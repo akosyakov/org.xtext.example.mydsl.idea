@@ -1,0 +1,51 @@
+<idea-plugin version="2">
+  <id>com.yourcompany.unique.plugin.id</id>
+  <name>Plugin display name here</name>
+  <version>1.0</version>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+  <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <em>most HTML tags may be used</em>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+      <!-- Add your extensions here -->
+      <fileTypeFactory implementation="org.xtext.example.mydsl.lang.MyDslFileTypeFactory"/>
+      <stubElementTypeHolder class="org.xtext.example.mydsl.lang.MyDslElementTypeProvider"/>
+      <lang.ast.factory language="org.xtext.example.mydsl.MyDsl" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
+      <lang.parserDefinition language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.lang.parser.MyDslParserDefinition"/>
+      <lang.findUsagesProvider language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.findusages.MyDslFindUsageProvider"/>
+      <lang.refactoringSupport language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.refactoring.MyDslRefactoringSupportProvider"/>
+      <lang.syntaxHighlighterFactory key="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.lang.MyDslSyntaxHighlighterFactory" />
+      <stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
+  </extensions>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
