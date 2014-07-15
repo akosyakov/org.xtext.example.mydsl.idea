@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.xtext.idea.lang.AbstractXtextLanguage;
+import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 
 import com.google.common.collect.Lists;
@@ -19,6 +19,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.PsiFileEx;
@@ -45,11 +46,12 @@ public class PsiFileUpdater extends AbstractProjectComponent implements ProjectC
 		if (updatedFiles.isEmpty()) {
 			return;
 		}
+		List<VirtualFile> filesToReparse = new ArrayList<VirtualFile>();
+		PsiManager psiManager = PsiManager.getInstance(myProject);
+		FileBasedIndex fileBasedIndex = FileBasedIndex.getInstance();
 		GlobalSearchScope projectScope = GlobalSearchScope.projectScope(myProject);
 		for (LanguageFileType fileType : fileTypes) {
-			Collection<VirtualFile> files = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, fileType, projectScope);
-	
-			PsiManager psiManager = PsiManager.getInstance(myProject);
+			Collection<VirtualFile> files = fileBasedIndex.getContainingFiles(FileTypeIndex.NAME, fileType, projectScope);
 			for (VirtualFile virtualFile : files) {
 				if (updatedFiles.contains(virtualFile)) {
 					continue;
@@ -58,17 +60,21 @@ public class PsiFileUpdater extends AbstractProjectComponent implements ProjectC
 				if (psiFile instanceof BaseXtextFile) {
 					PsiFileEx psiFileEx = (PsiFileEx) psiFile;
 					if (psiFileEx.isContentsLoaded()) {
-						psiManager.reloadFromDisk(psiFileEx);
+						filesToReparse.add(virtualFile);
 					}
 				}
 			}
 		}
+		if (filesToReparse.isEmpty()) {
+			return;
+		}
+		PsiDocumentManager.getInstance(myProject).reparseFiles(filesToReparse, false);
 	}
 
 	protected List<LanguageFileType> getFileTypes() {
 		List<LanguageFileType> fileTypes = Lists.newArrayList();
 		for (Language language : Language.getRegisteredLanguages()) {
-			if (language instanceof AbstractXtextLanguage) {
+			if (language instanceof IXtextLanguage) {
 				fileTypes.add(language.getAssociatedFileType());
 			}
 		}

@@ -82,13 +82,6 @@ public class BaseXtextPsiParser implements PsiParser {
 			composite.putUserData(XTEXT_ECONTEXT_KEY, context);
 			
 			if (semanticElement != null) {
-				Iterator<Adapter> adapters = semanticElement.eAdapters().iterator();
-				while (adapters.hasNext()) {
-					Adapter adapter = adapters.next();
-					if (adapter instanceof PsiAdapter) {
-						adapters.remove();
-					}
-				}
 				semanticElement.eAdapters().add(new PsiAdapter(composite));
 			}
 		}
