@@ -5,9 +5,8 @@ import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
 import org.eclipse.xtext.idea.resource.impl.StubContainerManager;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
 import org.eclipse.xtext.resource.IContainer;
-import org.eclipse.xtext.resource.impl.SimpleResourceDescriptionsBasedContainerManager;
 import org.eclipse.xtext.service.AbstractGenericModule;
-import org.xtext.example.mydsl.lang.MyDslElementTypeProvider;
+import org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider;
 
 import com.google.inject.Singleton;
 
