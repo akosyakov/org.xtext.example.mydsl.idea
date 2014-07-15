@@ -52,7 +52,7 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 
 	@Override
 	public PsiNamedEObject createPsi(PsiNamedEObjectStub stub) {
-		return new PsiNamedEObjectImpl(stub, elementTypeProvider.getNamedObjectType());
+		return new PsiNamedEObjectImpl(stub, elementTypeProvider.getNamedObjectType(), elementTypeProvider.getNameType());
 	}
 
 	@Override

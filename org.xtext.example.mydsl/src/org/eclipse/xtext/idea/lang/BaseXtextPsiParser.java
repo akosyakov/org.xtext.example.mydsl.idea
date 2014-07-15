@@ -26,6 +26,7 @@ import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
+import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
@@ -123,20 +124,33 @@ public class BaseXtextPsiParser implements PsiParser {
 	}
 	
 	public ASTNode parse(IElementType rootType, PsiBuilder psiBuilder) {
-		psiBuilder.setDebugMode(true);
-		
-		BaseXtextFile containingFile = getContainingFile(psiBuilder);
-		Resource resource = containingFile.createResource();
-		ICompositeNode rootNode = ((XtextResource) resource).getParseResult().getRootNode();
-		
 		PsiBuilder.Marker rootMarker = psiBuilder.mark();
-		parse(rootNode, new ParsingContext(psiBuilder, containingFile));
+
+		BaseXtextFile containingFile = getContainingFile(psiBuilder);
+		ICompositeNode rootNode = getRootNode(containingFile);
+		if (rootNode != null) {
+			parse(rootNode, new ParsingContext(psiBuilder, containingFile));
+		}
+		
 		while(!psiBuilder.eof()) {
 			psiBuilder.advanceLexer();
 		}
+		
 		rootMarker.done(rootType);
 		
 		return psiBuilder.getTreeBuilt();
+	}
+
+	protected ICompositeNode getRootNode(BaseXtextFile containingFile) {
+		Resource resource = containingFile.createResource();
+		if (resource == null) {
+			return null;
+		}
+        IParseResult parseResult = ((XtextResource) resource).getParseResult();
+        if (parseResult == null) {
+        	return null;
+        }
+        return parseResult.getRootNode();
 	}
 	
 	protected void parse(INode node, ParsingContext context) {

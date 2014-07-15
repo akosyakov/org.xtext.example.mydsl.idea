@@ -15,11 +15,12 @@ import com.intellij.util.IncorrectOperationException;
 
 public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> implements PsiNamedEObject {
 	
-	public PsiNamedEObjectImpl(PsiNamedEObjectStub stub, IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> nodeType) {
-		super(stub, nodeType);
-	}
-	
 	private IElementType nameType;
+	
+	public PsiNamedEObjectImpl(PsiNamedEObjectStub stub, IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> nodeType, IElementType nameType) {
+		super(stub, nodeType);
+		this.nameType = nameType;
+	}
 	
 	public PsiNamedEObjectImpl(ASTNode node, IElementType nameType) {
 		super(node);

@@ -34,6 +34,7 @@
       <lang.refactoringSupport language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.refactoring.MyDslRefactoringSupportProvider"/>
       <lang.syntaxHighlighterFactory key="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.lang.MyDslSyntaxHighlighterFactory" />
       <stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
+      <annotator language="org.xtext.example.mydsl.MyDsl" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
   </extensions>
 
   <application-components>
@@ -41,7 +42,10 @@
   </application-components>
 
   <project-components>
-    <!-- Add your project components here -->
+      <!-- Add your project components here -->
+      <component>
+          <implementation-class>org.eclipse.xtext.idea.resource.PsiFileUpdater</implementation-class>
+      </component>
   </project-components>
 
   <actions>

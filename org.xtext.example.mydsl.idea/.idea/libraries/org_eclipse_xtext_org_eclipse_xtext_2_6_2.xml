@@ -21,6 +21,9 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/lib/org.eclipse.xtext-2.6.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.eclipse.xtext-2.6.2-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/emf/org.eclipse.emf.ecore/2.10.0-v20140514-1158/org.eclipse.emf.ecore-2.10.0-v20140514-1158-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/emf/org.eclipse.emf.common/2.10.0-v20140514-1158/org.eclipse.emf.common-2.10.0-v20140514-1158-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

@@ -19,9 +19,17 @@ public abstract class BaseXtextFile extends PsiFileBase {
 
     @Inject
     private Provider<ResourceSet> resourceSetProvider;
+    
+	private Resource resource;
 
     protected BaseXtextFile(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
         super(viewProvider, language);
+    }
+    
+    @Override
+    public void onContentReload() {
+    	super.onContentReload();
+    	resource = null;
     }
 
     public Resource createResource() {    	
@@ -33,7 +41,7 @@ public abstract class BaseXtextFile extends PsiFileBase {
         URI uri = URI.createURI(url);
         ResourceSet resourceSet = resourceSetProvider.get();
         resourceSet.eAdapters().add(new StubBasedResourceDescriptions.ProjectAdapter(getProject()));
-        Resource resource = resourceSet.createResource(uri);
+        resource = resourceSet.createResource(uri);
         try {
             resource.load(virtualFile.getInputStream(), null);
         } catch (IOException e) {
@@ -41,5 +49,9 @@ public abstract class BaseXtextFile extends PsiFileBase {
         }
         return resource;
     }
+
+	public Resource getResource() {
+		return resource;
+	}
 
 }
