@@ -2,11 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-gen"/>
-	<classpathentry kind="src" path="xtend-gen"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Idea"/>
+	<classpathentry kind="lib" path="JFlex.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/intellij-dependencies"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.mydsl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.idea"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

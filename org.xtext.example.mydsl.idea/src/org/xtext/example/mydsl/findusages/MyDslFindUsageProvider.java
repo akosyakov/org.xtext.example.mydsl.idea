@@ -1,5 +1,12 @@
 package org.xtext.example.mydsl.findusages;
 
+import org.eclipse.xtext.psi.PsiNamedEObject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.xtext.example.mydsl.idea.lang.parser.MyDslLexer;
+import org.xtext.example.mydsl.idea.lang.parser.MyDslTokenTypes;
+import org.xtext.example.mydsl.parser.antlr.internal.InternalMyDslParser;
+
 import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
@@ -7,12 +14,6 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import org.eclipse.xtext.psi.PsiNamedEObject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.xtext.example.mydsl.lang.parser.MyDslLexer;
-import org.xtext.example.mydsl.lang.parser.MyDslTokenTypes;
-import org.xtext.example.mydsl.parser.antlr.internal.InternalMyDslParser;
 
 /**
  * Created by kosyakov on 09.07.14.

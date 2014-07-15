@@ -26,13 +26,13 @@
 
   <extensions defaultExtensionNs="com.intellij">
       <!-- Add your extensions here -->
-      <fileTypeFactory implementation="org.xtext.example.mydsl.lang.MyDslFileTypeFactory"/>
-      <stubElementTypeHolder class="org.xtext.example.mydsl.lang.MyDslElementTypeProvider"/>
+      <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
+      <stubElementTypeHolder class="org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider"/>
       <lang.ast.factory language="org.xtext.example.mydsl.MyDsl" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
-      <lang.parserDefinition language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.lang.parser.MyDslParserDefinition"/>
-      <lang.findUsagesProvider language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.findusages.MyDslFindUsageProvider"/>
-      <lang.refactoringSupport language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.refactoring.MyDslRefactoringSupportProvider"/>
-      <lang.syntaxHighlighterFactory key="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.lang.MyDslSyntaxHighlighterFactory" />
+      <lang.parserDefinition language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.idea.lang.parser.MyDslParserDefinition"/>
+      <lang.findUsagesProvider language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.idea.findusages.MyDslFindUsageProvider"/>
+      <lang.refactoringSupport language="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.idea.refactoring.MyDslRefactoringSupportProvider"/>
+      <lang.syntaxHighlighterFactory key="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.idea.lang.MyDslSyntaxHighlighterFactory" />
       <stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
       <annotator language="org.xtext.example.mydsl.MyDsl" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
   </extensions>
