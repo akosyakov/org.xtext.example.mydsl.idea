@@ -1,4 +1,4 @@
-package org.xtext.example.mydsl.lang;
+package org.xtext.example.mydsl.idea.lang;
 
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
 import org.eclipse.xtext.psi.PsiNamedEObject;

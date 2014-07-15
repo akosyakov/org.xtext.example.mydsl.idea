@@ -1,4 +1,4 @@
-package org.xtext.example.mydsl.lang;
+package org.xtext.example.mydsl.idea.lang;
 
 import org.eclipse.xtext.util.Modules2;
 import org.xtext.example.mydsl.MyDslStandaloneSetupGenerated;
