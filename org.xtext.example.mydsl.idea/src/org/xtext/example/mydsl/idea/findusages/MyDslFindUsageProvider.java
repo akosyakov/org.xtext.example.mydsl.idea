@@ -1,4 +1,4 @@
-package org.xtext.example.mydsl.findusages;
+package org.xtext.example.mydsl.idea.findusages;
 
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.jetbrains.annotations.NotNull;

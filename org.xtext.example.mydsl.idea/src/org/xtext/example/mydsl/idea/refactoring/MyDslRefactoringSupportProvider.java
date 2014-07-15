@@ -1,4 +1,4 @@
-package org.xtext.example.mydsl.refactoring;
+package org.xtext.example.mydsl.idea.refactoring;
 
 import com.intellij.lang.refactoring.RefactoringSupportProvider;
 import com.intellij.psi.PsiElement;
