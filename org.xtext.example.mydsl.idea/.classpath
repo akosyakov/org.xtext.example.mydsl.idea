@@ -5,5 +5,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/intellij-dependencies"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.mydsl"/>
-	<classpathentry kind="output" path="out/production/org.xtext.example.mydsl.idea"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
