@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.psi.PsiNamedEObject;
@@ -63,8 +62,7 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 	@Override
 	public PsiNamedEObjectStub createStub(PsiNamedEObject psi, StubElement parentStub) {
 		String name = psi.getName();
-		EReference reference = psi.getEReference();
-		return new PsiNamedEObjectStubImpl(parentStub, StringRef.fromString(name), reference.eClass(), elementTypeProvider.getNamedObjectType());
+		return new PsiNamedEObjectStubImpl(parentStub, StringRef.fromString(name), psi.getType(), elementTypeProvider.getNamedObjectType());
 	}
 
 }

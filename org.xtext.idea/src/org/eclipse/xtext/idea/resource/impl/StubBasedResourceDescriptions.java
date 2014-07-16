@@ -142,11 +142,10 @@ class StubEObjectDescription implements IEObjectDescription {
 
 	private final IPsiModelAssociations psiModelAssociations;
 
-	public StubEObjectDescription(PsiNamedEObject psiNamedEObject,
-			IPsiModelAssociations psiModelAssociations) {
+	public StubEObjectDescription(PsiNamedEObject psiNamedEObject, IPsiModelAssociations psiModelAssociations) {
 		this.psiNamedEObject = psiNamedEObject;
 		this.name = QualifiedName.create(psiNamedEObject.getName());
-		this.type = psiNamedEObject.getEReference().getEReferenceType();
+		this.type = psiNamedEObject.getType();
 		this.psiModelAssociations = psiModelAssociations;
 	}
 

@@ -1,0 +1,8 @@
+entity Foo {
+	Foo foo
+}
+
+entity Bar {
+	Bar bar
+	Foo foo
+}
