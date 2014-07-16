@@ -1,40 +1,76 @@
 package org.eclipse.xtext.idea.annotation;
 
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
-import org.eclipse.xtext.psi.impl.BaseXtextFile;
-import org.eclipse.xtext.resource.XtextSyntaxDiagnostic;
+import java.util.List;
 
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.diagnostics.Severity;
+import org.eclipse.xtext.idea.lang.IXtextLanguage;
+import org.eclipse.xtext.psi.PsiEObject;
+import org.eclipse.xtext.util.CancelIndicator;
+import org.eclipse.xtext.validation.CheckMode;
+import org.eclipse.xtext.validation.IResourceValidator;
+import org.eclipse.xtext.validation.Issue;
+
+import com.intellij.lang.Language;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
+import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 
 public class IssueAnnotator implements Annotator {
 
 	public void annotate(PsiElement element, AnnotationHolder holder) {
-		if (!(element instanceof BaseXtextFile)) {
+		if (!(element instanceof PsiEObject)) {
 			return;
 		}
-		BaseXtextFile xtextFile = (BaseXtextFile) element;
-		Resource resource = xtextFile.getResource();
+		PsiEObject psiEObject = (PsiEObject) element;
+		if (!psiEObject.isRoot()) {
+			return;
+		}
+		Resource resource = psiEObject.getResource();
 		if (resource == null) {
 			return;
 		}
-		for (Diagnostic error : resource.getErrors()) {
-			if (error instanceof org.eclipse.xtext.diagnostics.Diagnostic && !(error instanceof XtextSyntaxDiagnostic)) {
-				org.eclipse.xtext.diagnostics.Diagnostic xtextDiagnostic = (org.eclipse.xtext.diagnostics.Diagnostic) error;
-				int endOffset = xtextDiagnostic.getOffset() + xtextDiagnostic.getLength();
-				holder.createErrorAnnotation(new TextRange(xtextDiagnostic.getOffset(), endOffset), xtextDiagnostic.getMessage());
-			}
+		Language language = psiEObject.getLanguage();
+		if (!(language instanceof IXtextLanguage)) {
+			return;
 		}
-		for (Diagnostic warning : resource.getWarnings()) {
-			if (warning instanceof org.eclipse.xtext.diagnostics.Diagnostic && !(warning instanceof XtextSyntaxDiagnostic)) {
-				org.eclipse.xtext.diagnostics.Diagnostic xtextDiagnostic = (org.eclipse.xtext.diagnostics.Diagnostic) warning;
-				int endOffset = xtextDiagnostic.getOffset() + xtextDiagnostic.getLength();
-				holder.createWarningAnnotation(new TextRange(xtextDiagnostic.getOffset(), endOffset), xtextDiagnostic.getMessage());
+		IXtextLanguage xtextLanguage = (IXtextLanguage) language;
+		IResourceValidator resourceValidator = xtextLanguage.getInstance(IResourceValidator.class);
+		List<Issue> issues = resourceValidator.validate(resource, CheckMode.NORMAL_AND_FAST, new CancelIndicator() {
+			
+			public boolean isCanceled() {
+				ProgressIndicatorProvider.checkCanceled();
+				return false;
 			}
+			
+		});
+		for (Issue issue : issues) {
+			if (issue.isSyntaxError()) {
+				continue;
+			}
+			HighlightSeverity highlightSeverity = getHighlightSeverity(issue.getSeverity());
+			if (highlightSeverity == null) {
+				continue;
+			}
+			int endOffset = issue.getOffset() + issue.getLength();
+			holder.createAnnotation(highlightSeverity, new TextRange(issue.getOffset(), endOffset), issue.getMessage());
 		}
+	}
+
+	protected HighlightSeverity getHighlightSeverity(Severity severity) {
+		if (severity == Severity.ERROR) {
+			return HighlightSeverity.ERROR;
+		}
+		if (severity == Severity.WARNING) {
+			return HighlightSeverity.WARNING;
+		}
+		if (severity == Severity.INFO) {
+			return HighlightSeverity.INFORMATION;
+		}
+		return null;
 	}
 
 }

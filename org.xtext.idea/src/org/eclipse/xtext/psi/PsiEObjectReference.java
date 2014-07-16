@@ -38,6 +38,7 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
 	}
 
 	public Object[] getVariants() {
+		ProgressIndicatorProvider.checkCanceled();
         ICrossReferenceDescription crossReferenceDescription = psiModelAssociations.getCrossReferenceDescription(myElement);
         if (crossReferenceDescription == null) {
             return new Object[0];

@@ -1,7 +1,9 @@
 package org.eclipse.xtext.psi.impl;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.psi.PsiEObject;
 
@@ -39,6 +41,18 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 
 	public INode getINode() {
 		return getNode().getUserData(XTEXT_NODE_KEY);
+	}
+
+	public boolean isRoot() {
+		return getParent() instanceof BaseXtextFile;
+	}
+
+	protected EObject getEObject() {
+		return getINode().getSemanticElement();
+	}
+
+	public Resource getResource() {
+		return getEObject().eResource();
 	}
 	
 	@Override

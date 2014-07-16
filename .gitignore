@@ -1,5 +1,6 @@
 bin
 .DS_Store
-org.xtext.example.mydsl.idea/lib
 out
-*._trace
+*.java._trace
+*.java_trace
+*.smap
