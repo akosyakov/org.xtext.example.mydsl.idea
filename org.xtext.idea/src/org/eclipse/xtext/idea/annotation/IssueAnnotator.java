@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.diagnostics.Severity;
+import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.psi.PsiEObject;
 import org.eclipse.xtext.util.CancelIndicator;
@@ -39,15 +40,7 @@ public class IssueAnnotator implements Annotator {
 		}
 		IXtextLanguage xtextLanguage = (IXtextLanguage) language;
 		IResourceValidator resourceValidator = xtextLanguage.getInstance(IResourceValidator.class);
-		List<Issue> issues = resourceValidator.validate(resource, CheckMode.NORMAL_AND_FAST, new CancelIndicator() {
-			
-			public boolean isCanceled() {
-				ProgressIndicatorProvider.checkCanceled();
-				return false;
-			}
-			
-		});
-		for (Issue issue : issues) {
+		for (Issue issue : getIssues(resource, resourceValidator)) {
 			if (issue.isSyntaxError()) {
 				continue;
 			}
@@ -58,6 +51,21 @@ public class IssueAnnotator implements Annotator {
 			int endOffset = issue.getOffset() + issue.getLength();
 			holder.createAnnotation(highlightSeverity, new TextRange(issue.getOffset(), endOffset), issue.getMessage());
 		}
+	}
+
+	protected List<Issue> getIssues(Resource resource, IResourceValidator resourceValidator) {
+		try {
+			return resourceValidator.validate(resource, CheckMode.NORMAL_AND_FAST, new CancelIndicator() {
+				
+				public boolean isCanceled() {
+					ProgressIndicatorProvider.checkCanceled();
+					return false;
+				}
+				
+			});
+		} catch (Exception e) {
+    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+    	}
 	}
 
 	protected HighlightSeverity getHighlightSeverity(Severity severity) {
