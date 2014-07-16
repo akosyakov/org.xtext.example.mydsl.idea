@@ -28,7 +28,10 @@ public class MyDslParserDefinition implements ParserDefinition {
 	private IElementTypeProvider elementTypeProvider;
 	
 	@Inject
-	private Provider<BaseXtextPsiParser> baseXtextPsiParserProvider; 
+	private Provider<BaseXtextPsiParser> baseXtextPsiParserProvider;
+	
+	@Inject
+	private Provider<Lexer> lexerProvider; 
 	
 	public MyDslParserDefinition() {
 		MyDslLanguage.INSTANCE.injectMembers(this);
@@ -36,7 +39,7 @@ public class MyDslParserDefinition implements ParserDefinition {
 
 	@NotNull
 	public Lexer createLexer(Project project) {
-		return new MyDslLexer();
+		return lexerProvider.get();
 	}
 
 	public IFileElementType getFileNodeType() {
@@ -45,17 +48,17 @@ public class MyDslParserDefinition implements ParserDefinition {
 
 	@NotNull
 	public TokenSet getWhitespaceTokens() {
-		return MyDslTokenTypes.WHITESPACES;
+		return org.xtext.example.mydsl.idea.lang.parser.MyDslTokenTypes.WHITESPACES;
 	}
 
 	@NotNull
 	public TokenSet getCommentTokens() {
-		return MyDslTokenTypes.COMMENTS;
+		return org.xtext.example.mydsl.idea.lang.parser.MyDslTokenTypes.COMMENTS;
 	}
 
 	@NotNull
 	public TokenSet getStringLiteralElements() {
-		return MyDslTokenTypes.STRINGS;
+		return org.xtext.example.mydsl.idea.lang.parser.MyDslTokenTypes.STRINGS;
 	}
 
 	@NotNull

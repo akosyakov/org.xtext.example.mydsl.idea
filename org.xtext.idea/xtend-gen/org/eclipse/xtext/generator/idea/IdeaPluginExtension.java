@@ -3,6 +3,7 @@ package org.eclipse.xtext.generator.idea;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -20,7 +21,9 @@ import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.TerminalRule;
+import org.eclipse.xtext.generator.idea.IdeaPluginClassNames;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.IteratorExtensions;
@@ -28,41 +31,9 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 
 @SuppressWarnings("all")
 public class IdeaPluginExtension {
-  private static String TOKEN_TYPES = "TokenTypes";
-  
-  private static String LANGUAGE = "Language";
-  
-  private static String FILE_TYPE = "FileType";
-  
-  private static String FILE_TYPE_FACTORY = "FileTypeFactory";
-  
-  private static String FILE_IMPL = "FileImpl";
-  
-  private static String PARSER = "Parser";
-  
-  private static String TOKEN_TYPE_PROVIDER = "TokenTypeProvider";
-  
-  private static String LEXER = "Lexer";
-  
-  private static String PARSER_DEFINITION = "ParserDefinition";
-  
-  private static String SETUP = "IdeaSetup";
-  
-  private static String SYNTAX_HIGHLIGHTER = "SyntaxHighlighter";
-  
-  private static String SYNTAX_HIGHLIGHTER_FACTORY = "SyntaxHighlighterFactory";
-  
-  private static String LANG_PACKAGE = ".lang";
-  
-  private static String PARSER_PACKAGE = (IdeaPluginExtension.LANG_PACKAGE + ".parser");
-  
-  private static String PARSER_ANTLR_INTERNAL_PACKAGE = ".parser.antlr.internal";
-  
-  private static String PSI_PACKAGE = ".lang.psi";
-  
-  private static String PSI_IMPL_PACKAGE = ".lang.psi.impl";
-  
-  private static String STUB_ELEMENT_TYPE = "StubElementType";
+  @Inject
+  @Extension
+  private IdeaPluginClassNames _ideaPluginClassNames;
   
   public List<AbstractRule> getAllRules(final Grammar grammar) {
     ArrayList<AbstractRule> _newArrayList = CollectionLiterals.<AbstractRule>newArrayList();
@@ -110,106 +81,6 @@ public class IdeaPluginExtension {
   
   public String getPath(final String packageName) {
     return packageName.replaceAll("\\.", "/");
-  }
-  
-  public String getTokenTypesPath(final Grammar grammar) {
-    String _parsingPackageName = this.getParsingPackageName(grammar);
-    String _tokenTypesClassName = this.getTokenTypesClassName(grammar);
-    return this.getFilePath(_parsingPackageName, _tokenTypesClassName);
-  }
-  
-  public String getLexerPath(final Grammar grammar) {
-    String _parsingPackageName = this.getParsingPackageName(grammar);
-    String _lexerClassName = this.getLexerClassName(grammar);
-    return this.getFilePath(_parsingPackageName, _lexerClassName);
-  }
-  
-  public String getParserPath(final Grammar grammar) {
-    String _parsingPackageName = this.getParsingPackageName(grammar);
-    String _parserClassName = this.getParserClassName(grammar);
-    return this.getFilePath(_parsingPackageName, _parserClassName);
-  }
-  
-  public String tokenTypeProviderPath(final Grammar grammar) {
-    String _parsingPackageName = this.getParsingPackageName(grammar);
-    String _tokenTypeProviderClassName = this.getTokenTypeProviderClassName(grammar);
-    return this.getFilePath(_parsingPackageName, _tokenTypeProviderClassName);
-  }
-  
-  public String getParserDefinitionPath(final Grammar grammar) {
-    String _parsingPackageName = this.getParsingPackageName(grammar);
-    String _parserDefinitionClassName = this.getParserDefinitionClassName(grammar);
-    return this.getFilePath(_parsingPackageName, _parserDefinitionClassName);
-  }
-  
-  public String getSyntaxHighlighterPath(final Grammar grammar) {
-    String _langPackageName = this.getLangPackageName(grammar);
-    String _syntaxHighlighterClassName = this.getSyntaxHighlighterClassName(grammar);
-    return this.getFilePath(_langPackageName, _syntaxHighlighterClassName);
-  }
-  
-  public String getSyntaxHighlighterFactoryPath(final Grammar grammar) {
-    String _langPackageName = this.getLangPackageName(grammar);
-    String _syntaxHighlighterFactoryClassName = this.getSyntaxHighlighterFactoryClassName(grammar);
-    return this.getFilePath(_langPackageName, _syntaxHighlighterFactoryClassName);
-  }
-  
-  public String getLanguagePath(final Grammar grammar) {
-    String _langPackageName = this.getLangPackageName(grammar);
-    String _languageClassName = this.getLanguageClassName(grammar);
-    return this.getFilePath(_langPackageName, _languageClassName);
-  }
-  
-  public String getFileTypePath(final Grammar grammar) {
-    String _langPackageName = this.getLangPackageName(grammar);
-    String _fileTypeClassName = this.getFileTypeClassName(grammar);
-    return this.getFilePath(_langPackageName, _fileTypeClassName);
-  }
-  
-  public String getFileTypeFactoryPath(final Grammar grammar) {
-    String _langPackageName = this.getLangPackageName(grammar);
-    String _fileTypeFactoryClassName = this.getFileTypeFactoryClassName(grammar);
-    return this.getFilePath(_langPackageName, _fileTypeFactoryClassName);
-  }
-  
-  public String fileImplPath(final Grammar grammar) {
-    String _psiImplPackageName = this.getPsiImplPackageName(grammar);
-    String _fileImplClassName = this.getFileImplClassName(grammar);
-    return this.getFilePath(_psiImplPackageName, _fileImplClassName);
-  }
-  
-  public String getPsiElementPath(final Grammar grammar, final AbstractRule abstractRule) {
-    String _psiPackageName = this.getPsiPackageName(grammar);
-    String _psiElementClassName = this.getPsiElementClassName(abstractRule);
-    return this.getFilePath(_psiPackageName, _psiElementClassName);
-  }
-  
-  public String getPsiElementImplPath(final Grammar grammar, final AbstractRule abstractRule) {
-    String _psiImplPackageName = this.getPsiImplPackageName(grammar);
-    String _psiElementImplClassName = this.getPsiElementImplClassName(abstractRule);
-    return this.getFilePath(_psiImplPackageName, _psiElementImplClassName);
-  }
-  
-  public String getFilePath(final String packageName, final String className) {
-    String _path = this.getPath((packageName + "."));
-    String _plus = (_path + className);
-    return (_plus + ".java");
-  }
-  
-  public String guiceModuleIdea(final Grammar grammar) {
-    String _basePackageName = this.getBasePackageName(grammar);
-    String _plus = (_basePackageName + ".");
-    String _simpleName = this.getSimpleName(grammar);
-    String _plus_1 = (_plus + _simpleName);
-    return (_plus_1 + "IdeaModule");
-  }
-  
-  public String getIdeaSetupName(final Grammar grammar) {
-    String _basePackageName = this.getBasePackageName(grammar);
-    String _plus = (_basePackageName + ".");
-    String _simpleName = this.getSimpleName(grammar);
-    String _plus_1 = (_plus + _simpleName);
-    return (_plus_1 + "StandaloneSetupIdea");
   }
   
   public String getInstanceName(final AbstractRule abstractRule) {
@@ -261,8 +132,9 @@ public class IdeaPluginExtension {
   }
   
   public String getPsiElementImplClassName(final Grammar grammar, final AbstractRule abstractRule) {
-    String _psiImplPackageName = this.getPsiImplPackageName(grammar);
-    String _plus = (_psiImplPackageName + ".");
+    String _fileImplName = this._ideaPluginClassNames.getFileImplName(grammar);
+    String _packageName = this._ideaPluginClassNames.toPackageName(_fileImplName);
+    String _plus = (_packageName + ".");
     String _psiElementImplClassName = this.getPsiElementImplClassName(abstractRule);
     return (_plus + _psiElementImplClassName);
   }
@@ -486,102 +358,13 @@ public class IdeaPluginExtension {
     return this.getPsiElementClassName(_rule);
   }
   
-  public String getTokenTypesClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.TOKEN_TYPES);
-  }
-  
-  public String getLanguageClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.LANGUAGE);
-  }
-  
-  public String getFileTypeClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.FILE_TYPE);
-  }
-  
-  public String getFileTypeFactoryClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.FILE_TYPE_FACTORY);
-  }
-  
-  public String getFileImplClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.FILE_IMPL);
-  }
-  
   public String getLanguageID(final Grammar grammar) {
     return grammar.getName();
   }
   
-  public String getParserClassName(final Grammar grammar) {
-    String _className = this.getClassName(grammar, IdeaPluginExtension.PARSER);
-    return ("Internal" + _className);
-  }
-  
-  public String getTokenTypeProviderClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.TOKEN_TYPE_PROVIDER);
-  }
-  
-  public String getParserDefinitionClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.PARSER_DEFINITION);
-  }
-  
-  public String getSetupClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.SETUP);
-  }
-  
-  public String getSyntaxHighlighterClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.SYNTAX_HIGHLIGHTER);
-  }
-  
-  public String getSyntaxHighlighterFactoryClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.SYNTAX_HIGHLIGHTER_FACTORY);
-  }
-  
-  public String getLexerClassName(final Grammar grammar) {
-    return this.getClassName(grammar, IdeaPluginExtension.LEXER);
-  }
-  
-  public String getAntlrLexerClassName(final Grammar grammar) {
-    String _className = this.getClassName(grammar, IdeaPluginExtension.LEXER);
-    return ("Internal" + _className);
-  }
-  
-  public String getClassName(final Grammar grammar, final String typeName) {
-    String _simpleName = this.getSimpleName(grammar);
-    return (_simpleName + typeName);
-  }
-  
-  public String getBasePackageName(final Grammar grammar) {
-    String _packageName = this.getPackageName(grammar);
-    return (_packageName + ".idea");
-  }
-  
-  public String getLangPackageName(final Grammar grammar) {
-    String _basePackageName = this.getBasePackageName(grammar);
-    return (_basePackageName + IdeaPluginExtension.LANG_PACKAGE);
-  }
-  
-  public String getParsingPackageName(final Grammar grammar) {
-    String _basePackageName = this.getBasePackageName(grammar);
-    return (_basePackageName + IdeaPluginExtension.PARSER_PACKAGE);
-  }
-  
-  public String getInternalParsingPackageName(final Grammar grammar) {
-    String _packageName = this.getPackageName(grammar);
-    return (_packageName + IdeaPluginExtension.PARSER_ANTLR_INTERNAL_PACKAGE);
-  }
-  
-  public String getPsiImplPackageName(final Grammar grammar) {
-    String _basePackageName = this.getBasePackageName(grammar);
-    return (_basePackageName + IdeaPluginExtension.PSI_IMPL_PACKAGE);
-  }
-  
-  public String getPsiPackageName(final Grammar grammar) {
-    String _basePackageName = this.getBasePackageName(grammar);
-    return (_basePackageName + IdeaPluginExtension.PSI_PACKAGE);
-  }
-  
   public String getStubElementTypeClassName(final AbstractRule abstractRule) {
     String _name = abstractRule.getName();
-    return (_name + IdeaPluginExtension.STUB_ELEMENT_TYPE);
+    return (_name + "StubElementType");
   }
   
   public String getInternalTypeName(final AbstractElement assignment) {

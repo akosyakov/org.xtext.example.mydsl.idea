@@ -67,7 +67,7 @@
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/nanoxml-2.2.3.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/nekohtml-1.9.14.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/netty-all-4.1.0.Beta1.jar"/>
-	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/openapi.jar" sourcepath="INTELLIJ_IDEA/out/artifacts/sources.zip"/>
+	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/openapi.jar" sourcepath="/INTELLIJ_IDEA/out/artifacts/sources.zip"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/optimizedFileManager.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/oromatcher.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/picocontainer.jar"/>

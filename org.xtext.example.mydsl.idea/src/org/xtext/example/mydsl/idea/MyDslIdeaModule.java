@@ -5,12 +5,11 @@ import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
 import org.eclipse.xtext.idea.resource.impl.StubContainerManager;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
 import org.eclipse.xtext.resource.IContainer;
-import org.eclipse.xtext.service.AbstractGenericModule;
 import org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider;
 
 import com.google.inject.Singleton;
 
-public class MyDslIdeaModule extends AbstractGenericModule {
+public class MyDslIdeaModule extends AbstractMyDslIdeaModule {
 	
 	@Singleton
 	public Class<? extends IElementTypeProvider> bindElementTypeProvider() {

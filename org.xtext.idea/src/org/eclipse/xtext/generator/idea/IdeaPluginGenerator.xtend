@@ -1,5 +1,7 @@
 package org.eclipse.xtext.generator.idea
 
+import com.intellij.lexer.Lexer
+import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import java.util.Set
 import javax.inject.Inject
 import org.eclipse.xpand2.output.Outlet
@@ -7,6 +9,8 @@ import org.eclipse.xpand2.output.Output
 import org.eclipse.xpand2.output.OutputImpl
 import org.eclipse.xtext.AbstractRule
 import org.eclipse.xtext.Grammar
+import org.eclipse.xtext.generator.BindFactory
+import org.eclipse.xtext.generator.Binding
 import org.eclipse.xtext.generator.Generator
 import org.eclipse.xtext.generator.Xtend2ExecutionContext
 import org.eclipse.xtext.generator.Xtend2GeneratorFragment
@@ -30,6 +34,9 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	@Inject
 	extension IdeaPluginExtension
 	
+	@Inject
+	extension IdeaPluginClassNames
+	
 	override generate(Grammar grammar, Xtend2ExecutionContext ctx) {
 //		for (rule:grammar.rules) {
 //			ctx.writeFile(Generator::SRC_GEN, grammar.getPsiElementPath(rule), grammar.compilePsiElement(rule))
@@ -52,17 +59,25 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			ctx.xpandExecutionContext.output.addOutlet(newSrcOutlet)
 			outlet_src = newSrcOutlet.name
 		}
-		ctx.writeFile(outlet_src, naming.asPath(grammar.ideaSetupName)+".java", grammar.compileStandaloneSetup)
-		ctx.writeFile(outlet_src_gen, grammar.languagePath, grammar.compileLanguage)
-		ctx.writeFile(outlet_src_gen, grammar.fileTypePath, grammar.compileFileType)
-		ctx.writeFile(outlet_src_gen, grammar.fileTypeFactoryPath, grammar.compileFileTypeFactory)
-		ctx.writeFile(outlet_src_gen, grammar.fileImplPath, grammar.compileFileImpl)
-		ctx.writeFile(outlet_src_gen, grammar.tokenTypesPath, grammar.compileTokenTypes);
-		ctx.writeFile(outlet_src_gen, grammar.lexerPath, grammar.compileLexer);
-		ctx.writeFile(outlet_src_gen, grammar.tokenTypeProviderPath, grammar.compileTokenTypeProvider);
-		ctx.writeFile(outlet_src_gen, grammar.parserDefinitionPath, grammar.compileParserDefinition);
-		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterPath, grammar.compileSyntaxHighlighter);
-		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterFactoryPath, grammar.compileSyntaxHighlighterFactory);
+		
+		val bindFactory = new BindFactory();
+		bindFactory.addTypeToType(SyntaxHighlighter.name, grammar.syntaxHighlighterName)
+		bindFactory.addTypeToType(Lexer.name, grammar.lexerName)
+		val bindings = bindFactory.bindings
+		
+		ctx.writeFile(outlet_src, grammar.standaloneSetupIdea.toJavaPath, grammar.compileStandaloneSetup)
+		ctx.writeFile(outlet_src_gen, grammar.languageName.toJavaPath, grammar.compileLanguage)
+		ctx.writeFile(outlet_src_gen, grammar.fileTypeName.toJavaPath, grammar.compileFileType)
+		ctx.writeFile(outlet_src_gen, grammar.fileTypeFactoryName.toJavaPath, grammar.compileFileTypeFactory)
+		ctx.writeFile(outlet_src_gen, grammar.fileImplName.toJavaPath, grammar.compileFileImpl)
+		ctx.writeFile(outlet_src_gen, grammar.tokenTypesName.toJavaPath, grammar.compileTokenTypes);
+		ctx.writeFile(outlet_src_gen, grammar.lexerName.toJavaPath, grammar.compileLexer);
+		ctx.writeFile(outlet_src_gen, grammar.tokenTypeProviderName.toJavaPath, grammar.compileTokenTypeProvider);
+		ctx.writeFile(outlet_src_gen, grammar.parserDefinitionName.toJavaPath, grammar.compileParserDefinition);
+		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterName.toJavaPath, grammar.compileSyntaxHighlighter);
+		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterFactoryName.toJavaPath, grammar.compileSyntaxHighlighterFactory);
+		ctx.writeFile(outlet_src_gen, grammar.abstractIdeaModuleName.toJavaPath, grammar.compileGuiceModuleIdeaGenerated(bindings));
+		
 		
 		if (pathIdeaPluginProject != null) {
 			var output = new OutputImpl();
@@ -75,6 +90,55 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			output.writeFile(DOT_IDEA, "modules.xml", grammar.compileModulesXml);
 			output.writeFile(DOT_IDEA, "misc.xml", grammar.compileMiscXml);
 		}
+	}
+	
+	def CharSequence compileGuiceModuleIdeaGenerated(Grammar grammar, Set<Binding> bindings) '''
+		package «grammar.abstractIdeaModuleName.toPackageName»;
+		
+		public class «grammar.abstractIdeaModuleName.toSimpleName» extends org.eclipse.xtext.idea.DefaultIdeaModule {
+			
+			«FOR it : bindings»
+				«IF !value.provider && value.statements.isEmpty»
+					// contributed by «contributedBy»
+					«IF key.singleton»@org.eclipse.xtext.service.SingletonBinding«IF key.eagerSingleton»(eager=true)«ENDIF»«ENDIF»
+					public «IF value.expression==null»Class<? extends «key.type»>«ELSE»«key.type»«ENDIF» «bindMethodName(it)»() {
+						return «IF value.expression!=null»«value.expression»«ELSE»«value.typeName».class«ENDIF»;
+					}
+				«ELSEIF value.statements.isEmpty»
+					// contributed by «contributedBy»
+					«IF key.singleton»@org.eclipse.xtext.service.SingletonBinding«IF key.eagerSingleton»(eager=true)«ENDIF»«ENDIF»
+					public «IF value.expression==null»Class<? extends com.google.inject.Provider<«key.type»>>«ELSE»com.google.inject.Provider<«key.type»>«ENDIF» «bindMethodName(it)»() {
+						return «IF value.expression!=null»«value.expression»«ELSE»«value.typeName».class«ENDIF»;
+					}
+				«ELSE»
+					// contributed by «contributedBy»
+					public void «bindMethodName(it)»(com.google.inject.Binder binder) {
+				«FOR statement : value.statements»
+						«statement»«IF !statement.endsWith(";")»;«ENDIF»
+				«ENDFOR»
+					}
+				«ENDIF»
+			«ENDFOR»
+			
+			
+		}
+	'''
+	
+	def bindMethodName(Binding it) {
+		val prefix = if (!it.value.provider && it.value.statements.isEmpty) 
+			'bind' 
+		else {
+			if (it.value.statements.isEmpty)
+				'provide'
+			else 
+				'configure'
+		}
+		val suffix = if (value.expression!=null && !value.provider) 'ToInstance' else ''
+		return prefix + simpleMethodName(key.type) + suffix
+	}
+	
+	def private simpleMethodName(String qn) {
+		qn.replaceAll('<','\\.').replaceAll('>','\\.').split('\\.').filter(e|e.matches('[A-Z].*')).join('$');
 	}
 	
 	def iml() {
@@ -115,185 +179,185 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	}
 	
 	def compileModulesXml(Grammar grammar)'''
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/«iml»" filepath="$PROJECT_DIR$/«iml»" />
-    </modules>
-  </component>
-</project>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<project version="4">
+		  <component name="ProjectModuleManager">
+		    <modules>
+		      <module fileurl="file://$PROJECT_DIR$/«iml»" filepath="$PROJECT_DIR$/«iml»" />
+		    </modules>
+		  </component>
+		</project>
 	'''
 	
 	def compileMiscXml(Grammar grammar)'''
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA IC-123.72" project-jdk-type="IDEA JDK" />
-  <output url="file://$PROJECT_DIR$/out" />
-</project>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<project version="4">
+		  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA IC-123.72" project-jdk-type="IDEA JDK" />
+		  <output url="file://$PROJECT_DIR$/out" />
+		</project>
 	'''
 	
 	def compilePluginXml(Grammar grammar)'''
-<idea-plugin version="2">
-	<id>«grammar.languageID»</id>
-	<name>«grammar.simpleName» Support</name>
-	<description>
-      This plugin enables smart editing of «grammar.simpleName» files.
-	</description>
-	<version>1.0.0</version>
-	<vendor>My Company</vendor>
-
-	<idea-version since-build="123.72"/>
-
-	<extensions defaultExtensionNs="com.intellij">
-		<lang.syntaxHighlighterFactory key="«grammar.languageID»" implementationClass="«grammar.langPackageName».«grammar.syntaxHighlighterFactoryClassName»"/>
-		<lang.parserDefinition language="«grammar.languageID»" implementationClass="«grammar.parsingPackageName».«grammar.parserDefinitionClassName»"/>
-		<fileTypeFactory implementation="«grammar.langPackageName».«grammar.fileTypeFactoryClassName»"/>
-	</extensions>
-
-</idea-plugin>
+		<idea-plugin version="2">
+			<id>«grammar.languageID»</id>
+			<name>«grammar.simpleName» Support</name>
+			<description>
+		      This plugin enables smart editing of «grammar.simpleName» files.
+			</description>
+			<version>1.0.0</version>
+			<vendor>My Company</vendor>
+		
+			<idea-version since-build="123.72"/>
+		
+			<extensions defaultExtensionNs="com.intellij">
+				<lang.syntaxHighlighterFactory key="«grammar.languageID»" implementationClass="«grammar.syntaxHighlighterFactoryName»"/>
+				<lang.parserDefinition language="«grammar.languageID»" implementationClass="«grammar.parserDefinitionName»"/>
+				<fileTypeFactory implementation="«grammar.fileTypeFactoryName»"/>
+			</extensions>
+		
+		</idea-plugin>
 	'''
 	
 	def compileIml(Grammar grammar)'''
-<?xml version="1.0" encoding="UTF-8"?>
-<module type="PLUGIN_MODULE" version="4">
-  <component name="DevKit.ModuleBuildProperties" url="file://$MODULE_DIR$/META-INF/plugin.xml" />
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
-    <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
-    </content>
- 	<orderEntry type="jdk" jdkName="IDEA IC-123.72" jdkType="IDEA JDK" />
-    <orderEntry type="sourceFolder" forTests="false" />
-    «FOR library:libraries»
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://«library»!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    «ENDFOR»
-  </component>
-</module>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<module type="PLUGIN_MODULE" version="4">
+		  <component name="DevKit.ModuleBuildProperties" url="file://$MODULE_DIR$/META-INF/plugin.xml" />
+		  <component name="NewModuleRootManager" inherit-compiler-output="true">
+		    <exclude-output />
+		    <content url="file://$MODULE_DIR$">
+		      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+		      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+		    </content>
+		 	<orderEntry type="jdk" jdkName="IDEA IC-123.72" jdkType="IDEA JDK" />
+		    <orderEntry type="sourceFolder" forTests="false" />
+		    «FOR library:libraries»
+		    <orderEntry type="module-library">
+		      <library>
+		        <CLASSES>
+		          <root url="jar://«library»!/" />
+		        </CLASSES>
+		        <JAVADOC />
+		        <SOURCES />
+		      </library>
+		    </orderEntry>
+		    «ENDFOR»
+		  </component>
+		</module>
 	'''
 	
 	def compilePsiElement(Grammar grammar, AbstractRule rule)'''
-package «grammar.psiPackageName»;
-«IF rule.hasMultipleAssigment»
-
-import java.util.List;
-«ENDIF»
-
-import com.intellij.psi.«rule.psiElementSuperClassName»;
-
-public interface «rule.psiElementClassName» extends «rule.psiElementSuperClassName» {
-	«FOR assignment:rule.assignmentsWithoutName»
-	
-	«assignment.typeName» «assignment.getter»();
-	
-	void «assignment.setter»(«assignment.typeName» «assignment.feature»);
-	«ENDFOR»
-
-}
+		package «grammar.psiPackageName»;
+		«IF rule.hasMultipleAssigment»
+		
+		import java.util.List;
+		«ENDIF»
+		
+		import com.intellij.psi.«rule.psiElementSuperClassName»;
+		
+		public interface «rule.psiElementClassName» extends «rule.psiElementSuperClassName» {
+			«FOR assignment:rule.assignmentsWithoutName»
+			
+			«assignment.typeName» «assignment.getter»();
+			
+			void «assignment.setter»(«assignment.typeName» «assignment.feature»);
+			«ENDFOR»
+		
+		}
 	'''
 	
 	def compileFileImpl(Grammar grammar)'''
-package «grammar.psiImplPackageName»;
-
-import org.eclipse.xtext.psi.impl.BaseXtextFile;
-import «grammar.langPackageName».«grammar.fileTypeClassName»;
-import «grammar.langPackageName».«grammar.languageClassName»;
-
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.psi.FileViewProvider;
-
-public final class «grammar.fileImplClassName» extends BaseXtextFile {
-
-	public «grammar.fileImplClassName»(FileViewProvider viewProvider) {
-		super(viewProvider, «grammar.languageClassName».INSTANCE);
-	}
-
-	public FileType getFileType() {
-		return «grammar.fileTypeClassName».INSTANCE;
-	}
-
-}
+		package «grammar.psiImplPackageName»;
+		
+		import org.eclipse.xtext.psi.impl.BaseXtextFile;
+		import «grammar.fileTypeName»;
+		import «grammar.languageName»;
+		
+		import com.intellij.openapi.fileTypes.FileType;
+		import com.intellij.psi.FileViewProvider;
+		
+		public final class «grammar.fileImplName.toSimpleName» extends BaseXtextFile {
+		
+			public «grammar.fileImplName.toSimpleName»(FileViewProvider viewProvider) {
+				super(viewProvider, «grammar.languageName.toSimpleName».INSTANCE);
+			}
+		
+			public FileType getFileType() {
+				return «grammar.fileTypeName.toSimpleName».INSTANCE;
+			}
+		
+		}
 	'''
 	
 	def compileFileTypeFactory(Grammar grammar)'''
-package «grammar.langPackageName»;
-
-import com.intellij.openapi.fileTypes.FileTypeConsumer;
-import com.intellij.openapi.fileTypes.FileTypeFactory;
-import org.jetbrains.annotations.NotNull;
-
-public class «grammar.fileTypeFactoryClassName» extends FileTypeFactory {
-
-	public void createFileTypes(@NotNull FileTypeConsumer consumer) {
-		consumer.consume(«grammar.fileTypeClassName».INSTANCE, «grammar.fileTypeClassName».DEFAULT_EXTENSION);
-	}
-
-}
+		package «grammar.fileTypeFactoryName.toPackageName»;
+		
+		import com.intellij.openapi.fileTypes.FileTypeConsumer;
+		import com.intellij.openapi.fileTypes.FileTypeFactory;
+		import org.jetbrains.annotations.NotNull;
+		
+		public class «grammar.fileTypeFactoryName.toSimpleName» extends FileTypeFactory {
+		
+			public void createFileTypes(@NotNull FileTypeConsumer consumer) {
+				consumer.consume(«grammar.fileTypeName».INSTANCE, «grammar.fileTypeName».DEFAULT_EXTENSION);
+			}
+		
+		}
 	'''
 	
 	def compileFileType(Grammar grammar)'''
-package «grammar.langPackageName»;
-
-import javax.swing.Icon;
-
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import org.jetbrains.annotations.NonNls;
-
-public final class «grammar.fileTypeClassName» extends LanguageFileType {
-
-	public static final «grammar.fileTypeClassName» INSTANCE = new «grammar.fileTypeClassName»();
-	
-	@NonNls 
-	public static final String DEFAULT_EXTENSION = "«fileExtension»";
-
-	private «grammar.fileTypeClassName»() {
-		super(«grammar.languageClassName».INSTANCE);
-	}
-
-	public String getDefaultExtension() {
-		return DEFAULT_EXTENSION;
-	}
-
-	public String getDescription() {
-		return "«grammar.simpleName» files";
-	}
-
-	public Icon getIcon() {
-		return null;
-	}
-
-	public String getName() {
-		return "«grammar.simpleName»";
-	}
-
-}
+		package «grammar.fileTypeName.toPackageName»;
+		
+		import javax.swing.Icon;
+		
+		import com.intellij.openapi.fileTypes.LanguageFileType;
+		import org.jetbrains.annotations.NonNls;
+		
+		public final class «grammar.fileTypeName.toSimpleName» extends LanguageFileType {
+		
+			public static final «grammar.fileTypeName.toSimpleName» INSTANCE = new «grammar.fileTypeName.toSimpleName»();
+			
+			@NonNls 
+			public static final String DEFAULT_EXTENSION = "«fileExtension»";
+		
+			private «grammar.fileTypeName.toSimpleName»() {
+				super(«grammar.languageName.toSimpleName».INSTANCE);
+			}
+		
+			public String getDefaultExtension() {
+				return DEFAULT_EXTENSION;
+			}
+		
+			public String getDescription() {
+				return "«grammar.simpleName» files";
+			}
+		
+			public Icon getIcon() {
+				return null;
+			}
+		
+			public String getName() {
+				return "«grammar.simpleName»";
+			}
+		
+		}
 	'''
 	
 	def compileLanguage(Grammar grammar)'''
-		package «grammar.langPackageName»;
+		package «grammar.languageName.toPackageName»;
 		
 		import org.eclipse.xtext.idea.lang.AbstractXtextLanguage;
 		
 		import com.google.inject.Injector;
 		
-		public final class «grammar.languageClassName» extends AbstractXtextLanguage {
+		public final class «grammar.languageName.toSimpleName» extends AbstractXtextLanguage {
 		
-			public static final «grammar.languageClassName» INSTANCE = new «grammar.languageClassName»();
+			public static final «grammar.languageName.toSimpleName» INSTANCE = new «grammar.languageName.toSimpleName»();
 		
 			private Injector injector;
 		
-			private «grammar.languageClassName»() {
+			private «grammar.languageName.toSimpleName»() {
 				super("«grammar.languageID»");
-				this.injector = new «getIdeaSetupName(grammar)»().createInjectorAndDoEMFRegistration();
+				this.injector = new «grammar.standaloneSetupIdea»().createInjectorAndDoEMFRegistration();
 				
 			}
 		
@@ -304,10 +368,8 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		}
 	'''
 	
-	def compileStandaloneSetup(Grammar grammar) {
-		val setupName = getIdeaSetupName(grammar)
-		'''
-		package «naming.toPackageName(setupName)»;
+	def compileStandaloneSetup(Grammar grammar) '''
+		package «grammar.standaloneSetupIdea.toPackageName»;
 		
 		import org.eclipse.xtext.util.Modules2;
 		import «naming.setupImpl(grammar)»;
@@ -316,35 +378,33 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		import com.google.inject.Injector;
 		import com.google.inject.Module;
 		
-		public class «naming.toSimpleName(setupName)» extends «naming.toSimpleName(naming.setupImpl(grammar))» {
+		public class «grammar.standaloneSetupIdea.toSimpleName» extends «naming.toSimpleName(naming.setupImpl(grammar))» {
 		
 		    @Override
 		    public Injector createInjector() {
 		        Module runtimeModule = new «naming.guiceModuleRt(grammar)»();
-		        Module ideaModule = new «guiceModuleIdea(grammar)»();
+		        Module ideaModule = new «grammar.ideaModuleName»();
 		        Module mergedModule = Modules2.mixin(runtimeModule, ideaModule);
 		        return Guice.createInjector(mergedModule);
 		    }
 		
 		}
-		'''
-	}
+	'''
 	
 	def compileTokenTypes(Grammar grammar)'''
-		package «grammar.parsingPackageName»;
+		package «grammar.tokenTypesName.toPackageName»;
 		
-		import static «grammar.internalParsingPackageName».«grammar.parserClassName».tokenNames;
+		import static «grammar.internalParserName».*;
 		
 		import java.util.HashMap;
 		import java.util.Map;
 		
-		import «grammar.langPackageName».«grammar.languageClassName»;
-		import «grammar.internalParsingPackageName».«grammar.parserClassName»;
+		import «grammar.languageName»;
 		
 		import com.intellij.psi.tree.IElementType;
 		import com.intellij.psi.tree.TokenSet;
 		
-		public abstract class «grammar.tokenTypesClassName» {
+		public abstract class «grammar.tokenTypesName.toSimpleName» {
 		
 			public static final IElementType[] tokenTypes = new IElementType[tokenNames.length];
 			
@@ -352,39 +412,39 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		
 			static {
 				for (int i = 0; i < tokenNames.length; i++) {
-					tokenTypes[i] = new IElementType(tokenNames[i], «grammar.languageClassName».INSTANCE);
+					tokenTypes[i] = new IElementType(tokenNames[i], «grammar.languageName.toSimpleName».INSTANCE);
 					nameToTypeMap.put(tokenNames[i], tokenTypes[i]);
 				}
 			}
 		
-			public static final TokenSet COMMENTS = TokenSet.create(tokenTypes[«grammar.parserClassName».RULE_SL_COMMENT],
-					tokenTypes[«grammar.parserClassName».RULE_ML_COMMENT]);
+			public static final TokenSet COMMENTS = TokenSet.create(tokenTypes[RULE_SL_COMMENT],
+					tokenTypes[RULE_ML_COMMENT]);
 			
-			public static final TokenSet LINE_COMMENTS = TokenSet.create(tokenTypes[«grammar.parserClassName».RULE_SL_COMMENT]);
+			public static final TokenSet LINE_COMMENTS = TokenSet.create(tokenTypes[RULE_SL_COMMENT]);
 			
-			public static final TokenSet BLOCK_COMMENTS = TokenSet.create(tokenTypes[«grammar.parserClassName».RULE_ML_COMMENT]);
+			public static final TokenSet BLOCK_COMMENTS = TokenSet.create(tokenTypes[RULE_ML_COMMENT]);
 		
-			public static final TokenSet WHITESPACES = TokenSet.create(tokenTypes[«grammar.parserClassName».RULE_WS]);
+			public static final TokenSet WHITESPACES = TokenSet.create(tokenTypes[RULE_WS]);
 		
-			public static final TokenSet STRINGS = TokenSet.create(tokenTypes[«grammar.parserClassName».RULE_STRING]);
+			public static final TokenSet STRINGS = TokenSet.create(tokenTypes[RULE_STRING]);
 		
 		}
 	'''
 	
 	def compileLexer(Grammar grammar)'''
-		package «grammar.parsingPackageName»;
+		package «grammar.lexerName.toPackageName»;
 		
 		import org.antlr.runtime.ANTLRStringStream;
 		import org.antlr.runtime.CommonToken;
 		import org.antlr.runtime.Token;
-		import «grammar.internalParsingPackageName».«grammar.antlrLexerClassName»;
+		import «grammar.antlrLexerName»;
 		
 		import com.intellij.lexer.LexerBase;
 		import com.intellij.psi.tree.IElementType;
 		
-		public class «grammar.lexerClassName» extends LexerBase {
+		public class «grammar.lexerName.toSimpleName» extends LexerBase {
 		
-		    private «grammar.antlrLexerClassName» internalLexer;
+		    private «grammar.antlrLexerName.toSimpleName» internalLexer;
 		    private CommonToken token;
 		
 		    private CharSequence buffer;
@@ -397,7 +457,7 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		        this.endOffset = endOffset;
 		
 		        String text = buffer.subSequence(startOffset, endOffset).toString();
-		        internalLexer = new «grammar.antlrLexerClassName»(new ANTLRStringStream(text));
+		        internalLexer = new «grammar.antlrLexerName.toSimpleName»(new ANTLRStringStream(text));
 		    }
 		
 		    public int getState() {
@@ -410,7 +470,7 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		            return null;
 		        }
 		        int type = token.getType();
-		        return «grammar.tokenTypesClassName».tokenTypes[type];
+		        return «grammar.tokenTypesName».tokenTypes[type];
 		    }
 		
 		    public int getTokenStart() {
@@ -453,7 +513,7 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 	'''
 	
 	def compileTokenTypeProvider(Grammar grammar)'''
-		package «grammar.parsingPackageName»;
+		package «grammar.tokenTypeProviderName.toPackageName»;
 		
 		import java.util.Arrays;
 		import java.util.List;
@@ -462,9 +522,9 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		
 		import com.intellij.psi.tree.IElementType;
 		
-		public class «grammar.tokenTypeProviderClassName» implements TokenTypeProvider {
+		public class «grammar.tokenTypeProviderName.toSimpleName» implements TokenTypeProvider {
 		
-		    public static final List<IElementType> I_ELEMENT_TYPES = Arrays.asList(«grammar.tokenTypesClassName».tokenTypes);
+		    public static final List<IElementType> I_ELEMENT_TYPES = Arrays.asList(«grammar.tokenTypesName».tokenTypes);
 		
 		    public int getType(IElementType iElementType) {
 		        return I_ELEMENT_TYPES.indexOf(iElementType);
@@ -474,50 +534,60 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 	'''
 
 	def compileSyntaxHighlighterFactory(Grammar grammar)'''
-		package «grammar.langPackageName»;
+		package «grammar.syntaxHighlighterFactoryName.toPackageName»;
+		
+		import com.google.inject.Inject;
+		import com.google.inject.Provider;
 		
 		import com.intellij.openapi.fileTypes.SingleLazyInstanceSyntaxHighlighterFactory;
 		import com.intellij.openapi.fileTypes.SyntaxHighlighter;
+		
 		import org.jetbrains.annotations.NotNull;
 		
-		public class «grammar.syntaxHighlighterFactoryClassName» extends SingleLazyInstanceSyntaxHighlighterFactory {
-		
+		public class «grammar.syntaxHighlighterFactoryName.toSimpleName» extends SingleLazyInstanceSyntaxHighlighterFactory {
+			
+			@Inject Provider<SyntaxHighlighter> syntaxHighlighterProvider;
+			
+			public MyDslSyntaxHighlighterFactory() {
+				«grammar.languageName».INSTANCE.injectMembers(this);
+			}
+			
 		    @NotNull
 		    protected SyntaxHighlighter createHighlighter() {
-		        return new «grammar.syntaxHighlighterClassName»();
+		        return syntaxHighlighterProvider.get();
 		    }
 		
 		}
 	'''
 	
 	def compileSyntaxHighlighter(Grammar grammar)'''
-		package «grammar.langPackageName»;
+		package «grammar.syntaxHighlighterName.toPackageName»;
 		
 		import com.intellij.lexer.Lexer;
 		import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 		import com.intellij.openapi.editor.colors.TextAttributesKey;
 		import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 		import com.intellij.psi.tree.IElementType;
-		import «grammar.parsingPackageName».«grammar.lexerClassName»;
-		import «grammar.parsingPackageName».«grammar.tokenTypesClassName»;
+		import «grammar.lexerName»;
+		import «grammar.tokenTypesName»;
 		import org.jetbrains.annotations.NotNull;
 		
-		public class «grammar.syntaxHighlighterClassName» extends SyntaxHighlighterBase {
+		public class «grammar.syntaxHighlighterName.toSimpleName» extends SyntaxHighlighterBase {
 		
 		    @NotNull
 		    public Lexer getHighlightingLexer() {
-		        return new «grammar.lexerClassName»();
+		        return new «grammar.lexerName.toSimpleName»();
 		    }
 		
 		    @NotNull
 		    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-		        if («grammar.tokenTypesClassName».STRINGS.contains(tokenType)) {
+		        if («grammar.tokenTypesName.toSimpleName».STRINGS.contains(tokenType)) {
 		            return pack(DefaultLanguageHighlighterColors.STRING);
 		        }
-				if («grammar.tokenTypesClassName».LINE_COMMENTS.contains(tokenType)) {
+				if («grammar.tokenTypesName.toSimpleName».LINE_COMMENTS.contains(tokenType)) {
 					return pack(DefaultLanguageHighlighterColors.LINE_COMMENT);
 				}
-				if («grammar.tokenTypesClassName».BLOCK_COMMENTS.contains(tokenType)) {
+				if («grammar.tokenTypesName.toSimpleName».BLOCK_COMMENTS.contains(tokenType)) {
 					return pack(DefaultLanguageHighlighterColors.BLOCK_COMMENT);
 				}
 		        String myDebugName = tokenType.toString();
@@ -531,7 +601,7 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 	'''
 	
 	def compileParserDefinition(Grammar grammar)'''
-		package «grammar.parsingPackageName»;
+		package «grammar.parserDefinitionName.toPackageName»;
 		
 		import org.eclipse.xtext.idea.lang.BaseXtextPsiParser;
 		import org.eclipse.xtext.idea.lang.IElementTypeProvider;
@@ -539,8 +609,8 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		import org.eclipse.xtext.psi.impl.PsiNamedEObjectImpl;
 		import org.eclipse.xtext.psi.impl.PsiReferenceEObjectImpl;
 		import org.jetbrains.annotations.NotNull;
-		import «grammar.langPackageName».«grammar.languageClassName»;
-		import «grammar.psiImplPackageName».«grammar.fileImplClassName»;
+		import «grammar.languageName»;
+		import «grammar.fileImplName»;
 		
 		import com.google.inject.Inject;
 		import com.google.inject.Provider;
@@ -555,21 +625,24 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		import com.intellij.psi.tree.IFileElementType;
 		import com.intellij.psi.tree.TokenSet;
 		
-		public class «grammar.parserDefinitionClassName» implements ParserDefinition {
+		public class «grammar.parserDefinitionName.toSimpleName» implements ParserDefinition {
 			
 			@Inject
 			private IElementTypeProvider elementTypeProvider;
 			
 			@Inject
-			private Provider<BaseXtextPsiParser> baseXtextPsiParserProvider; 
+			private Provider<BaseXtextPsiParser> baseXtextPsiParserProvider;
 			
-			public «grammar.parserDefinitionClassName»() {
-				«grammar.languageClassName».INSTANCE.injectMembers(this);
+			@Inject
+			private Provider<Lexer> lexerProvider; 
+			
+			public «grammar.parserDefinitionName.toSimpleName»() {
+				«grammar.languageName.toSimpleName».INSTANCE.injectMembers(this);
 			}
 		
 			@NotNull
 			public Lexer createLexer(Project project) {
-				return new «grammar.lexerClassName»();
+				return lexerProvider.get();
 			}
 		
 			public IFileElementType getFileNodeType() {
@@ -578,17 +651,17 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 		
 			@NotNull
 			public TokenSet getWhitespaceTokens() {
-				return «grammar.tokenTypesClassName».WHITESPACES;
+				return «grammar.tokenTypesName».WHITESPACES;
 			}
 		
 			@NotNull
 			public TokenSet getCommentTokens() {
-				return «grammar.tokenTypesClassName».COMMENTS;
+				return «grammar.tokenTypesName».COMMENTS;
 			}
 		
 			@NotNull
 			public TokenSet getStringLiteralElements() {
-				return «grammar.tokenTypesClassName».STRINGS;
+				return «grammar.tokenTypesName».STRINGS;
 			}
 		
 			@NotNull
@@ -597,7 +670,7 @@ public final class «grammar.fileTypeClassName» extends LanguageFileType {
 			}
 		
 			public PsiFile createFile(FileViewProvider viewProvider) {
-				return new «grammar.fileImplClassName»(viewProvider);
+				return new «grammar.fileImplName.toSimpleName»(viewProvider);
 			}
 		
 			public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {

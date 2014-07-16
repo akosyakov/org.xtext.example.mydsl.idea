@@ -1,0 +1,15 @@
+package org.xtext.example.mydsl.idea;
+
+public class AbstractMyDslIdeaModule extends org.eclipse.xtext.idea.DefaultIdeaModule {
+	
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public Class<? extends com.intellij.openapi.fileTypes.SyntaxHighlighter> bindSyntaxHighlighter() {
+		return org.xtext.example.mydsl.idea.lang.MyDslSyntaxHighlighter.class;
+	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public Class<? extends com.intellij.lexer.Lexer> bindLexer() {
+		return org.xtext.example.mydsl.idea.lang.parser.MyDslLexer.class;
+	}
+	
+	
+}

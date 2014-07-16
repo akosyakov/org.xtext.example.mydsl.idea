@@ -36,7 +36,7 @@ public class MyDslLexer extends LexerBase {
             return null;
         }
         int type = token.getType();
-        return MyDslTokenTypes.tokenTypes[type];
+        return org.xtext.example.mydsl.idea.lang.parser.MyDslTokenTypes.tokenTypes[type];
     }
 
     public int getTokenStart() {

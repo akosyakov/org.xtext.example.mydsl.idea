@@ -1,9 +1,7 @@
 package org.eclipse.xtext.linking.lazy;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScopeProvider;
 
@@ -20,8 +18,7 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
 	private EReference reference;
 
     public EObject resolve() {
-        URI proxyURI = ((InternalEObject) proxy).eProxyURI();
-        return context.eResource().getResourceSet().getEObject(proxyURI, true);
+    	return (EObject) context.eGet(reference);
     }
 
     public Iterable<IEObjectDescription> getVariants() {

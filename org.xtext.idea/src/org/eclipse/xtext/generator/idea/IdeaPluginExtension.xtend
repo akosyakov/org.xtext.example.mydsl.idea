@@ -1,5 +1,6 @@
 package org.eclipse.xtext.generator.idea
 
+import com.google.inject.Inject
 import java.util.List
 import org.eclipse.xtext.AbstractElement
 import org.eclipse.xtext.AbstractRule
@@ -13,41 +14,7 @@ import org.eclipse.xtext.TerminalRule
 
 class IdeaPluginExtension {
 	
-	private static String TOKEN_TYPES = "TokenTypes"
-	
-	private static String LANGUAGE = "Language"
-	
-	private static String FILE_TYPE = "FileType"
-	
-	private static String FILE_TYPE_FACTORY = "FileTypeFactory"
-	
-	private static String FILE_IMPL = "FileImpl"
-	
-	private static String PARSER = "Parser"
-	
-	private static String TOKEN_TYPE_PROVIDER = "TokenTypeProvider"
-	
-	private static String LEXER = "Lexer"
-	
-	private static String PARSER_DEFINITION = "ParserDefinition"
-	
-	private static String SETUP = "IdeaSetup"
-	
-	private static String SYNTAX_HIGHLIGHTER = "SyntaxHighlighter"
-	
-	private static String SYNTAX_HIGHLIGHTER_FACTORY = "SyntaxHighlighterFactory"
-	
-	private static String LANG_PACKAGE = ".lang"
-	
-	private static String PARSER_PACKAGE = LANG_PACKAGE + ".parser"
-	
-	private static String PARSER_ANTLR_INTERNAL_PACKAGE = ".parser.antlr.internal"
-	
-	private static String PSI_PACKAGE = ".lang.psi"
-	
-	private static String PSI_IMPL_PACKAGE = ".lang.psi.impl"
-	
-	private static String STUB_ELEMENT_TYPE = "StubElementType"	
+	@Inject extension IdeaPluginClassNames 
 	
 	def getAllRules(Grammar grammar) {
 		getAllRules(grammar, <AbstractRule>newArrayList())
@@ -71,70 +38,6 @@ class IdeaPluginExtension {
 	
 	def getPath(String packageName) {
 		packageName.replaceAll("\\.", "/")
-	}
-	
-	def getTokenTypesPath(Grammar grammar) {
-		getFilePath(grammar.parsingPackageName, grammar.tokenTypesClassName)
-	}
-	
-	def getLexerPath(Grammar grammar) {
-		getFilePath(grammar.parsingPackageName, grammar.lexerClassName)
-	}
-	
-	def getParserPath(Grammar grammar) {
-		getFilePath(grammar.parsingPackageName, grammar.parserClassName)
-	}
-	
-	def tokenTypeProviderPath(Grammar grammar) {
-		getFilePath(grammar.parsingPackageName, grammar.tokenTypeProviderClassName);
-	}
-	
-	def getParserDefinitionPath(Grammar grammar) {
-		getFilePath(grammar.parsingPackageName, grammar.parserDefinitionClassName)
-	}
-	
-	def getSyntaxHighlighterPath(Grammar grammar) {
-		getFilePath(grammar.langPackageName, grammar.syntaxHighlighterClassName)
-	}
-	
-	def getSyntaxHighlighterFactoryPath(Grammar grammar) {
-		getFilePath(grammar.langPackageName, grammar.syntaxHighlighterFactoryClassName)
-	}
-	
-	def getLanguagePath(Grammar grammar) {
-		getFilePath(grammar.langPackageName, grammar.languageClassName)
-	}
-	
-	def getFileTypePath(Grammar grammar) {
-		getFilePath(grammar.langPackageName, grammar.fileTypeClassName)
-	}
-	
-	def getFileTypeFactoryPath(Grammar grammar) {
-		getFilePath(grammar.langPackageName, grammar.fileTypeFactoryClassName);
-	}
-	
-	def fileImplPath(Grammar grammar) {
-		getFilePath(grammar.psiImplPackageName, grammar.fileImplClassName)
-	}
-	
-	def getPsiElementPath(Grammar grammar, AbstractRule abstractRule) {
-		getFilePath(grammar.psiPackageName, abstractRule.getPsiElementClassName);
-	}
-	
-	def getPsiElementImplPath(Grammar grammar, AbstractRule abstractRule) {
-		getFilePath(grammar.psiImplPackageName, abstractRule.getPsiElementImplClassName);
-	}
-	
-	def getFilePath(String packageName, String className) {
-		(packageName + ".").path + className + ".java"
-	}
-	
-	def guiceModuleIdea(Grammar grammar) {
-		grammar.basePackageName + "." + grammar.simpleName + "IdeaModule"
-	}
-	
-	def getIdeaSetupName(Grammar grammar) {
-		grammar.basePackageName + '.' + grammar.simpleName + "StandaloneSetupIdea";
 	}
 	
 	def getInstanceName(AbstractRule abstractRule) {
@@ -170,7 +73,7 @@ class IdeaPluginExtension {
 	}
 	
 	def getPsiElementImplClassName(Grammar grammar, AbstractRule abstractRule) {
-		grammar.psiImplPackageName + "." + abstractRule.getPsiElementImplClassName
+		grammar.fileImplName.toPackageName + "." + abstractRule.getPsiElementImplClassName
 	}
 	
 	def getPsiElementImplClassName(AbstractRule abstractRule) {
@@ -308,92 +211,13 @@ class IdeaPluginExtension {
 		(assignment.terminal as RuleCall).rule.psiElementClassName
 	}
 	
-	def getTokenTypesClassName(Grammar grammar) {
-		grammar.getClassName(TOKEN_TYPES);
-	}
-	
-	def getLanguageClassName(Grammar grammar) {
-		grammar.getClassName(LANGUAGE)
-	}
-	
-	def getFileTypeClassName(Grammar grammar) {
-		grammar.getClassName(FILE_TYPE)
-	}
-	
-	def getFileTypeFactoryClassName(Grammar grammar) {
-		grammar.getClassName(FILE_TYPE_FACTORY)
-	}
-	
-	def getFileImplClassName(Grammar grammar) {
-		grammar.getClassName(FILE_IMPL)
-	}
-	
 	def getLanguageID(Grammar grammar) {
 		grammar.name
 	}
 	
-	def getParserClassName(Grammar grammar) {
-		"Internal" + grammar.getClassName(PARSER)
-	}
-	
-	def getTokenTypeProviderClassName(Grammar grammar) {
-		grammar.getClassName(TOKEN_TYPE_PROVIDER)
-	}
-	
-	def getParserDefinitionClassName(Grammar grammar) {
-		grammar.getClassName(PARSER_DEFINITION)
-	}
-	
-	def getSetupClassName(Grammar grammar) {
-		grammar.getClassName(SETUP)
-	}
-	
-	def getSyntaxHighlighterClassName(Grammar grammar) {
-		grammar.getClassName(SYNTAX_HIGHLIGHTER)
-	}
-	
-	def getSyntaxHighlighterFactoryClassName(Grammar grammar) {
-		grammar.getClassName(SYNTAX_HIGHLIGHTER_FACTORY)
-	}
-	
-	def getLexerClassName(Grammar grammar) {
-		grammar.getClassName(LEXER)
-	}
-	
-	def getAntlrLexerClassName(Grammar grammar) {
-		"Internal" + grammar.getClassName(LEXER)
-	}
-	
-	def getClassName(Grammar grammar, String typeName) {
-		grammar.simpleName + typeName
-	}
-	
-	def getBasePackageName(Grammar grammar) {
-		grammar.packageName + '.idea' 
-	}
-	
-	def getLangPackageName(Grammar grammar) {
-		grammar.basePackageName + LANG_PACKAGE
-	}
-	
-	def getParsingPackageName(Grammar grammar) {
-		grammar.basePackageName + PARSER_PACKAGE
-	}
-	
-	def getInternalParsingPackageName(Grammar grammar) {
-		grammar.packageName + PARSER_ANTLR_INTERNAL_PACKAGE
-	}
-	
-	def getPsiImplPackageName(Grammar grammar) {
-		grammar.basePackageName + PSI_IMPL_PACKAGE
-	}
-	
-	def getPsiPackageName(Grammar grammar) {
-		grammar.basePackageName + PSI_PACKAGE		
-	}
-	
 	def getStubElementTypeClassName(AbstractRule abstractRule) {
-		abstractRule.name + STUB_ELEMENT_TYPE;
+		abstractRule.name + "StubElementType";
 	}
 	
+
 }

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class MyDslFileTypeFactory extends FileTypeFactory {
 
 	public void createFileTypes(@NotNull FileTypeConsumer consumer) {
-		consumer.consume(MyDslFileType.INSTANCE, MyDslFileType.DEFAULT_EXTENSION);
+		consumer.consume(org.xtext.example.mydsl.idea.lang.MyDslFileType.INSTANCE, org.xtext.example.mydsl.idea.lang.MyDslFileType.DEFAULT_EXTENSION);
 	}
 
 }
