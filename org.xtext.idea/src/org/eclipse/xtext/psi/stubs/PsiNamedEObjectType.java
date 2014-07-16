@@ -31,7 +31,7 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 			((IXtextLanguage) language).injectMembers(this);
 		}
 	}
-
+	
 	public String getExternalId() {
 		return getLanguage().getID() + "." + super.toString();
 	}
@@ -42,6 +42,7 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 		dataStream.writeUTF(stub.getType().getName());
 	}
 
+	@SuppressWarnings("rawtypes")
 	public PsiNamedEObjectStub deserialize(StubInputStream dataStream, StubElement parentStub) throws IOException {
 		StringRef name = dataStream.readName();
 		String packageURI = dataStream.readUTF();
@@ -59,6 +60,7 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 		return new PsiNamedEObjectImpl(stub, elementTypeProvider.getNamedObjectType(), elementTypeProvider.getNameType());
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public PsiNamedEObjectStub createStub(PsiNamedEObject psi, StubElement parentStub) {
 		String name = psi.getName();

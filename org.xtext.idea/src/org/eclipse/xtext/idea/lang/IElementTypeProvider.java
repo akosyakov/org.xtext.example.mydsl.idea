@@ -13,7 +13,7 @@ public interface IElementTypeProvider {
 
 	IElementType getObjectType();
 
-	IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> getNamedObjectType();
+	IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> getNamedObjectType();
 
 	IElementType getCrossReferenceType();
 

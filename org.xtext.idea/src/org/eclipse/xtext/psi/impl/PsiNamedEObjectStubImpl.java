@@ -15,7 +15,8 @@ public class PsiNamedEObjectStubImpl extends StubBase<PsiNamedEObject> implement
 	
 	private final EClass type;
 
-	public PsiNamedEObjectStubImpl(StubElement parent, StringRef name, EClass type, IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> elementType) {
+	@SuppressWarnings("rawtypes")
+	public PsiNamedEObjectStubImpl(StubElement parent, StringRef name, EClass type, IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> elementType) {
 		super(parent, elementType);
 		this.name = name;
 		this.type = type;

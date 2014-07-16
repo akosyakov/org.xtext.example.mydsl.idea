@@ -17,7 +17,7 @@ public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> imp
 	
 	private IElementType nameType;
 	
-	public PsiNamedEObjectImpl(PsiNamedEObjectStub stub, IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> nodeType, IElementType nameType) {
+	public PsiNamedEObjectImpl(PsiNamedEObjectStub stub, IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> nodeType, IElementType nameType) {
 		super(stub, nodeType);
 		this.nameType = nameType;
 	}
