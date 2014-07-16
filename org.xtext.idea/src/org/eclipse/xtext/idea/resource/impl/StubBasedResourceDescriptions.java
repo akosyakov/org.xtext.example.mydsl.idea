@@ -14,6 +14,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.IPsiModelAssociations;
 import org.eclipse.xtext.psi.PsiNamedEObject;
@@ -28,6 +29,7 @@ import org.eclipse.xtext.resource.impl.AbstractResourceDescription;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Processor;
@@ -114,20 +116,24 @@ class StubResourceDescription extends AbstractResourceDescription implements IRe
 
 	@Override
 	protected List<IEObjectDescription> computeExportedObjects() {
-		final List<IEObjectDescription> allDescriptions = new ArrayList<IEObjectDescription>();
-		final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(project);
-		psiNamedEObjectIndex.processAllKeys(project, new Processor<String>() {
-			
-			public boolean process(String key) {
-				Collection<PsiNamedEObject> psiNamedObjects = psiNamedEObjectIndex.get(key, project, projectScope);
-				for (PsiNamedEObject psiNamedObject : psiNamedObjects) {
-					allDescriptions.add(new StubEObjectDescription(psiNamedObject, psiModelAssociations));
+		try {
+			final List<IEObjectDescription> allDescriptions = new ArrayList<IEObjectDescription>();
+			final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(project);
+			psiNamedEObjectIndex.processAllKeys(project, new Processor<String>() {
+				
+				public boolean process(String key) {
+					Collection<PsiNamedEObject> psiNamedObjects = psiNamedEObjectIndex.get(key, project, projectScope);
+					for (PsiNamedEObject psiNamedObject : psiNamedObjects) {
+						allDescriptions.add(new StubEObjectDescription(psiNamedObject, psiModelAssociations));
+					}
+					return true;
 				}
-				return true;
-			}
-
-		});
-		return allDescriptions;
+	
+			});
+			return allDescriptions;
+		} catch (ProcessCanceledException e) {
+			throw ProcessCanceledExceptionHandling.wrappedReThrow(e);
+		}
 	}
 	
 }

@@ -2,6 +2,7 @@ package org.eclipse.xtext.linking.lazy;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScopeProvider;
 
@@ -18,7 +19,11 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
 	private EReference reference;
 
     public EObject resolve() {
-    	return (EObject) context.eGet(reference);
+    	try {
+    		return (EObject) context.eGet(reference);
+    	} catch (Exception e) {
+    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+    	}
     }
 
     public Iterable<IEObjectDescription> getVariants() {
