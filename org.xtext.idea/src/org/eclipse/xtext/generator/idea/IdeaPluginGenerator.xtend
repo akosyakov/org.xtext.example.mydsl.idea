@@ -63,6 +63,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		val bindFactory = new BindFactory();
 		bindFactory.addTypeToType(SyntaxHighlighter.name, grammar.syntaxHighlighterName)
 		bindFactory.addTypeToType(Lexer.name, grammar.lexerName)
+		bindFactory.addTypeToType(TokenTypeProvider.name, grammar.tokenTypeProviderName)
 		val bindings = bindFactory.bindings
 		
 		ctx.writeFile(outlet_src, grammar.standaloneSetupIdea.toJavaPath, grammar.compileStandaloneSetup)
@@ -70,7 +71,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		ctx.writeFile(outlet_src_gen, grammar.fileTypeName.toJavaPath, grammar.compileFileType)
 		ctx.writeFile(outlet_src_gen, grammar.fileTypeFactoryName.toJavaPath, grammar.compileFileTypeFactory)
 		ctx.writeFile(outlet_src_gen, grammar.fileImplName.toJavaPath, grammar.compileFileImpl)
-		ctx.writeFile(outlet_src_gen, grammar.tokenTypesName.toJavaPath, grammar.compileTokenTypes);
 		ctx.writeFile(outlet_src_gen, grammar.lexerName.toJavaPath, grammar.compileLexer);
 		ctx.writeFile(outlet_src_gen, grammar.tokenTypeProviderName.toJavaPath, grammar.compileTokenTypeProvider);
 		ctx.writeFile(outlet_src_gen, grammar.parserDefinitionName.toJavaPath, grammar.compileParserDefinition);
@@ -391,42 +391,54 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		}
 	'''
 	
-	def compileTokenTypes(Grammar grammar)'''
-		package «grammar.tokenTypesName.toPackageName»;
+	def compileTokenTypeProvider(Grammar grammar)'''
+		package «grammar.tokenTypeProviderName.toPackageName»;
 		
 		import static «grammar.internalParserName».*;
 		
-		import java.util.HashMap;
-		import java.util.Map;
-		
+		import org.eclipse.xtext.generator.idea.TokenTypeProvider;
 		import «grammar.languageName»;
 		
+		import com.google.inject.Singleton;
 		import com.intellij.psi.tree.IElementType;
 		import com.intellij.psi.tree.TokenSet;
 		
-		public abstract class «grammar.tokenTypesName.toSimpleName» {
+		@Singleton public class «grammar.tokenTypeProviderName.toSimpleName» implements TokenTypeProvider {
 		
-			public static final IElementType[] tokenTypes = new IElementType[tokenNames.length];
+			private static final IElementType[] tokenTypes = new IElementType[tokenNames.length];
 			
-			public static final Map<String, IElementType> nameToTypeMap = new HashMap<String, IElementType>();
-		
 			static {
 				for (int i = 0; i < tokenNames.length; i++) {
-					tokenTypes[i] = new IElementType(tokenNames[i], «grammar.languageName.toSimpleName».INSTANCE);
-					nameToTypeMap.put(tokenNames[i], tokenTypes[i]);
+					tokenTypes[i] = new IndexedElementType(tokenNames[i], i, «grammar.languageName.toSimpleName».INSTANCE);
 				}
 			}
-		
-			public static final TokenSet COMMENTS = TokenSet.create(tokenTypes[RULE_SL_COMMENT],
-					tokenTypes[RULE_ML_COMMENT]);
 			
-			public static final TokenSet LINE_COMMENTS = TokenSet.create(tokenTypes[RULE_SL_COMMENT]);
-			
-			public static final TokenSet BLOCK_COMMENTS = TokenSet.create(tokenTypes[RULE_ML_COMMENT]);
+			private static final TokenSet WHITESPACE_TOKENS = TokenSet.create(tokenTypes[RULE_WS]);
+			private static final TokenSet COMMENT_TOKENS = TokenSet.create(tokenTypes[RULE_SL_COMMENT], tokenTypes[RULE_ML_COMMENT]);
+			private static final TokenSet STRING_TOKENS = TokenSet.create(tokenTypes[RULE_STRING]);
 		
-			public static final TokenSet WHITESPACES = TokenSet.create(tokenTypes[RULE_WS]);
+		    public int getAntlrType(IElementType iElementType) {
+		        return ((IndexedElementType)iElementType).getLocalIndex();
+		    }
+		    
+		    public IElementType getIElementType(int antlrType) {
+		    	return tokenTypes[antlrType];
+		    }
 		
-			public static final TokenSet STRINGS = TokenSet.create(tokenTypes[RULE_STRING]);
+			@Override
+			public TokenSet getWhitespaceTokens() {
+				return WHITESPACE_TOKENS;
+			}
+		
+			@Override
+			public TokenSet getCommentTokens() {
+				return COMMENT_TOKENS;
+			}
+		
+			@Override
+			public TokenSet getStringLiteralTokens() {
+				return STRING_TOKENS;
+			}
 		
 		}
 	'''
@@ -435,104 +447,20 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		package «grammar.lexerName.toPackageName»;
 		
 		import org.antlr.runtime.ANTLRStringStream;
-		import org.antlr.runtime.CommonToken;
-		import org.antlr.runtime.Token;
+		import org.antlr.runtime.Lexer;
+		import org.eclipse.xtext.idea.lang.parser.AbstractAntlrDelegatingIdeaLexer;
 		import «grammar.antlrLexerName»;
 		
-		import com.intellij.lexer.LexerBase;
-		import com.intellij.psi.tree.IElementType;
+		public class «grammar.lexerName.toSimpleName» extends AbstractAntlrDelegatingIdeaLexer {
 		
-		public class «grammar.lexerName.toSimpleName» extends LexerBase {
-		
-		    private «grammar.antlrLexerName.toSimpleName» internalLexer;
-		    private CommonToken token;
-		
-		    private CharSequence buffer;
-		    private int startOffset;
-		    private int endOffset;
-		
-		    public void start(CharSequence buffer, int startOffset, int endOffset, int initialState) {
-		        this.buffer = buffer;
-		        this.startOffset = startOffset;
-		        this.endOffset = endOffset;
-		
-		        String text = buffer.subSequence(startOffset, endOffset).toString();
-		        internalLexer = new «grammar.antlrLexerName.toSimpleName»(new ANTLRStringStream(text));
-		    }
-		
-		    public int getState() {
-		        return token != null ? token.getType() : 0;
-		    }
-		
-		    public IElementType getTokenType() {
-		        locateToken();
-		        if (token == null) {
-		            return null;
-		        }
-		        int type = token.getType();
-		        return «grammar.tokenTypesName».tokenTypes[type];
-		    }
-		
-		    public int getTokenStart() {
-		        locateToken();
-		        return startOffset + token.getStartIndex();
-		    }
-		
-		    public int getTokenEnd() {
-		        locateToken();
-		        return startOffset + token.getStopIndex() + 1;
-		    }
-		
-		    public void advance() {
-		        locateToken();
-		        token = null;
-		    }
-		
-		    public CharSequence getBufferSequence() {
-		        return buffer;
-		    }
-		
-		    public int getBufferEnd() {
-		        return endOffset;
-		    }
-		
-		    private void locateToken() {
-		        if (token == null) {
-		            try {
-		                token = (CommonToken) internalLexer.nextToken();
-		            } catch (Exception e) {
-		                e.printStackTrace();
-		            }
-		            if (token == Token.EOF_TOKEN) {
-		                token = null;
-		            }
-		        }
-		    }
+			@Override
+			public Lexer createAntlrLexer(String text) {
+				return new InternalMyDslLexer(new ANTLRStringStream(text));
+			}
 		
 		}
 	'''
 	
-	def compileTokenTypeProvider(Grammar grammar)'''
-		package «grammar.tokenTypeProviderName.toPackageName»;
-		
-		import java.util.Arrays;
-		import java.util.List;
-		
-		import org.eclipse.xtext.generator.idea.TokenTypeProvider;
-		
-		import com.intellij.psi.tree.IElementType;
-		
-		public class «grammar.tokenTypeProviderName.toSimpleName» implements TokenTypeProvider {
-		
-		    public static final List<IElementType> I_ELEMENT_TYPES = Arrays.asList(«grammar.tokenTypesName».tokenTypes);
-		
-		    public int getType(IElementType iElementType) {
-		        return I_ELEMENT_TYPES.indexOf(iElementType);
-		    }
-		
-		}
-	'''
-
 	def compileSyntaxHighlighterFactory(Grammar grammar)'''
 		package «grammar.syntaxHighlighterFactoryName.toPackageName»;
 		
@@ -563,31 +491,37 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	def compileSyntaxHighlighter(Grammar grammar)'''
 		package «grammar.syntaxHighlighterName.toPackageName»;
 		
+		import org.eclipse.xtext.generator.idea.TokenTypeProvider;
+		import org.jetbrains.annotations.NotNull;
+		import «grammar.antlrLexerName»;
+		
+		import com.google.inject.Inject;
+		import com.google.inject.Provider;
 		import com.intellij.lexer.Lexer;
 		import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 		import com.intellij.openapi.editor.colors.TextAttributesKey;
 		import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 		import com.intellij.psi.tree.IElementType;
-		import «grammar.lexerName»;
-		import «grammar.tokenTypesName»;
-		import org.jetbrains.annotations.NotNull;
 		
 		public class «grammar.syntaxHighlighterName.toSimpleName» extends SyntaxHighlighterBase {
 		
+			@Inject TokenTypeProvider tokenTypeProvider;
+			@Inject Provider<Lexer> lexerProvider; 
+		
 		    @NotNull
 		    public Lexer getHighlightingLexer() {
-		        return new «grammar.lexerName.toSimpleName»();
+		        return lexerProvider.get();
 		    }
 		
 		    @NotNull
 		    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-		        if («grammar.tokenTypesName.toSimpleName».STRINGS.contains(tokenType)) {
+		        if (tokenTypeProvider.getStringLiteralTokens().contains(tokenType)) {
 		            return pack(DefaultLanguageHighlighterColors.STRING);
 		        }
-				if («grammar.tokenTypesName.toSimpleName».LINE_COMMENTS.contains(tokenType)) {
+				if (tokenTypeProvider.getIElementType(«grammar.antlrLexerName.toSimpleName».RULE_SL_COMMENT) == tokenType) {
 					return pack(DefaultLanguageHighlighterColors.LINE_COMMENT);
 				}
-				if («grammar.tokenTypesName.toSimpleName».BLOCK_COMMENTS.contains(tokenType)) {
+				if (tokenTypeProvider.getIElementType(«grammar.antlrLexerName.toSimpleName».RULE_ML_COMMENT) == tokenType) {
 					return pack(DefaultLanguageHighlighterColors.BLOCK_COMMENT);
 				}
 		        String myDebugName = tokenType.toString();
@@ -603,89 +537,21 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	def compileParserDefinition(Grammar grammar)'''
 		package «grammar.parserDefinitionName.toPackageName»;
 		
-		import org.eclipse.xtext.idea.lang.BaseXtextPsiParser;
-		import org.eclipse.xtext.idea.lang.IElementTypeProvider;
-		import org.eclipse.xtext.psi.impl.PsiEObjectImpl;
-		import org.eclipse.xtext.psi.impl.PsiNamedEObjectImpl;
-		import org.eclipse.xtext.psi.impl.PsiReferenceEObjectImpl;
-		import org.jetbrains.annotations.NotNull;
+		import org.eclipse.xtext.idea.lang.parser.AbstractXtextParserDefinition;
 		import «grammar.languageName»;
 		import «grammar.fileImplName»;
 		
-		import com.google.inject.Inject;
-		import com.google.inject.Provider;
-		import com.intellij.lang.ASTNode;
-		import com.intellij.lang.ParserDefinition;
-		import com.intellij.lang.PsiParser;
-		import com.intellij.lexer.Lexer;
-		import com.intellij.openapi.project.Project;
 		import com.intellij.psi.FileViewProvider;
-		import com.intellij.psi.PsiElement;
 		import com.intellij.psi.PsiFile;
-		import com.intellij.psi.tree.IFileElementType;
-		import com.intellij.psi.tree.TokenSet;
-		
-		public class «grammar.parserDefinitionName.toSimpleName» implements ParserDefinition {
-			
-			@Inject
-			private IElementTypeProvider elementTypeProvider;
-			
-			@Inject
-			private Provider<BaseXtextPsiParser> baseXtextPsiParserProvider;
-			
-			@Inject
-			private Provider<Lexer> lexerProvider; 
+
+		public class «grammar.parserDefinitionName.toSimpleName» extends AbstractXtextParserDefinition {
 			
 			public «grammar.parserDefinitionName.toSimpleName»() {
 				«grammar.languageName.toSimpleName».INSTANCE.injectMembers(this);
 			}
 		
-			@NotNull
-			public Lexer createLexer(Project project) {
-				return lexerProvider.get();
-			}
-		
-			public IFileElementType getFileNodeType() {
-				return elementTypeProvider.getFileType();
-			}
-		
-			@NotNull
-			public TokenSet getWhitespaceTokens() {
-				return «grammar.tokenTypesName».WHITESPACES;
-			}
-		
-			@NotNull
-			public TokenSet getCommentTokens() {
-				return «grammar.tokenTypesName».COMMENTS;
-			}
-		
-			@NotNull
-			public TokenSet getStringLiteralElements() {
-				return «grammar.tokenTypesName».STRINGS;
-			}
-		
-			@NotNull
-			public PsiParser createParser(Project project) {
-				return baseXtextPsiParserProvider.get();
-			}
-		
 			public PsiFile createFile(FileViewProvider viewProvider) {
 				return new «grammar.fileImplName.toSimpleName»(viewProvider);
-			}
-		
-			public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
-				return SpaceRequirements.MAY;
-			}
-		
-			@NotNull
-			public PsiElement createElement(ASTNode node) {
-				if (elementTypeProvider.getNamedObjectType().equals(node.getElementType())) {
-					return new PsiNamedEObjectImpl(node, elementTypeProvider.getNameType());
-				}
-				if (elementTypeProvider.getCrossReferenceType().equals(node.getElementType())) {
-					return new PsiReferenceEObjectImpl(node);
-				}
-				return new PsiEObjectImpl(node);
 			}
 		
 		}

@@ -10,6 +10,10 @@ public class AbstractMyDslIdeaModule extends org.eclipse.xtext.idea.DefaultIdeaM
 	public Class<? extends com.intellij.lexer.Lexer> bindLexer() {
 		return org.xtext.example.mydsl.idea.lang.parser.MyDslLexer.class;
 	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public Class<? extends org.eclipse.xtext.generator.idea.TokenTypeProvider> bindTokenTypeProvider() {
+		return org.xtext.example.mydsl.idea.lang.parser.MyDslTokenTypeProvider.class;
+	}
 	
 	
 }

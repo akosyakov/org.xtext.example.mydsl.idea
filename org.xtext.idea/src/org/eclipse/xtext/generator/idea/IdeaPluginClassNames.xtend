@@ -65,10 +65,6 @@ class IdeaPluginClassNames {
 		basePackageName+'.lang.parser.'+it.name.toSimpleName+'TokenTypeProvider'
 	}
 	
-	def String getTokenTypesName(Grammar it) {
-		basePackageName+'.lang.parser.'+it.name.toSimpleName+'TokenTypes'
-	}
-	
 	def String getFileImplName(Grammar it) {
 		psiImplPackageName+'.'+it.name.toSimpleName+'FileImpl'
 	}

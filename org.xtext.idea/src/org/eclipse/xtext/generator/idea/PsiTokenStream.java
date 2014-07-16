@@ -55,7 +55,7 @@ public class PsiTokenStream implements TokenStream {
 			return Token.EOF_TOKEN;
 		}
 		CommonToken commonToken = new CommonToken(
-				tokenTypeProvider.getType(iElementType));
+				tokenTypeProvider.getAntlrType(iElementType));
 		commonToken.setText(psiBuilder.getTokenText());
 		return commonToken;
 	}
