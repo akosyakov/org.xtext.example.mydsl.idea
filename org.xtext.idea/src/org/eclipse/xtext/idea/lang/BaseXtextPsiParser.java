@@ -3,7 +3,7 @@ package org.eclipse.xtext.idea.lang;
 import static org.eclipse.xtext.psi.PsiEObject.XTEXT_EREFERENCE_KEY;
 import static org.eclipse.xtext.psi.PsiEObject.XTEXT_NODE_KEY;
 import static org.eclipse.xtext.psi.PsiReferenceEObject.XTEXT_ECONTEXT_KEY;
-import static org.eclipse.xtext.psi.PsiReferenceEObject.XTEXT_EPROXY_KEY;
+import static org.eclipse.xtext.psi.PsiReferenceEObject.XTEXT_INDEX_KEY;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -16,7 +16,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.xtext.AbstractElement;
 import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.CrossReference;
@@ -51,7 +50,7 @@ public class BaseXtextPsiParser implements PsiParser {
 		private final INode node;
 		private final EReference reference;
 		
-		private final EObject proxy;
+		private final Integer index;
 		private final EObject context;
 		
 		private final EObject semanticElement;
@@ -64,11 +63,11 @@ public class BaseXtextPsiParser implements PsiParser {
 			this(node, reference, null, null, semanticElement);
 		}
 
-		public CreateWithNodeAndReferenceCallback(INode node, EReference reference, EObject proxy, EObject context, EObject semanticElement) {
+		public CreateWithNodeAndReferenceCallback(INode node, EReference reference, Integer index, EObject context, EObject semanticElement) {
 			this.node = node;
 			this.reference = reference;
 			
-			this.proxy = proxy;
+			this.index = index;
 			this.context = context;
 			
 			this.semanticElement = semanticElement;
@@ -78,7 +77,7 @@ public class BaseXtextPsiParser implements PsiParser {
 			composite.putUserData(XTEXT_NODE_KEY, node);
 			composite.putUserData(XTEXT_EREFERENCE_KEY, reference);
 			
-			composite.putUserData(XTEXT_EPROXY_KEY, proxy);
+			composite.putUserData(XTEXT_INDEX_KEY, index);
 			composite.putUserData(XTEXT_ECONTEXT_KEY, context);
 			
 			if (semanticElement != null) {
@@ -156,7 +155,6 @@ public class BaseXtextPsiParser implements PsiParser {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected void parse(ILeafNode node, ParsingContext context) {
         if (node.isHidden()) {
         	return;
@@ -167,13 +165,11 @@ public class BaseXtextPsiParser implements PsiParser {
         if (grammarElement instanceof CrossReference) {
         	EReference reference = GrammarUtil.getReference((CrossReference) grammarElement);
 			elementType = elementTypeProvider.getCrossReferenceType();
-			Object value = context.semanticElement.eGet(reference, false);
+			Integer index = null;
 			if (reference.isMany()) {
-				Integer index = context.getIndex(reference);
-				value = ((InternalEList<EObject>) value).get(index);
+				index = context.getIndex(reference);
 			}
-			EObject proxy = (EObject) value;
-			createCallback = new CreateWithNodeAndReferenceCallback(node, reference, proxy, context.semanticElement, null);
+			createCallback = new CreateWithNodeAndReferenceCallback(node, reference, index, context.semanticElement, null);
         } else if (grammarElement instanceof AbstractElement && context.semanticElement != null) {
         	EAttribute attribute = SimpleAttributeResolver.NAME_RESOLVER.getAttribute(context.semanticElement);
     		if (attribute != null) {

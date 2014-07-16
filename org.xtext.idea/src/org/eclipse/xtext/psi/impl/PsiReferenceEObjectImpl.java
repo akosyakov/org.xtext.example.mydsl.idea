@@ -25,8 +25,8 @@ public class PsiReferenceEObjectImpl<T extends StubElement> extends PsiEObjectIm
     	return new PsiEObjectReference(this, new TextRange(0, getTextLength()));
     }
 
-	public EObject getEProxy() {
-		return getNode().getUserData(XTEXT_EPROXY_KEY);
+	public Integer getIndex() {
+		return getNode().getUserData(XTEXT_INDEX_KEY);
 	}
 
 	public EObject getEContext() {

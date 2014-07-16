@@ -2,6 +2,7 @@ package org.eclipse.xtext.linking.lazy;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScopeProvider;
@@ -14,20 +15,29 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
 	@Inject
 	private IScopeProvider scopeProvider;
 	
-    private EObject proxy;
+	private Integer index;
     private EObject context;
 	private EReference reference;
 
-    public EObject resolve() {
+    @SuppressWarnings("unchecked")
+	public EObject resolve() {
     	try {
-    		return (EObject) context.eGet(reference);
+    		Object value = context.eGet(reference);
+    		if (reference.isMany()) {
+    			value = ((InternalEList<EObject>) value).get(index);
+    		}
+			return (EObject) value;
     	} catch (Exception e) {
     		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
     	}
     }
 
     public Iterable<IEObjectDescription> getVariants() {
-    	return scopeProvider.getScope(context, reference).getAllElements();
+    	try {
+    		return scopeProvider.getScope(context, reference).getAllElements();
+    	} catch (Exception e) {
+    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+    	}
     }
     
     public static class CrossReferenceDescriptionProvider {
@@ -35,9 +45,9 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
     	@Inject
     	private Provider<CrossReferenceDescription> delegate;
     	
-    	public ICrossReferenceDescription get(EObject proxy, EObject context, EReference reference) {
+    	public ICrossReferenceDescription get(EObject context, EReference reference, Integer index) {
     		CrossReferenceDescription crossReferenceDescription = delegate.get();
-    		crossReferenceDescription.proxy = proxy;
+    		crossReferenceDescription.index = index;
     		crossReferenceDescription.context = context;
     		crossReferenceDescription.reference = reference;
     		return crossReferenceDescription;

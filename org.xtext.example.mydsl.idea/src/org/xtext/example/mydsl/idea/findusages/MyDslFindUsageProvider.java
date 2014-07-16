@@ -3,32 +3,22 @@ package org.xtext.example.mydsl.idea.findusages;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.xtext.example.mydsl.idea.lang.parser.MyDslLexer;
-import org.xtext.example.mydsl.idea.lang.parser.MyDslTokenTypes;
-import org.xtext.example.mydsl.parser.antlr.internal.InternalMyDslParser;
 
 import com.intellij.lang.HelpID;
-import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.tree.TokenSet;
 
 /**
  * Created by kosyakov on 09.07.14.
  */
 public class MyDslFindUsageProvider implements FindUsagesProvider {
-    private static final DefaultWordsScanner WORDS_SCANNER =
-            new DefaultWordsScanner(new MyDslLexer(),
-                    TokenSet.create(MyDslTokenTypes.tokenTypes[InternalMyDslParser.RULE_ID]),
-                    TokenSet.EMPTY,
-                    TokenSet.EMPTY);
 
-    @Nullable
+	@Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return WORDS_SCANNER;
+        return null;
     }
 
     @Override
