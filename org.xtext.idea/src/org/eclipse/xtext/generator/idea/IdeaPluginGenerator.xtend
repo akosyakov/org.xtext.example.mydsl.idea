@@ -14,6 +14,7 @@ import org.eclipse.xtext.generator.Binding
 import org.eclipse.xtext.generator.Generator
 import org.eclipse.xtext.generator.Xtend2ExecutionContext
 import org.eclipse.xtext.generator.Xtend2GeneratorFragment
+import com.intellij.lang.ParserDefinition
 
 class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	
@@ -64,6 +65,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		bindFactory.addTypeToType(SyntaxHighlighter.name, grammar.syntaxHighlighterName)
 		bindFactory.addTypeToType(Lexer.name, grammar.lexerName)
 		bindFactory.addTypeToType(TokenTypeProvider.name, grammar.tokenTypeProviderName)
+		bindFactory.addTypeToType(ParserDefinition.name, grammar.parserDefinitionName)
 		val bindings = bindFactory.bindings
 		
 		ctx.writeFile(outlet_src, grammar.standaloneSetupIdea.toJavaPath, grammar.compileStandaloneSetup)
@@ -476,10 +478,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			
 			@Inject Provider<SyntaxHighlighter> syntaxHighlighterProvider;
 			
-			public MyDslSyntaxHighlighterFactory() {
-				«grammar.languageName».INSTANCE.injectMembers(this);
-			}
-			
 		    @NotNull
 		    protected SyntaxHighlighter createHighlighter() {
 		        return syntaxHighlighterProvider.get();
@@ -538,7 +536,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		package «grammar.parserDefinitionName.toPackageName»;
 		
 		import org.eclipse.xtext.idea.lang.parser.AbstractXtextParserDefinition;
-		import «grammar.languageName»;
 		import «grammar.fileImplName»;
 		
 		import com.intellij.psi.FileViewProvider;
@@ -546,10 +543,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 
 		public class «grammar.parserDefinitionName.toSimpleName» extends AbstractXtextParserDefinition {
 			
-			public «grammar.parserDefinitionName.toSimpleName»() {
-				«grammar.languageName.toSimpleName».INSTANCE.injectMembers(this);
-			}
-		
 			public PsiFile createFile(FileViewProvider viewProvider) {
 				return new «grammar.fileImplName.toSimpleName»(viewProvider);
 			}

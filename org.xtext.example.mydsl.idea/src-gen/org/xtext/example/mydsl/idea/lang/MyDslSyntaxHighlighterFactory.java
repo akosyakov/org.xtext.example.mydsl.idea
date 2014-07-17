@@ -12,10 +12,6 @@ public class MyDslSyntaxHighlighterFactory extends SingleLazyInstanceSyntaxHighl
 	
 	@Inject Provider<SyntaxHighlighter> syntaxHighlighterProvider;
 	
-	public MyDslSyntaxHighlighterFactory() {
-		org.xtext.example.mydsl.idea.lang.MyDslLanguage.INSTANCE.injectMembers(this);
-	}
-	
     @NotNull
     protected SyntaxHighlighter createHighlighter() {
         return syntaxHighlighterProvider.get();
