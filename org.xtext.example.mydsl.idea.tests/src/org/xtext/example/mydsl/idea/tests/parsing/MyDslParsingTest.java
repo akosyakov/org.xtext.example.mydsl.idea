@@ -10,13 +10,13 @@ import com.intellij.testFramework.ParsingTestCase;
 public class MyDslParsingTest extends ParsingTestCase {
 
 	public MyDslParsingTest() {
-		super("", "mydsl", new MyDslParserDefinition());
+		super("", "mydsl", MyDslLanguage.INSTANCE.getInstance(MyDslParserDefinition.class));
 	}
 	
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		addExplicitExtension(LanguageASTFactory.INSTANCE, MyDslLanguage.INSTANCE, new BaseXtextASTFactory());
+		addExplicitExtension(LanguageASTFactory.INSTANCE, MyDslLanguage.INSTANCE, MyDslLanguage.INSTANCE.getInstance(BaseXtextASTFactory.class));
 	}
 	
 	public void testPsiEObjectParsingTestData() {

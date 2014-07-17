@@ -472,15 +472,15 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		import com.intellij.openapi.fileTypes.SingleLazyInstanceSyntaxHighlighterFactory;
 		import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 		
+		import «grammar.languageName»;
+		
 		import org.jetbrains.annotations.NotNull;
 		
 		public class «grammar.syntaxHighlighterFactoryName.toSimpleName» extends SingleLazyInstanceSyntaxHighlighterFactory {
 			
-			@Inject Provider<SyntaxHighlighter> syntaxHighlighterProvider;
-			
 		    @NotNull
 		    protected SyntaxHighlighter createHighlighter() {
-		        return syntaxHighlighterProvider.get();
+		        return «grammar.languageName.toSimpleName».INSTANCE.getInstance(SyntaxHighlighter.class);
 		    }
 		
 		}

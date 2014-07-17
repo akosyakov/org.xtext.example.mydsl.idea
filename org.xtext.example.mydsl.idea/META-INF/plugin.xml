@@ -32,7 +32,7 @@
       <lang.parserDefinition language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.xtext.example.mydsl.idea.lang.parser.MyDslParserDefinition"/>
       <lang.findUsagesProvider language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.xtext.example.mydsl.idea.findusages.MyDslFindUsageProvider"/>
       <lang.refactoringSupport language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.xtext.example.mydsl.idea.refactoring.MyDslRefactoringSupportProvider"/>
-      <lang.syntaxHighlighterFactory key="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.xtext.example.mydsl.idea.lang.MyDslSyntaxHighlighterFactory" />
+      <lang.syntaxHighlighterFactory key="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.idea.lang.MyDslSyntaxHighlighterFactory" />
       <stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
       <annotator language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
   </extensions>
