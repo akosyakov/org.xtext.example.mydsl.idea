@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
+import org.eclipse.xtext.naming.IQualifiedNameConverter;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.inject.Inject;
@@ -17,7 +18,6 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
@@ -28,6 +28,9 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
 
     @Inject
     private IPsiModelAssociations psiModelAssociations;
+    
+    @Inject
+    private IQualifiedNameConverter qualifiedNameConverter;
 
 	public PsiEObjectReference(PsiReferenceEObject element, TextRange range) {
 		super(element, range);
@@ -39,27 +42,22 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
 
 	public Object[] getVariants() {
 		ProgressIndicatorProvider.checkCanceled();
-        ICrossReferenceDescription crossReferenceDescription = psiModelAssociations.getCrossReferenceDescription(myElement);
+        ICrossReferenceDescription crossReferenceDescription = myElement.getCrossReferenceDescription();
         if (crossReferenceDescription == null) {
             return new Object[0];
         }
         List<LookupElement> variants = new ArrayList<LookupElement>();
         for (IEObjectDescription objectDescription : crossReferenceDescription.getVariants()) {
-            PsiElement element = psiModelAssociations.getPsiElement(objectDescription.getEObjectOrProxy());
-            if (element instanceof PsiNamedElement) {
-                PsiNamedElement namedElement = (PsiNamedElement) element;
-                String name = namedElement.getName();
-                if (name != null && name.length() > 0) {
-                    variants.add(LookupElementBuilder.create(namedElement).withTypeText(element.getContainingFile().getName()));
-                }
-            }
+        	String name = qualifiedNameConverter.toString(objectDescription.getName());
+            PsiElement element = psiModelAssociations.getPsiElement(objectDescription);
+            variants.add(LookupElementBuilder.create(name).withTypeText(element.getContainingFile().getName()));
         }
         return variants.toArray();
 	}
 
 	public PsiElement resolve() {
 		ProgressIndicatorProvider.checkCanceled();
-        ICrossReferenceDescription crossReferenceDescription = psiModelAssociations.getCrossReferenceDescription(myElement);
+        ICrossReferenceDescription crossReferenceDescription = myElement.getCrossReferenceDescription();
         if (crossReferenceDescription == null) {
             return null;
         }
@@ -68,8 +66,7 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
 	}
 	
 	@Override
-	public PsiElement handleElementRename(String newElementName)
-			throws IncorrectOperationException {
+	public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
 		PsiReferenceEObject element = getElement();
 		ASTNode referenceNode = element.getNode();
 		ASTNode oldNode = referenceNode.getFirstChildNode();

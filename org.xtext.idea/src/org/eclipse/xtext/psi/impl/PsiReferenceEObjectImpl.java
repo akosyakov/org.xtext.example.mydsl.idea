@@ -1,6 +1,9 @@
 package org.eclipse.xtext.psi.impl;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.linking.lazy.CrossReferenceDescription.CrossReferenceDescriptionProvider;
+import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 import org.eclipse.xtext.psi.PsiEObjectReference;
 import org.eclipse.xtext.psi.PsiReferenceEObject;
 
@@ -31,6 +34,13 @@ public class PsiReferenceEObjectImpl<T extends StubElement> extends PsiEObjectIm
 
 	public EObject getEContext() {
 		return getNode().getUserData(XTEXT_ECONTEXT_KEY);
+	}
+
+	public ICrossReferenceDescription getCrossReferenceDescription() {
+		Integer index = getIndex();
+		EObject context = getEContext();
+		EReference reference = getEReference();
+		return getXtextLanguage().getInstance(CrossReferenceDescriptionProvider.class).get(context, reference, index);
 	}
 
 }

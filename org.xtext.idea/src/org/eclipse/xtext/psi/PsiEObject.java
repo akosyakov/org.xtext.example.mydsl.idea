@@ -1,8 +1,10 @@
 package org.eclipse.xtext.psi;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.nodemodel.INode;
 
 import com.intellij.openapi.util.Key;
@@ -22,6 +24,10 @@ public interface PsiEObject extends PsiElement {
 
 	boolean isRoot();
 
+	EObject getEObject();
+
 	Resource getResource();
+	
+	IXtextLanguage getXtextLanguage();
 
 }

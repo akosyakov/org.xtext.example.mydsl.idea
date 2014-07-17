@@ -1,6 +1,7 @@
 package org.eclipse.xtext.psi.impl;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 
@@ -15,7 +16,9 @@ import com.intellij.util.IncorrectOperationException;
 
 public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> implements PsiNamedEObject {
 	
-	private IElementType nameType;
+	private QualifiedName qualifiedName;
+	
+	private final IElementType nameType;
 	
 	public PsiNamedEObjectImpl(PsiNamedEObjectStub stub, IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> nodeType, IElementType nameType) {
 		super(stub, nodeType);
@@ -38,6 +41,18 @@ public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> imp
 			return null;
 		}
 		return nameIdentifier.getText();
+	}
+
+	public QualifiedName getQualifiedName() {
+		PsiNamedEObjectStub stub = getStub();
+		if (stub != null) {
+			return stub.getQualifiedName();
+		}
+		return qualifiedName;
+	}
+
+	public void setQualifiedName(QualifiedName qualifiedName) {
+		this.qualifiedName = qualifiedName;
 	}
 	
 	@Override

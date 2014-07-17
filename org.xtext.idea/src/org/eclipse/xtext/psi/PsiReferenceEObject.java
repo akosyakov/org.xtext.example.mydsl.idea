@@ -1,6 +1,7 @@
 package org.eclipse.xtext.psi;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 
 import com.intellij.openapi.util.Key;
 
@@ -13,5 +14,7 @@ public interface PsiReferenceEObject extends PsiEObject {
 	Integer getIndex();
 
 	EObject getEContext();
+
+	ICrossReferenceDescription getCrossReferenceDescription();
 
 }

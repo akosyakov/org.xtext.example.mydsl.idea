@@ -4,11 +4,13 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.psi.PsiEObject;
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IElementType;
@@ -51,12 +53,16 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 		return getParent() instanceof BaseXtextFile;
 	}
 
-	protected EObject getEObject() {
+	public EObject getEObject() {
 		return getINode().getSemanticElement();
 	}
 
 	public Resource getResource() {
 		return getEObject().eResource();
+	}
+
+	public IXtextLanguage getXtextLanguage() {
+		return (IXtextLanguage) getLanguage();
 	}
 	
 	@Override
@@ -73,5 +79,4 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 		}
 		return builder.toString();
 	}
-	
 }
