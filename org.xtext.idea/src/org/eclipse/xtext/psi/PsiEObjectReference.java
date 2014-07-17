@@ -69,7 +69,7 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
 	public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
 		PsiReferenceEObject element = getElement();
 		ASTNode referenceNode = element.getNode();
-		ASTNode oldNode = referenceNode.getFirstChildNode();
+		ASTNode oldNode = referenceNode.getLastChildNode();
 		LeafElement newChild = ASTFactory.leaf(oldNode.getElementType(), newElementName);
 		CodeEditUtil.setNodeGenerated(newChild, true);
 		referenceNode.replaceChild(oldNode, newChild);

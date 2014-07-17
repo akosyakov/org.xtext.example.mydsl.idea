@@ -35,7 +35,7 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
     }
 
     public Iterable<IEObjectDescription> getVariants() {
-    	final Iterable<IEObjectDescription> iterable = scopeProvider.getScope(context, reference).getAllElements();
+    	final Iterable<IEObjectDescription> iterable = getAllElements();
 		return new Iterable<IEObjectDescription>() {
 
 			public Iterator<IEObjectDescription> iterator() {
@@ -71,6 +71,14 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
     		
     	};
     }
+
+	protected Iterable<IEObjectDescription> getAllElements() {
+		try {
+			return scopeProvider.getScope(context, reference).getAllElements();
+		} catch (Exception e) {
+    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+    	}
+	}
     
     public static class CrossReferenceDescriptionProvider {
     	

@@ -13,6 +13,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
 
+@SuppressWarnings("rawtypes")
 public class PsiReferenceEObjectImpl<T extends StubElement> extends PsiEObjectImpl<T> implements PsiReferenceEObject {
 
 	protected PsiReferenceEObjectImpl(T stub, IStubElementType nodeType) {
@@ -25,7 +26,12 @@ public class PsiReferenceEObjectImpl<T extends StubElement> extends PsiEObjectIm
 
     @Override
     public PsiReference getReference() {
-    	return new PsiEObjectReference(this, new TextRange(0, getTextLength()));
+    	ASTNode node = getNode();
+		TextRange textRange = node.getTextRange();
+    	TextRange childRange = node.getLastChildNode().getTextRange();
+    	int startOffset = childRange.getStartOffset() - textRange.getStartOffset();
+		int endOffset = startOffset + childRange.getLength();
+		return new PsiEObjectReference(this, new TextRange(startOffset, endOffset));
     }
 
 	public Integer getIndex() {

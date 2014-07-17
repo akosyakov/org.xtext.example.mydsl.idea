@@ -10,6 +10,7 @@ var projectName = "org.xtext.example.mydsl"
 var runtimeProject = "../${projectName}"
 var generateXtendStub = true
 var encoding = "UTF-8"
+var lineDelimiter = '\n'
 
 Workflow {
     bean = StandaloneSetup {
