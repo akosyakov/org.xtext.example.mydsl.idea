@@ -16,7 +16,7 @@ class MyDslValidator extends AbstractMyDslValidator {
 	@Check
 	def checkGreetingStartsWithCapital(Entity entity) {
 		if (!Character.isUpperCase(entity.name.charAt(0))) {
-			warning('Name should start with a capital', MyDslPackage.Literals.ENTITY__NAME, INVALID_NAME)
+			warning('Name should start with a capital', MyDslPackage.Literals.TYPE__NAME, INVALID_NAME)
 		}
 	}
 

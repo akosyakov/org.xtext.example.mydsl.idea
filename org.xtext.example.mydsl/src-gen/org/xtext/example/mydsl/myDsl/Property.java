@@ -32,12 +32,12 @@ public interface Property extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Type</em>' reference.
-   * @see #setType(Entity)
+   * @see #setType(Type)
    * @see org.xtext.example.mydsl.myDsl.MyDslPackage#getProperty_Type()
    * @model
    * @generated
    */
-  Entity getType();
+  Type getType();
 
   /**
    * Sets the value of the '{@link org.xtext.example.mydsl.myDsl.Property#getType <em>Type</em>}' reference.
@@ -47,7 +47,7 @@ public interface Property extends EObject
    * @see #getType()
    * @generated
    */
-  void setType(Entity value);
+  void setType(Type value);
 
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.

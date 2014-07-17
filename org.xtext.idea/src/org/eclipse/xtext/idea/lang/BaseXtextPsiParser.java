@@ -159,37 +159,7 @@ public class BaseXtextPsiParser implements PsiParser {
         if (node.isHidden()) {
         	return;
         }
-        CreateCallback createCallback = null;
-        IElementType elementType = null;
-        EObject grammarElement = node.getGrammarElement();
-        if (grammarElement instanceof CrossReference) {
-        	EReference reference = GrammarUtil.getReference((CrossReference) grammarElement);
-			elementType = elementTypeProvider.getCrossReferenceType();
-			Integer index = null;
-			if (reference.isMany()) {
-				index = context.getIndex(reference);
-			}
-			createCallback = new CreateWithNodeAndReferenceCallback(node, reference, index, context.semanticElement, null);
-        } else if (grammarElement instanceof AbstractElement && context.semanticElement != null) {
-        	EAttribute attribute = SimpleAttributeResolver.NAME_RESOLVER.getAttribute(context.semanticElement);
-    		if (attribute != null) {
-    			EClass referenceOwner = context.semanticElement.eClass();
-        		Assignment assignment = GrammarUtil.containingAssignment(grammarElement);
-        		if (assignment != null) {
-					String feature = assignment.getFeature();
-	            	EStructuralFeature structuralFeature = ((EClass) referenceOwner).getEStructuralFeature(feature);
-	            	if (attribute == structuralFeature) {
-	                	elementType = elementTypeProvider.getNameType();
-	                	context.namedElement = true;
-	        			createCallback = new CreateWithNodeAndReferenceCallback(node);
-	            	}
-        		}
-    		}
-        }
-        Marker nodeMarker = null;
-        if (elementType != null) {
-        	nodeMarker = context.builder.mark();
-        }
+        NodeMarker nodeMarker = mark(node, context);
         Marker errorMarker = null;
         SyntaxErrorMessage syntaxErrorMessage = node.getSyntaxErrorMessage();
         if (syntaxErrorMessage != null) {
@@ -200,20 +170,24 @@ public class BaseXtextPsiParser implements PsiParser {
         	errorMarker.error(syntaxErrorMessage.getMessage());
         }
 		if (nodeMarker != null) {
-        	nodeMarker.done(new CreateElementType(elementType, createCallback));
+			nodeMarker.done();
 		}
 	}
-	
+
 	protected void parse(ICompositeNode node, ParsingContext context) {
 		Marker errorMarker = null;
         SyntaxErrorMessage syntaxErrorMessage = node.getSyntaxErrorMessage();
         if (syntaxErrorMessage != null) {
         	errorMarker = context.builder.mark();
         }
-		Marker elementMarker = null;
+        Marker elementMarker = null;
 		if (node.hasDirectSemanticElement()) {
 			elementMarker = context.builder.mark();
 			context = context.newContext(node.getSemanticElement());
+		}
+		NodeMarker nodeMarker = null;
+		if (elementMarker == null) {
+			nodeMarker = mark(node, context);
 		}
 		for (INode child : node.getChildren()) {
 			parse(child, context);
@@ -232,6 +206,57 @@ public class BaseXtextPsiParser implements PsiParser {
 		if (errorMarker != null) {
         	errorMarker.error(syntaxErrorMessage.getMessage());
 		}
+		if (nodeMarker != null) {
+			nodeMarker.done();
+		}
+	}
+
+	protected NodeMarker mark(INode node, ParsingContext context) {
+		NodeMarker nodeMarker = markCrossReference(node, context);
+        if (nodeMarker == null) {
+        	nodeMarker = markName(node, context);
+        }
+		return nodeMarker;
+	}
+
+	protected NodeMarker markName(INode node, ParsingContext context) {
+        EObject grammarElement = node.getGrammarElement();
+        if (!(grammarElement instanceof AbstractElement)) {
+        	return null;
+        }
+        Assignment assignment = GrammarUtil.containingAssignment(grammarElement);
+		if (assignment == null) {
+			return null;
+		}
+        if (context.semanticElement == null) {
+        	return null;
+        }
+    	EAttribute attribute = SimpleAttributeResolver.NAME_RESOLVER.getAttribute(context.semanticElement);
+		if (attribute == null) {
+			return null;
+		}
+		EClass referenceOwner = context.semanticElement.eClass();
+		String feature = assignment.getFeature();
+		EStructuralFeature structuralFeature = ((EClass) referenceOwner).getEStructuralFeature(feature);
+        if (attribute != structuralFeature) {
+        	return null;
+        }
+        context.namedElement = true;
+    	return context.mark(elementTypeProvider.getNameType(), new CreateWithNodeAndReferenceCallback(node));
+	}
+	
+	protected NodeMarker markCrossReference(INode node, ParsingContext context) {
+		EObject grammarElement = node.getGrammarElement();
+		if (!(grammarElement instanceof CrossReference)) {
+			return null;
+		}
+	    EReference reference = GrammarUtil.getReference((CrossReference) grammarElement);
+		IElementType elementType = elementTypeProvider.getCrossReferenceType();
+		Integer index = null;
+		if (reference.isMany()) {
+			index = context.getIndex(reference);
+		}
+		return context.mark(elementType, new CreateWithNodeAndReferenceCallback(node, reference, index, context.semanticElement, null));
 	}
 
 	protected BaseXtextFile getContainingFile(PsiBuilder builder) {
@@ -252,6 +277,10 @@ public class BaseXtextPsiParser implements PsiParser {
 			this.builder = builder;
 		}
 
+		public NodeMarker mark(IElementType elementType, CreateCallback createCallback) {
+			return new NodeMarker(builder.mark(), elementType, createCallback);
+		}
+
 		public Integer getIndex(EReference reference) {
 			Integer index = referenceToIndex.get(reference);
             if (index == null) {
@@ -266,6 +295,24 @@ public class BaseXtextPsiParser implements PsiParser {
 			context.semanticElement = semanticElement;
 			context.referenceToIndex = Maps.newHashMap();
 			return context;
+		}
+		
+	}
+	
+	protected static class NodeMarker {
+
+		private final Marker marker;
+		private final IElementType elementType;
+		private final CreateCallback createCallback;
+
+		public NodeMarker(Marker marker, IElementType elementType, CreateCallback createCallback) {
+			this.marker = marker;
+			this.elementType = elementType;
+			this.createCallback = createCallback;
+		}
+
+		public void done() {
+        	marker.done(new CreateElementType(elementType, createCallback));
 		}
 		
 	}

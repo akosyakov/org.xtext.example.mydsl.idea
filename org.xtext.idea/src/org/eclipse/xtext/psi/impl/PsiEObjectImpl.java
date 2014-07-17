@@ -28,11 +28,15 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 	}
 	
 	public EClass getType() {
-		EReference eReference = getEReference();
-		if (eReference == null) {
-			return null;
+		INode node = getINode();
+		if (node.hasDirectSemanticElement()) {
+			return node.getSemanticElement().eClass();
 		}
-		return eReference.getEReferenceType();
+		EReference eReference = getEReference();
+		if (eReference != null) {
+			return eReference.getEReferenceType();
+		}
+		return null;
 	}
 
 	public EReference getEReference() {

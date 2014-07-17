@@ -64,8 +64,13 @@ public class MyDslFactoryImpl extends EFactoryImpl implements MyDslFactory
   {
     switch (eClass.getClassifierID())
     {
-      case MyDslPackage.MODEL: return createModel();
+      case MyDslPackage.FILE: return createFile();
+      case MyDslPackage.IMPORT: return createImport();
+      case MyDslPackage.NAMESPACE: return createNamespace();
+      case MyDslPackage.ELEMENT: return createElement();
+      case MyDslPackage.TYPE: return createType();
       case MyDslPackage.ENTITY: return createEntity();
+      case MyDslPackage.DATATYPE: return createDatatype();
       case MyDslPackage.PROPERTY: return createProperty();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -77,10 +82,54 @@ public class MyDslFactoryImpl extends EFactoryImpl implements MyDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Model createModel()
+  public File createFile()
   {
-    ModelImpl model = new ModelImpl();
-    return model;
+    FileImpl file = new FileImpl();
+    return file;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Import createImport()
+  {
+    ImportImpl import_ = new ImportImpl();
+    return import_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Namespace createNamespace()
+  {
+    NamespaceImpl namespace = new NamespaceImpl();
+    return namespace;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Element createElement()
+  {
+    ElementImpl element = new ElementImpl();
+    return element;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Type createType()
+  {
+    TypeImpl type = new TypeImpl();
+    return type;
   }
 
   /**
@@ -92,6 +141,17 @@ public class MyDslFactoryImpl extends EFactoryImpl implements MyDslFactory
   {
     EntityImpl entity = new EntityImpl();
     return entity;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Datatype createDatatype()
+  {
+    DatatypeImpl datatype = new DatatypeImpl();
+    return datatype;
   }
 
   /**

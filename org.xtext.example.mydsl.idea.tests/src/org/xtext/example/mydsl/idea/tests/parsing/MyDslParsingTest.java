@@ -23,6 +23,10 @@ public class MyDslParsingTest extends ParsingTestCase {
 		doTest(true);
 	}
 	
+	public void testEntityParsing() {
+		doTest(true);
+	}
+	
 	@Override
 	protected String getTestDataPath() {
 		return "./testData";

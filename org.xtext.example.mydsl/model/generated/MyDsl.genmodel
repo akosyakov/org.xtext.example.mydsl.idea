@@ -7,13 +7,24 @@
     editorPluginID="org.xtext.example.mydsl.editor" runtimeVersion="2.10">
   <genPackages prefix="MyDsl" basePackage="org.xtext.example.mydsl" disposableProviderFactory="true"
       fileExtensions="mydsl" ecorePackage="MyDsl.ecore#/">
-    <genClasses ecoreClass="MyDsl.ecore#//Model">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Model/entities"/>
+    <genClasses ecoreClass="MyDsl.ecore#//File">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//File/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="MyDsl.ecore#//Import">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Import/importedNamespace"/>
+    </genClasses>
+    <genClasses ecoreClass="MyDsl.ecore#//Namespace">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Namespace/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Namespace/elements"/>
+    </genClasses>
+    <genClasses ecoreClass="MyDsl.ecore#//Element"/>
+    <genClasses ecoreClass="MyDsl.ecore#//Type">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Type/name"/>
     </genClasses>
     <genClasses ecoreClass="MyDsl.ecore#//Entity">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Entity/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Entity/properties"/>
     </genClasses>
+    <genClasses ecoreClass="MyDsl.ecore#//Datatype"/>
     <genClasses ecoreClass="MyDsl.ecore#//Property">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference MyDsl.ecore#//Property/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute MyDsl.ecore#//Property/name"/>

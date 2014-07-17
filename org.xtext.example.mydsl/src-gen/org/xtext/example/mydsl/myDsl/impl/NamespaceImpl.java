@@ -2,44 +2,41 @@
  */
 package org.xtext.example.mydsl.myDsl.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
+import org.xtext.example.mydsl.myDsl.Element;
 import org.xtext.example.mydsl.myDsl.MyDslPackage;
-import org.xtext.example.mydsl.myDsl.Property;
-import org.xtext.example.mydsl.myDsl.Type;
+import org.xtext.example.mydsl.myDsl.Namespace;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Property</b></em>'.
+ * An implementation of the model object '<em><b>Namespace</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.xtext.example.mydsl.myDsl.impl.PropertyImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.xtext.example.mydsl.myDsl.impl.PropertyImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.xtext.example.mydsl.myDsl.impl.NamespaceImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.xtext.example.mydsl.myDsl.impl.NamespaceImpl#getElements <em>Elements</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class PropertyImpl extends MinimalEObjectImpl.Container implements Property
+public class NamespaceImpl extends ElementImpl implements Namespace
 {
-  /**
-   * The cached value of the '{@link #getType() <em>Type</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getType()
-   * @generated
-   * @ordered
-   */
-  protected Type type;
-
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -61,11 +58,21 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   protected String name = NAME_EDEFAULT;
 
   /**
+   * The cached value of the '{@link #getElements() <em>Elements</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getElements()
+   * @generated
+   * @ordered
+   */
+  protected EList<Element> elements;
+
+  /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected PropertyImpl()
+  protected NamespaceImpl()
   {
     super();
   }
@@ -78,50 +85,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   @Override
   protected EClass eStaticClass()
   {
-    return MyDslPackage.Literals.PROPERTY;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Type getType()
-  {
-    if (type != null && type.eIsProxy())
-    {
-      InternalEObject oldType = (InternalEObject)type;
-      type = (Type)eResolveProxy(oldType);
-      if (type != oldType)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, MyDslPackage.PROPERTY__TYPE, oldType, type));
-      }
-    }
-    return type;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Type basicGetType()
-  {
-    return type;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setType(Type newType)
-  {
-    Type oldType = type;
-    type = newType;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MyDslPackage.PROPERTY__TYPE, oldType, type));
+    return MyDslPackage.Literals.NAMESPACE;
   }
 
   /**
@@ -144,7 +108,37 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MyDslPackage.PROPERTY__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, MyDslPackage.NAMESPACE__NAME, oldName, name));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<Element> getElements()
+  {
+    if (elements == null)
+    {
+      elements = new EObjectContainmentEList<Element>(Element.class, this, MyDslPackage.NAMESPACE__ELEMENTS);
+    }
+    return elements;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case MyDslPackage.NAMESPACE__ELEMENTS:
+        return ((InternalEList<?>)getElements()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -157,11 +151,10 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        if (resolve) return getType();
-        return basicGetType();
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.NAMESPACE__NAME:
         return getName();
+      case MyDslPackage.NAMESPACE__ELEMENTS:
+        return getElements();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -171,16 +164,18 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        setType((Type)newValue);
-        return;
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.NAMESPACE__NAME:
         setName((String)newValue);
+        return;
+      case MyDslPackage.NAMESPACE__ELEMENTS:
+        getElements().clear();
+        getElements().addAll((Collection<? extends Element>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -196,11 +191,11 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        setType((Type)null);
-        return;
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.NAMESPACE__NAME:
         setName(NAME_EDEFAULT);
+        return;
+      case MyDslPackage.NAMESPACE__ELEMENTS:
+        getElements().clear();
         return;
     }
     super.eUnset(featureID);
@@ -216,10 +211,10 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        return type != null;
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.NAMESPACE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case MyDslPackage.NAMESPACE__ELEMENTS:
+        return elements != null && !elements.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -241,4 +236,4 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
     return result.toString();
   }
 
-} //PropertyImpl
+} //NamespaceImpl

@@ -5,41 +5,27 @@ package org.xtext.example.mydsl.myDsl.impl;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.xtext.example.mydsl.myDsl.MyDslPackage;
-import org.xtext.example.mydsl.myDsl.Property;
 import org.xtext.example.mydsl.myDsl.Type;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Property</b></em>'.
+ * An implementation of the model object '<em><b>Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.xtext.example.mydsl.myDsl.impl.PropertyImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.xtext.example.mydsl.myDsl.impl.PropertyImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.xtext.example.mydsl.myDsl.impl.TypeImpl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class PropertyImpl extends MinimalEObjectImpl.Container implements Property
+public class TypeImpl extends ElementImpl implements Type
 {
-  /**
-   * The cached value of the '{@link #getType() <em>Type</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getType()
-   * @generated
-   * @ordered
-   */
-  protected Type type;
-
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -65,7 +51,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
    * <!-- end-user-doc -->
    * @generated
    */
-  protected PropertyImpl()
+  protected TypeImpl()
   {
     super();
   }
@@ -78,50 +64,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   @Override
   protected EClass eStaticClass()
   {
-    return MyDslPackage.Literals.PROPERTY;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Type getType()
-  {
-    if (type != null && type.eIsProxy())
-    {
-      InternalEObject oldType = (InternalEObject)type;
-      type = (Type)eResolveProxy(oldType);
-      if (type != oldType)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, MyDslPackage.PROPERTY__TYPE, oldType, type));
-      }
-    }
-    return type;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Type basicGetType()
-  {
-    return type;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setType(Type newType)
-  {
-    Type oldType = type;
-    type = newType;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MyDslPackage.PROPERTY__TYPE, oldType, type));
+    return MyDslPackage.Literals.TYPE;
   }
 
   /**
@@ -144,7 +87,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, MyDslPackage.PROPERTY__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, MyDslPackage.TYPE__NAME, oldName, name));
   }
 
   /**
@@ -157,10 +100,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        if (resolve) return getType();
-        return basicGetType();
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.TYPE__NAME:
         return getName();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -176,10 +116,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        setType((Type)newValue);
-        return;
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.TYPE__NAME:
         setName((String)newValue);
         return;
     }
@@ -196,10 +133,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        setType((Type)null);
-        return;
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.TYPE__NAME:
         setName(NAME_EDEFAULT);
         return;
     }
@@ -216,9 +150,7 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
   {
     switch (featureID)
     {
-      case MyDslPackage.PROPERTY__TYPE:
-        return type != null;
-      case MyDslPackage.PROPERTY__NAME:
+      case MyDslPackage.TYPE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
     }
     return super.eIsSet(featureID);
@@ -241,4 +173,4 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
     return result.toString();
   }
 
-} //PropertyImpl
+} //TypeImpl

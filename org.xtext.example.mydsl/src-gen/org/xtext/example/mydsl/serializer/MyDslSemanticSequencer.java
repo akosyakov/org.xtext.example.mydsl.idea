@@ -13,9 +13,12 @@ import org.eclipse.xtext.serializer.sequencer.ISemanticNodeProvider.INodesForEOb
 import org.eclipse.xtext.serializer.sequencer.ISemanticSequencer;
 import org.eclipse.xtext.serializer.sequencer.ITransientValueService;
 import org.eclipse.xtext.serializer.sequencer.ITransientValueService.ValueTransient;
+import org.xtext.example.mydsl.myDsl.Datatype;
 import org.xtext.example.mydsl.myDsl.Entity;
-import org.xtext.example.mydsl.myDsl.Model;
+import org.xtext.example.mydsl.myDsl.File;
+import org.xtext.example.mydsl.myDsl.Import;
 import org.xtext.example.mydsl.myDsl.MyDslPackage;
+import org.xtext.example.mydsl.myDsl.Namespace;
 import org.xtext.example.mydsl.myDsl.Property;
 import org.xtext.example.mydsl.services.MyDslGrammarAccess;
 
@@ -27,15 +30,39 @@ public class MyDslSemanticSequencer extends AbstractDelegatingSemanticSequencer 
 	
 	public void createSequence(EObject context, EObject semanticObject) {
 		if(semanticObject.eClass().getEPackage() == MyDslPackage.eINSTANCE) switch(semanticObject.eClass().getClassifierID()) {
+			case MyDslPackage.DATATYPE:
+				if(context == grammarAccess.getDatatypeRule() ||
+				   context == grammarAccess.getElementRule() ||
+				   context == grammarAccess.getTypeRule()) {
+					sequence_Datatype(context, (Datatype) semanticObject); 
+					return; 
+				}
+				else break;
 			case MyDslPackage.ENTITY:
-				if(context == grammarAccess.getEntityRule()) {
+				if(context == grammarAccess.getElementRule() ||
+				   context == grammarAccess.getEntityRule() ||
+				   context == grammarAccess.getTypeRule()) {
 					sequence_Entity(context, (Entity) semanticObject); 
 					return; 
 				}
 				else break;
-			case MyDslPackage.MODEL:
-				if(context == grammarAccess.getModelRule()) {
-					sequence_Model(context, (Model) semanticObject); 
+			case MyDslPackage.FILE:
+				if(context == grammarAccess.getFileRule()) {
+					sequence_File(context, (File) semanticObject); 
+					return; 
+				}
+				else break;
+			case MyDslPackage.IMPORT:
+				if(context == grammarAccess.getElementRule() ||
+				   context == grammarAccess.getImportRule()) {
+					sequence_Import(context, (Import) semanticObject); 
+					return; 
+				}
+				else break;
+			case MyDslPackage.NAMESPACE:
+				if(context == grammarAccess.getElementRule() ||
+				   context == grammarAccess.getNamespaceRule()) {
+					sequence_Namespace(context, (Namespace) semanticObject); 
 					return; 
 				}
 				else break;
@@ -51,6 +78,22 @@ public class MyDslSemanticSequencer extends AbstractDelegatingSemanticSequencer 
 	
 	/**
 	 * Constraint:
+	 *     name=ID
+	 */
+	protected void sequence_Datatype(EObject context, Datatype semanticObject) {
+		if(errorAcceptor != null) {
+			if(transientValues.isValueTransient(semanticObject, MyDslPackage.Literals.TYPE__NAME) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, MyDslPackage.Literals.TYPE__NAME));
+		}
+		INodesForEObjectProvider nodes = createNodeProvider(semanticObject);
+		SequenceFeeder feeder = createSequencerFeeder(semanticObject, nodes);
+		feeder.accept(grammarAccess.getDatatypeAccess().getNameIDTerminalRuleCall_1_0(), semanticObject.getName());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Constraint:
 	 *     (name=ID properties+=Property*)
 	 */
 	protected void sequence_Entity(EObject context, Entity semanticObject) {
@@ -60,16 +103,41 @@ public class MyDslSemanticSequencer extends AbstractDelegatingSemanticSequencer 
 	
 	/**
 	 * Constraint:
-	 *     entities+=Entity*
+	 *     elements+=Element*
 	 */
-	protected void sequence_Model(EObject context, Model semanticObject) {
+	protected void sequence_File(EObject context, File semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
 	/**
 	 * Constraint:
-	 *     (type=[Entity|ID] name=ID)
+	 *     importedNamespace=QualifiedNameWithWildCard
+	 */
+	protected void sequence_Import(EObject context, Import semanticObject) {
+		if(errorAcceptor != null) {
+			if(transientValues.isValueTransient(semanticObject, MyDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, MyDslPackage.Literals.IMPORT__IMPORTED_NAMESPACE));
+		}
+		INodesForEObjectProvider nodes = createNodeProvider(semanticObject);
+		SequenceFeeder feeder = createSequencerFeeder(semanticObject, nodes);
+		feeder.accept(grammarAccess.getImportAccess().getImportedNamespaceQualifiedNameWithWildCardParserRuleCall_1_0(), semanticObject.getImportedNamespace());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (name=QualifiedName elements+=Element*)
+	 */
+	protected void sequence_Namespace(EObject context, Namespace semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (type=[Type|QualifiedName] name=ID)
 	 */
 	protected void sequence_Property(EObject context, Property semanticObject) {
 		if(errorAcceptor != null) {
@@ -80,7 +148,7 @@ public class MyDslSemanticSequencer extends AbstractDelegatingSemanticSequencer 
 		}
 		INodesForEObjectProvider nodes = createNodeProvider(semanticObject);
 		SequenceFeeder feeder = createSequencerFeeder(semanticObject, nodes);
-		feeder.accept(grammarAccess.getPropertyAccess().getTypeEntityIDTerminalRuleCall_0_0_1(), semanticObject.getType());
+		feeder.accept(grammarAccess.getPropertyAccess().getTypeTypeQualifiedNameParserRuleCall_0_0_1(), semanticObject.getType());
 		feeder.accept(grammarAccess.getPropertyAccess().getNameIDTerminalRuleCall_1_0(), semanticObject.getName());
 		feeder.finish();
 	}

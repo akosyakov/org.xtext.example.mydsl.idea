@@ -1,0 +1,9 @@
+foo {
+	entity Foo {
+	}
+}
+
+foo.bar {
+	entity Bar {
+	} 
+}

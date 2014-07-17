@@ -23,13 +23,49 @@ public interface MyDslFactory extends EFactory
   MyDslFactory eINSTANCE = org.xtext.example.mydsl.myDsl.impl.MyDslFactoryImpl.init();
 
   /**
-   * Returns a new object of class '<em>Model</em>'.
+   * Returns a new object of class '<em>File</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Model</em>'.
+   * @return a new object of class '<em>File</em>'.
    * @generated
    */
-  Model createModel();
+  File createFile();
+
+  /**
+   * Returns a new object of class '<em>Import</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Import</em>'.
+   * @generated
+   */
+  Import createImport();
+
+  /**
+   * Returns a new object of class '<em>Namespace</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Namespace</em>'.
+   * @generated
+   */
+  Namespace createNamespace();
+
+  /**
+   * Returns a new object of class '<em>Element</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Element</em>'.
+   * @generated
+   */
+  Element createElement();
+
+  /**
+   * Returns a new object of class '<em>Type</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Type</em>'.
+   * @generated
+   */
+  Type createType();
 
   /**
    * Returns a new object of class '<em>Entity</em>'.
@@ -39,6 +75,15 @@ public interface MyDslFactory extends EFactory
    * @generated
    */
   Entity createEntity();
+
+  /**
+   * Returns a new object of class '<em>Datatype</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Datatype</em>'.
+   * @generated
+   */
+  Datatype createDatatype();
 
   /**
    * Returns a new object of class '<em>Property</em>'.

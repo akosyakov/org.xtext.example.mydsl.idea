@@ -21,7 +21,7 @@ public class MyDslValidator extends AbstractMyDslValidator {
     boolean _isUpperCase = Character.isUpperCase(_charAt);
     boolean _not = (!_isUpperCase);
     if (_not) {
-      this.warning("Name should start with a capital", MyDslPackage.Literals.ENTITY__NAME, MyDslValidator.INVALID_NAME);
+      this.warning("Name should start with a capital", MyDslPackage.Literals.TYPE__NAME, MyDslValidator.INVALID_NAME);
     }
   }
 }
