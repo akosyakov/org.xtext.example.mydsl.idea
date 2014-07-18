@@ -7,7 +7,7 @@ import com.intellij.psi.stubs.NamedStub;
 
 public interface PsiNamedEObjectStub extends NamedStub<PsiNamedEObject> {
 
-	EClass getType();
+	EClass getEClass();
 
 	QualifiedName getQualifiedName();
 

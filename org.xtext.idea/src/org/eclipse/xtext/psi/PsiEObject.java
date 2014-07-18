@@ -18,7 +18,7 @@ public interface PsiEObject extends PsiElement {
 	
 	INode getINode();
 	
-	EClass getType();
+	EClass getEClass();
 	
 	EReference getEReference();
 

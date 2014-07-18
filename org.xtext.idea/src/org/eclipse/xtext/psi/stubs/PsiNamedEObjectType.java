@@ -47,8 +47,8 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 
 	public void serialize(PsiNamedEObjectStub stub, StubOutputStream dataStream) throws IOException {
 		dataStream.writeName(stub.getName());
-		dataStream.writeUTF(stub.getType().getEPackage().getNsURI());
-		dataStream.writeUTF(stub.getType().getName());
+		dataStream.writeUTF(stub.getEClass().getEPackage().getNsURI());
+		dataStream.writeUTF(stub.getEClass().getName());
 		dataStream.writeUTF(stub.getQualifiedName().toString());
 	}
 
@@ -78,7 +78,7 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 	public PsiNamedEObjectStub createStub(PsiNamedEObject psi, StubElement parentStub) {
 		String name = psi.getName();
 		QualifiedName qualifiedName = psi.getQualifiedName();
-		return new PsiNamedEObjectStubImpl(parentStub, StringRef.fromString(name), qualifiedName, psi.getType(), elementTypeProvider.getNamedObjectType());
+		return new PsiNamedEObjectStubImpl(parentStub, StringRef.fromString(name), qualifiedName, psi.getEClass(), elementTypeProvider.getNamedObjectType());
 	}
 	
 	@Override

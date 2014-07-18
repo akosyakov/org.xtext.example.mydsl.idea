@@ -34,7 +34,7 @@ public class PsiNamedEObjectStubImpl extends StubBase<PsiNamedEObject> implement
 		return StringRef.toString(name);
 	}
 
-	public EClass getType() {
+	public EClass getEClass() {
 		return type;
 	}
 

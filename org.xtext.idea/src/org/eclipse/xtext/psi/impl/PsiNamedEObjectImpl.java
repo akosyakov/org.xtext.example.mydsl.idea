@@ -56,12 +56,12 @@ public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> imp
 	}
 	
 	@Override
-	public EClass getType() {
+	public EClass getEClass() {
 		PsiNamedEObjectStub stub = getStub();
 		if (stub != null) {
-			return stub.getType();
+			return stub.getEClass();
 		}
-		return super.getType();
+		return super.getEClass();
 	}
 
 	public PsiElement setName(String name) throws IncorrectOperationException {

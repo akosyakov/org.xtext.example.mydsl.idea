@@ -10,7 +10,6 @@ import org.eclipse.xtext.psi.PsiEObject;
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IElementType;
@@ -29,7 +28,7 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 		this.elementType = node.getElementType();
 	}
 	
-	public EClass getType() {
+	public EClass getEClass() {
 		INode node = getINode();
 		if (node.hasDirectSemanticElement()) {
 			return node.getSemanticElement().eClass();
@@ -73,7 +72,7 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 		if (reference != null) {
 			builder.append("(").append(reference.getName()).append(")");
 		}
-		EClass type = getType();
+		EClass type = getEClass();
 		if (type != null) {
 			builder.append("(").append(type.getName()).append(")");
 		}

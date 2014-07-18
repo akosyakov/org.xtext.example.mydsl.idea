@@ -19,7 +19,7 @@ public class StubEObjectDescription implements IEObjectDescription {
 	public StubEObjectDescription(PsiNamedEObject psiNamedEObject) {
 		this.psiNamedEObject = psiNamedEObject;
 		this.qualifiedName = psiNamedEObject.getQualifiedName();
-		this.type = psiNamedEObject.getType();
+		this.type = psiNamedEObject.getEClass();
 	}
 	
 	public PsiNamedEObject getPsiNamedEObject() {

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
+import org.eclipse.xtext.psi.PsiEObject;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 
 import com.google.common.collect.Lists;
@@ -20,6 +21,7 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.PsiFileEx;
@@ -30,8 +32,11 @@ import com.intellij.util.messages.MessageBusConnection;
 
 public class PsiFileUpdater extends AbstractProjectComponent implements ProjectComponent, BulkFileListener {
 
+	private final PsiManager psiManager;
+
 	public PsiFileUpdater(Project project) {
 		super(project);
+		psiManager = PsiManager.getInstance(myProject);
 		Application application = ApplicationManager.getApplication();
 		MessageBusConnection conn = application.getMessageBus().connect();
 		conn.subscribe(VirtualFileManager.VFS_CHANGES, this);
@@ -47,21 +52,13 @@ public class PsiFileUpdater extends AbstractProjectComponent implements ProjectC
 			return;
 		}
 		List<VirtualFile> filesToReparse = new ArrayList<VirtualFile>();
-		PsiManager psiManager = PsiManager.getInstance(myProject);
 		FileBasedIndex fileBasedIndex = FileBasedIndex.getInstance();
 		GlobalSearchScope projectScope = GlobalSearchScope.projectScope(myProject);
 		for (LanguageFileType fileType : fileTypes) {
 			Collection<VirtualFile> files = fileBasedIndex.getContainingFiles(FileTypeIndex.NAME, fileType, projectScope);
 			for (VirtualFile virtualFile : files) {
-				if (updatedFiles.contains(virtualFile)) {
-					continue;
-				}
-				PsiFile psiFile = psiManager.findFile(virtualFile);
-				if (psiFile instanceof BaseXtextFile) {
-					PsiFileEx psiFileEx = (PsiFileEx) psiFile;
-					if (psiFileEx.isContentsLoaded()) {
-						filesToReparse.add(virtualFile);
-					}
+				if (needReparse(virtualFile, updatedFiles)) {
+					filesToReparse.add(virtualFile);
 				}
 			}
 		}
@@ -69,6 +66,32 @@ public class PsiFileUpdater extends AbstractProjectComponent implements ProjectC
 			return;
 		}
 		PsiDocumentManager.getInstance(myProject).reparseFiles(filesToReparse, false);
+	}
+
+	protected boolean needReparse(VirtualFile virtualFile, List<VirtualFile> updatedFiles) {
+		PsiFile psiFile = psiManager.findFile(virtualFile);
+		if (!(psiFile instanceof BaseXtextFile)) {
+			return false;
+		}
+		PsiFileEx psiFileEx = (PsiFileEx) psiFile;
+		if (!psiFileEx.isContentsLoaded()) {
+			return false;
+		}
+		if (updatedFiles.contains(virtualFile)) {
+			return !isNodeModelUpdated(psiFile);
+		}
+		return true;
+	}
+
+	protected boolean isNodeModelUpdated(PsiFile psiFile) {
+		PsiElement firstChild = psiFile.getFirstChild();
+		if (firstChild instanceof PsiEObject) {
+			PsiEObject psiEObject = (PsiEObject) firstChild;
+			String nodeText = psiEObject.getINode().getRootNode().getText();
+			String psiFileText = psiFile.getText();
+			return nodeText.equals(psiFileText);
+		}
+		return true;
 	}
 
 	protected List<LanguageFileType> getFileTypes() {
