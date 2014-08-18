@@ -3,9 +3,17 @@
  */
 package org.xtext.example.mydsl.generator
 
+import com.google.inject.Inject
+import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.IGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess
+import org.eclipse.xtext.generator.IGenerator
+import org.eclipse.xtext.naming.IQualifiedNameProvider
+import org.eclipse.xtext.naming.QualifiedName
+import org.xtext.example.mydsl.myDsl.Datatype
+import org.xtext.example.mydsl.myDsl.Entity
+import org.xtext.example.mydsl.myDsl.File
+import org.xtext.example.mydsl.myDsl.Namespace
 
 /**
  * Generates code from your model files on save.
@@ -14,11 +22,57 @@ import org.eclipse.xtext.generator.IFileSystemAccess
  */
 class MyDslGenerator implements IGenerator {
 	
+	@Inject
+	IQualifiedNameProvider qualifiedNameProvider
+	
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
-//		fsa.generateFile('greetings.txt', 'People to greet: ' + 
-//			resource.allContents
-//				.filter(typeof(Greeting))
-//				.map[name]
-//				.join(', '))
+		val root = resource.contents.head 
+		root.generate(fsa)
 	}
+	
+	def dispatch void generate(Void object, IFileSystemAccess fsa) {
+		
+	}
+	
+	def dispatch void generate(EObject object, IFileSystemAccess fsa) {
+		
+	}
+	
+	def dispatch void generate(File it, IFileSystemAccess fsa) {
+		for (element : elements) {
+			element.generate(fsa)
+		}
+	}
+	
+	def dispatch void generate(Namespace it, IFileSystemAccess fsa) {
+		for (element : elements) {
+			element.generate(fsa)
+		}
+	}
+	
+	def dispatch void generate(Entity entity, IFileSystemAccess fsa) {
+		val qualifiedName = qualifiedNameProvider.getFullyQualifiedName(entity)
+		val packageQualifiedName = qualifiedName.skipLast(1)
+		fsa.generateFile('''«qualifiedName.toString('/')».java''', '''
+			«IF packageQualifiedName != QualifiedName.EMPTY»package «packageQualifiedName.toString»;«ENDIF»
+			
+			class «entity.name» {
+				«FOR property:entity.properties»
+					«property.type.name» «property.name»;
+				«ENDFOR»
+			}
+		''')
+	}
+	
+	def dispatch void generate(Datatype datatype, IFileSystemAccess fsa) {
+		val qualifiedName = qualifiedNameProvider.getFullyQualifiedName(datatype)
+		val packageQualifiedName = qualifiedName.skipLast(1)
+		fsa.generateFile('''«qualifiedName.toString('/')».java''', '''
+			«IF packageQualifiedName != QualifiedName.EMPTY»package «packageQualifiedName.toString»;«ENDIF»
+			
+			class «datatype.name» {
+			}
+		''')
+	}
+	
 }

@@ -46,8 +46,8 @@
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jna-utils.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jna.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jps-launcher.jar"/>
-	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jps-model.jar"/>
-	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jps-server.jar"/>
+	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jps-model.jar" sourcepath="/INTELLIJ_IDEA"/>
+	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jps-server.jar" sourcepath="/INTELLIJ_IDEA"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jsch-0.1.50.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jsch.agentproxy.connector-factory.jar"/>
 	<classpathentry exported="true" kind="var" path="INTELLIJ_IDEA/out/dist.all.ce/lib/jsch.agentproxy.core.jar"/>

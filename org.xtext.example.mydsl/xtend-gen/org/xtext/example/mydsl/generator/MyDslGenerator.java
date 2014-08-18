@@ -3,9 +3,25 @@
  */
 package org.xtext.example.mydsl.generator;
 
+import com.google.common.base.Objects;
+import com.google.inject.Inject;
+import java.util.Arrays;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.IFileSystemAccess;
 import org.eclipse.xtext.generator.IGenerator;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.xtext.example.mydsl.myDsl.Datatype;
+import org.xtext.example.mydsl.myDsl.Element;
+import org.xtext.example.mydsl.myDsl.Entity;
+import org.xtext.example.mydsl.myDsl.File;
+import org.xtext.example.mydsl.myDsl.Namespace;
+import org.xtext.example.mydsl.myDsl.Property;
+import org.xtext.example.mydsl.myDsl.Type;
 
 /**
  * Generates code from your model files on save.
@@ -14,6 +30,129 @@ import org.eclipse.xtext.generator.IGenerator;
  */
 @SuppressWarnings("all")
 public class MyDslGenerator implements IGenerator {
+  @Inject
+  private IQualifiedNameProvider qualifiedNameProvider;
+  
   public void doGenerate(final Resource resource, final IFileSystemAccess fsa) {
+    EList<EObject> _contents = resource.getContents();
+    final EObject root = IterableExtensions.<EObject>head(_contents);
+    this.generate(root, fsa);
+  }
+  
+  protected void _generate(final Void object, final IFileSystemAccess fsa) {
+  }
+  
+  protected void _generate(final EObject object, final IFileSystemAccess fsa) {
+  }
+  
+  protected void _generate(final File it, final IFileSystemAccess fsa) {
+    EList<Element> _elements = it.getElements();
+    for (final Element element : _elements) {
+      this.generate(element, fsa);
+    }
+  }
+  
+  protected void _generate(final Namespace it, final IFileSystemAccess fsa) {
+    EList<Element> _elements = it.getElements();
+    for (final Element element : _elements) {
+      this.generate(element, fsa);
+    }
+  }
+  
+  protected void _generate(final Entity entity, final IFileSystemAccess fsa) {
+    final QualifiedName qualifiedName = this.qualifiedNameProvider.getFullyQualifiedName(entity);
+    final QualifiedName packageQualifiedName = qualifiedName.skipLast(1);
+    StringConcatenation _builder = new StringConcatenation();
+    String _string = qualifiedName.toString("/");
+    _builder.append(_string, "");
+    _builder.append(".java");
+    StringConcatenation _builder_1 = new StringConcatenation();
+    {
+      boolean _notEquals = (!Objects.equal(packageQualifiedName, QualifiedName.EMPTY));
+      if (_notEquals) {
+        _builder_1.append("package ");
+        String _string_1 = packageQualifiedName.toString();
+        _builder_1.append(_string_1, "");
+        _builder_1.append(";");
+      }
+    }
+    _builder_1.newLineIfNotEmpty();
+    _builder_1.newLine();
+    _builder_1.append("class ");
+    String _name = entity.getName();
+    _builder_1.append(_name, "");
+    _builder_1.append(" {");
+    _builder_1.newLineIfNotEmpty();
+    {
+      EList<Property> _properties = entity.getProperties();
+      for(final Property property : _properties) {
+        _builder_1.append("\t");
+        Type _type = property.getType();
+        String _name_1 = _type.getName();
+        _builder_1.append(_name_1, "\t");
+        _builder_1.append(" ");
+        String _name_2 = property.getName();
+        _builder_1.append(_name_2, "\t");
+        _builder_1.append(";");
+        _builder_1.newLineIfNotEmpty();
+      }
+    }
+    _builder_1.append("}");
+    _builder_1.newLine();
+    fsa.generateFile(_builder.toString(), _builder_1);
+  }
+  
+  protected void _generate(final Datatype datatype, final IFileSystemAccess fsa) {
+    final QualifiedName qualifiedName = this.qualifiedNameProvider.getFullyQualifiedName(datatype);
+    final QualifiedName packageQualifiedName = qualifiedName.skipLast(1);
+    StringConcatenation _builder = new StringConcatenation();
+    String _string = qualifiedName.toString("/");
+    _builder.append(_string, "");
+    _builder.append(".java");
+    StringConcatenation _builder_1 = new StringConcatenation();
+    {
+      boolean _notEquals = (!Objects.equal(packageQualifiedName, QualifiedName.EMPTY));
+      if (_notEquals) {
+        _builder_1.append("package ");
+        String _string_1 = packageQualifiedName.toString();
+        _builder_1.append(_string_1, "");
+        _builder_1.append(";");
+      }
+    }
+    _builder_1.newLineIfNotEmpty();
+    _builder_1.newLine();
+    _builder_1.append("class ");
+    String _name = datatype.getName();
+    _builder_1.append(_name, "");
+    _builder_1.append(" {");
+    _builder_1.newLineIfNotEmpty();
+    _builder_1.append("}");
+    _builder_1.newLine();
+    fsa.generateFile(_builder.toString(), _builder_1);
+  }
+  
+  public void generate(final EObject datatype, final IFileSystemAccess fsa) {
+    if (datatype instanceof Datatype) {
+      _generate((Datatype)datatype, fsa);
+      return;
+    } else if (datatype instanceof Entity) {
+      _generate((Entity)datatype, fsa);
+      return;
+    } else if (datatype instanceof Namespace) {
+      _generate((Namespace)datatype, fsa);
+      return;
+    } else if (datatype instanceof File) {
+      _generate((File)datatype, fsa);
+      return;
+    } else if (datatype != null) {
+      _generate(datatype, fsa);
+      return;
+    } else if (datatype == null) {
+      _generate((Void)null, fsa);
+      return;
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(datatype, fsa).toString());
+    }
   }
 }
