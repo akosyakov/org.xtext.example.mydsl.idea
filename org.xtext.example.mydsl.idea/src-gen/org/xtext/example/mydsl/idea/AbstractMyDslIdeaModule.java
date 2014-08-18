@@ -18,6 +18,11 @@ public class AbstractMyDslIdeaModule extends org.eclipse.xtext.idea.DefaultIdeaM
 	public Class<? extends com.intellij.lang.ParserDefinition> bindParserDefinition() {
 		return org.xtext.example.mydsl.idea.lang.parser.MyDslParserDefinition.class;
 	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	@org.eclipse.xtext.service.SingletonBinding
+	public Class<? extends org.eclipse.xtext.idea.lang.IElementTypeProvider> bindIElementTypeProvider() {
+		return org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider.class;
+	}
 	
 	
 }

@@ -4,7 +4,6 @@ import org.eclipse.xtext.idea.lang.IElementTypeProvider;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType;
-import org.xtext.example.mydsl.idea.lang.MyDslLanguage;
 import org.xtext.example.mydsl.idea.lang.psi.impl.MyDslFileImpl;
 
 import com.intellij.psi.stubs.IStubElementType;

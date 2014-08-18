@@ -15,6 +15,7 @@ import org.eclipse.xtext.generator.Generator
 import org.eclipse.xtext.generator.Xtend2ExecutionContext
 import org.eclipse.xtext.generator.Xtend2GeneratorFragment
 import com.intellij.lang.ParserDefinition
+import org.eclipse.xtext.idea.lang.IElementTypeProvider
 
 class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	
@@ -66,20 +67,22 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		bindFactory.addTypeToType(Lexer.name, grammar.lexerName)
 		bindFactory.addTypeToType(TokenTypeProvider.name, grammar.tokenTypeProviderName)
 		bindFactory.addTypeToType(ParserDefinition.name, grammar.parserDefinitionName)
+		bindFactory.addTypeToTypeSingleton(IElementTypeProvider.name, grammar.elementTypeProviderName)
 		val bindings = bindFactory.bindings
 		
 		ctx.writeFile(outlet_src, grammar.standaloneSetupIdea.toJavaPath, grammar.compileStandaloneSetup)
+		ctx.writeFile(outlet_src, grammar.ideaModuleName.toJavaPath, grammar.compileIdeaModule)
 		ctx.writeFile(outlet_src_gen, grammar.languageName.toJavaPath, grammar.compileLanguage)
 		ctx.writeFile(outlet_src_gen, grammar.fileTypeName.toJavaPath, grammar.compileFileType)
 		ctx.writeFile(outlet_src_gen, grammar.fileTypeFactoryName.toJavaPath, grammar.compileFileTypeFactory)
 		ctx.writeFile(outlet_src_gen, grammar.fileImplName.toJavaPath, grammar.compileFileImpl)
 		ctx.writeFile(outlet_src_gen, grammar.lexerName.toJavaPath, grammar.compileLexer);
 		ctx.writeFile(outlet_src_gen, grammar.tokenTypeProviderName.toJavaPath, grammar.compileTokenTypeProvider);
+		ctx.writeFile(outlet_src_gen, grammar.elementTypeProviderName.toJavaPath, grammar.compileElementTypeProvider);
 		ctx.writeFile(outlet_src_gen, grammar.parserDefinitionName.toJavaPath, grammar.compileParserDefinition);
 		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterName.toJavaPath, grammar.compileSyntaxHighlighter);
 		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterFactoryName.toJavaPath, grammar.compileSyntaxHighlighterFactory);
 		ctx.writeFile(outlet_src_gen, grammar.abstractIdeaModuleName.toJavaPath, grammar.compileGuiceModuleIdeaGenerated(bindings));
-		
 		
 		if (pathIdeaPluginProject != null) {
 			var output = new OutputImpl();
@@ -393,6 +396,64 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		}
 	'''
 	
+	def compileIdeaModule(Grammar grammar) '''
+		package «grammar.ideaModuleName.toPackageName»;
+		
+		public class «grammar.ideaModuleName.toSimpleName» extends «grammar.abstractIdeaModuleName.toSimpleName» {
+		
+		}
+	'''
+	
+	def compileElementTypeProvider(Grammar grammar) '''
+		package «grammar.elementTypeProviderName.toPackageName»;
+
+		import org.eclipse.xtext.idea.lang.IElementTypeProvider;
+		import org.eclipse.xtext.psi.PsiNamedEObject;
+		import org.eclipse.xtext.psi.PsiNamedEObjectStub;
+		import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType;
+		import «grammar.fileImplName»;
+		
+		import com.intellij.psi.stubs.IStubElementType;
+		import com.intellij.psi.stubs.PsiFileStub;
+		import com.intellij.psi.tree.IElementType;
+		import com.intellij.psi.tree.IFileElementType;
+		import com.intellij.psi.tree.IStubFileElementType;
+		
+		public class «grammar.elementTypeProviderName.toSimpleName» implements IElementTypeProvider {
+		
+			public static final IFileElementType FILE_TYPE = new IStubFileElementType<PsiFileStub<«grammar.fileImplName.toSimpleName»>>(«grammar.languageName.toSimpleName».INSTANCE);
+			
+			public static final IElementType NAME_TYPE = new IElementType("NAME", «grammar.languageName.toSimpleName».INSTANCE);
+			
+			public static final IElementType EOBJECT_TYPE = new IElementType("EOBJECT_TYPE", «grammar.languageName.toSimpleName».INSTANCE);
+			
+			public static final IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> NAMED_EOBJECT_TYPE = new PsiNamedEObjectType("NAMED_EOBJECT", «grammar.languageName.toSimpleName».INSTANCE);
+			
+			public static final IElementType CROSS_REFERENCE_TYPE = new IElementType("CROSS_REFERENCE", «grammar.languageName.toSimpleName».INSTANCE);
+		
+			public IFileElementType getFileType() {
+				return FILE_TYPE;
+			}
+		
+			public IElementType getObjectType() {
+				return EOBJECT_TYPE;
+			}
+		
+			public IElementType getCrossReferenceType() {
+				return CROSS_REFERENCE_TYPE;
+			}
+		
+			public IElementType getNameType() {
+				return NAME_TYPE;
+			}
+		
+			public IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> getNamedObjectType() {
+				return NAMED_EOBJECT_TYPE;
+			}
+		
+		}
+	'''
+	
 	def compileTokenTypeProvider(Grammar grammar)'''
 		package «grammar.tokenTypeProviderName.toPackageName»;
 		
@@ -457,7 +518,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		
 			@Override
 			public Lexer createAntlrLexer(String text) {
-				return new InternalMyDslLexer(new ANTLRStringStream(text));
+				return new «grammar.antlrLexerName.toSimpleName»(new ANTLRStringStream(text));
 			}
 		
 		}
@@ -466,15 +527,10 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	def compileSyntaxHighlighterFactory(Grammar grammar)'''
 		package «grammar.syntaxHighlighterFactoryName.toPackageName»;
 		
-		import com.google.inject.Inject;
-		import com.google.inject.Provider;
+		import org.jetbrains.annotations.NotNull;
 		
 		import com.intellij.openapi.fileTypes.SingleLazyInstanceSyntaxHighlighterFactory;
 		import com.intellij.openapi.fileTypes.SyntaxHighlighter;
-		
-		import «grammar.languageName»;
-		
-		import org.jetbrains.annotations.NotNull;
 		
 		public class «grammar.syntaxHighlighterFactoryName.toSimpleName» extends SingleLazyInstanceSyntaxHighlighterFactory {
 			
