@@ -29,6 +29,10 @@ class IdeaPluginClassNames {
 		basePackageName+'.'+it.name.toSimpleName+'StandaloneSetupIdea'
 	}
 	
+	def String getExtensionFactoryName(Grammar it) {
+		basePackageName+'.'+it.name.toSimpleName+'ExtensionFactory'
+	}
+	
 	def String getAbstractIdeaModuleName(Grammar it) {
 		basePackageName+'.Abstract'+it.name.toSimpleName+'IdeaModule'
 	}

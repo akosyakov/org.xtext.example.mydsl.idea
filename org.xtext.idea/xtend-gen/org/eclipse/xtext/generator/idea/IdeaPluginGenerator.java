@@ -160,6 +160,10 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     String _javaPath_12 = this._ideaPluginClassNames.toJavaPath(_abstractIdeaModuleName);
     CharSequence _compileGuiceModuleIdeaGenerated = this.compileGuiceModuleIdeaGenerated(grammar, bindings);
     ctx.writeFile(outlet_src_gen, _javaPath_12, _compileGuiceModuleIdeaGenerated);
+    String _extensionFactoryName = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
+    String _javaPath_13 = this._ideaPluginClassNames.toJavaPath(_extensionFactoryName);
+    CharSequence _compileExtensionFactory = this.compileExtensionFactory(grammar);
+    ctx.writeFile(outlet_src_gen, _javaPath_13, _compileExtensionFactory);
     boolean _notEquals_1 = (!Objects.equal(this.pathIdeaPluginProject, null));
     if (_notEquals_1) {
       OutputImpl output = new OutputImpl();
@@ -397,6 +401,68 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     return _builder;
   }
   
+  public CharSequence compileExtensionFactory(final Grammar grammar) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("package ");
+    String _extensionFactoryName = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
+    String _packageName = this._ideaPluginClassNames.toPackageName(_extensionFactoryName);
+    _builder.append(_packageName, "");
+    _builder.append(";");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("import ");
+    String _languageName = this._ideaPluginClassNames.getLanguageName(grammar);
+    _builder.append(_languageName, "");
+    _builder.append(";");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("import com.intellij.openapi.extensions.ExtensionFactory;");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("public class ");
+    String _extensionFactoryName_1 = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
+    String _simpleName = this._ideaPluginClassNames.toSimpleName(_extensionFactoryName_1);
+    _builder.append(_simpleName, "");
+    _builder.append(" implements ExtensionFactory {");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("public Object createInstance(final String factoryArgument, final String implementationClass) {");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("Class<?> clazz;");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("try {");
+    _builder.newLine();
+    _builder.append("\t\t\t");
+    _builder.append("clazz = Class.forName(implementationClass);");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("} catch (ClassNotFoundException e) {");
+    _builder.newLine();
+    _builder.append("\t\t\t");
+    _builder.append("throw new IllegalArgumentException(\"Couldn\'t load \"+implementationClass, e);");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("}");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("return ");
+    String _languageName_1 = this._ideaPluginClassNames.getLanguageName(grammar);
+    String _simpleName_1 = this._ideaPluginClassNames.toSimpleName(_languageName_1);
+    _builder.append(_simpleName_1, "\t\t");
+    _builder.append(".INSTANCE.<Object> getInstance(clazz);");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    return _builder;
+  }
+  
   public String bindMethodName(final Binding it) {
     String _xifexpression = null;
     boolean _and = false;
@@ -596,7 +662,7 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.newLine();
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("<idea-version since-build=\"123.72\"/>");
+    _builder.append("<idea-version since-build=\"131\"/>");
     _builder.newLine();
     _builder.newLine();
     _builder.append("\t");

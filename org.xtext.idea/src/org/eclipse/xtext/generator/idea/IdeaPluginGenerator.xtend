@@ -83,6 +83,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterName.toJavaPath, grammar.compileSyntaxHighlighter);
 		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterFactoryName.toJavaPath, grammar.compileSyntaxHighlighterFactory);
 		ctx.writeFile(outlet_src_gen, grammar.abstractIdeaModuleName.toJavaPath, grammar.compileGuiceModuleIdeaGenerated(bindings));
+		ctx.writeFile(outlet_src_gen, grammar.extensionFactoryName.toJavaPath, grammar.compileExtensionFactory);
 		
 		if (pathIdeaPluginProject != null) {
 			var output = new OutputImpl();
@@ -126,6 +127,28 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			«ENDFOR»
 			
 			
+		}
+	'''
+	
+	def compileExtensionFactory(Grammar grammar) '''
+		package «grammar.extensionFactoryName.toPackageName»;
+		
+		import «grammar.languageName»;
+		
+		import com.intellij.openapi.extensions.ExtensionFactory;
+		
+		public class «grammar.extensionFactoryName.toSimpleName» implements ExtensionFactory {
+
+			public Object createInstance(final String factoryArgument, final String implementationClass) {
+				Class<?> clazz;
+				try {
+					clazz = Class.forName(implementationClass);
+				} catch (ClassNotFoundException e) {
+					throw new IllegalArgumentException("Couldn't load "+implementationClass, e);
+				}
+				return «grammar.languageName.toSimpleName».INSTANCE.<Object> getInstance(clazz);
+			}
+
 		}
 	'''
 	
@@ -212,7 +235,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			<version>1.0.0</version>
 			<vendor>My Company</vendor>
 		
-			<idea-version since-build="123.72"/>
+			<idea-version since-build="131"/>
 		
 			<extensions defaultExtensionNs="com.intellij">
 				<lang.syntaxHighlighterFactory key="«grammar.languageID»" implementationClass="«grammar.syntaxHighlighterFactoryName»"/>
