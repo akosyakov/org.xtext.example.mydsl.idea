@@ -7,5 +7,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/intellij-dependencies"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.idea"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.mydsl"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
