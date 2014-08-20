@@ -47,6 +47,13 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/util.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>com.intellij</groupId>
+			<artifactId>trove4j</artifactId>
+			<version>14.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/trove4j.jar</systemPath>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

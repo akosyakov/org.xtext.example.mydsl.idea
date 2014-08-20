@@ -2,8 +2,25 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.xtext.example.mydsl.idea</artifactId>
+	<name>Mydsl IntelliJ Plugin</name>
+	<description>Mydsl Xtext Plugin for intellij</description>
+
+	<properties>
+		<vendor.url>https://github.com/akosyakov/org.xtext.example.mydsl.idea</vendor.url>
+		<vendor.email>alle-ki@itemis.de</vendor.email>
+		<vendor.name>itemis AG</vendor.name>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>META-INF/**</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

@@ -1,12 +1,11 @@
 <idea-plugin version="2">
-  <id>org.xtext.example.mydsl.idea</id>
-  <name>MyDsl language support</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <id>${project.artifactId}</id>
+  <name>${project.name}</name>
+  <version>${project.version}</version>
+  <vendor email="${vendor.email}" url="${vendor.url}">${vendor.name}</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+     ${project.description}
     ]]></description>
 
   <change-notes><![CDATA[
