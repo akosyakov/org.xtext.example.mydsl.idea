@@ -6,72 +6,79 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
-			<groupId>com.intellij</groupId>
-			<artifactId>annotations</artifactId>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>org.jetbrains.intellij-ce</artifactId>
 			<version>14.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/annotations.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.intellij</groupId>
-			<artifactId>extensions</artifactId>
-			<version>14.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/extensions.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.intellij</groupId>
-			<artifactId>idea_rt</artifactId>
-			<version>14.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/idea_rt.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.intellij</groupId>
-			<artifactId>idea</artifactId>
-			<version>14.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/idea.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.intellij</groupId>
-			<artifactId>openapi</artifactId>
-			<version>14.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/openapi.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.intellij</groupId>
-			<artifactId>util</artifactId>
-			<version>14.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/util.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>com.intellij</groupId>
-			<artifactId>trove4j</artifactId>
-			<version>14.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/trove4j.jar</systemPath>
+			<type>zip</type>
+			<classifier>win</classifier>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
+		<resources>
+			<resource>
+				<directory>lib</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<id>unzip-distribution</id>
 						<goals>
-							<goal>single</goal>
+							<goal>unpack-dependencies</goal>
 						</goals>
+						<configuration>
+							<includeArtifactIds>org.jetbrains.intellij-ce</includeArtifactIds>
+							<outputDirectory>${basedir}</outputDirectory>
+							<includes>lib/*.jar</includes>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<descriptor>${project.basedir}/all-assembly.xml</descriptor>
-				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.3,)
+										</versionRange>
+										<goals>
+											<goal>
+												unpack-dependencies
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
-	
+
 </project>
