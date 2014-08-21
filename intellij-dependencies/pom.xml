@@ -16,11 +16,6 @@
 	</dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>lib</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -36,6 +31,25 @@
 							<includeArtifactIds>org.jetbrains.intellij-ce</includeArtifactIds>
 							<outputDirectory>${basedir}</outputDirectory>
 							<includes>lib/*.jar</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.googlecode.addjars-maven-plugin</groupId>
+				<artifactId>addjars-maven-plugin</artifactId>
+				<version>1.0.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>add-jars</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>${basedir}/lib</directory>
+								</resource>
+							</resources>
 						</configuration>
 					</execution>
 				</executions>
@@ -67,6 +81,25 @@
 											<goal>
 												unpack-dependencies
 											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.googlecode.addjars-maven-plugin
+										</groupId>
+										<artifactId>
+											addjars-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0.5,)
+										</versionRange>
+										<goals>
+											<goal>add-jars</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

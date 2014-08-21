@@ -1,9 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.xtext.idea</groupId>
 	<artifactId>xtext-idea</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -46,7 +44,13 @@
 			<groupId>org.xtext.idea</groupId>
 			<artifactId>intellij-dependencies</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<classifier>all</classifier>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<parent>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<groupId>org.xtext.idea</groupId>
+		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
+	</parent>
 </project>

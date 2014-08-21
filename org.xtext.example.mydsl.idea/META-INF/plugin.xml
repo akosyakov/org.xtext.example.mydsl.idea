@@ -1,8 +1,14 @@
 <idea-plugin version="2">
-  <id>${project.artifactId}</id>
+  <!--
+   <id>${project.artifactId}</id>
   <name>${project.name}</name>
   <version>${project.version}</version>
   <vendor email="${vendor.email}" url="${vendor.url}">${vendor.name}</vendor>
+  -->
+  <id>mydsl-idea</id>
+  <name>MyDsl Language</name>
+  <version>1.2</version>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
      ${project.description}
@@ -25,7 +31,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
   	  <buildProcess.parametersProvider implementation="org.xtext.example.mydsl.idea.server.MyDslBuildProcessParametersProvider" />
-  	  <compileServer.plugin classpath="org.eclipse.emf.common_2.11.0.v20140815-0133.jar;org.eclipse.emf.ecore_2.11.0.v20140815-0133.jar;org.eclipse.emf.ecore.xmi_2.11.0.v20140815-0133.jar;javax.inject_1.0.0.v20091030.jar;com.google.inject_3.0.0.v201312141243.jar;com.google.guava_15.0.0.v201403281430.jar;org.antlr.runtime_3.2.0.v201101311130.jar;org.eclipse.xtext_2.7.0.v201408150954.jar;org.eclipse.xtext.util_2.7.0.v201408150954.jar;org.eclipse.xtext.xbase.lib_2.7.0.v201408150954.jar"/> 
+  	  <compileServer.plugin classpath="xtext-idea.jar;org.eclipse.emf.common.jar;org.eclipse.emf.ecore.jar;org.eclipse.emf.ecore.xmi.jar;javax.inject.jar;com.google.inject.jar;com.google.guava.jar;org.antlr.runtime.jar;org.eclipse.xtext.jar;org.eclipse.xtext.util.jar;org.eclipse.xtext.xbase.lib.jar"/> 
       <!-- Add your extensions here -->
       <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
       <stubElementTypeHolder class="org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider"/>

@@ -1,11 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.xtext.idea</groupId>
 	<artifactId>org.xtext.example.mydsl.idea.tests</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>src</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>.</directory>
+				<includes>
+					<include>testData/**/*</include>
+				</includes>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -26,13 +33,23 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<argLine>-ea -Xbootclasspath/p:${basedir}../intellij-dependencies/lib/boot.jar  -Didea.home.path="${INTELLIJ_IDEA}/" -Didea.system.path=${project.build.directory}/test-system -Didea.config.path=${project.build.directory}/test -Didea.test.group=ALL_EXCLUDE_DEFINED -Dplugin.path="${basedir}/../org.xtext.example.mydsl.idea/" -XX:+HeapDumpOnOutOfMemoryError -Xmx512m -XX:MaxPermSize=320m</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.xtext.idea</groupId>
 			<artifactId>intellij-dependencies</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -41,7 +58,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.xtext.idea</groupId>
-			<artifactId>org.xtext.idea</artifactId>
+			<artifactId>xtext-idea</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -70,4 +87,10 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	<parent>
+		<artifactId>parent</artifactId>
+		<groupId>org.xtext.idea</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
+	</parent>
 </project>
