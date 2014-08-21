@@ -2,6 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.xtext.example.mydsl.idea.tests</artifactId>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>src</testSourceDirectory>
@@ -93,4 +94,5 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
 	</parent>
+	<name>Mydsl IntelliJ Plugin Tests</name>
 </project>

@@ -6,8 +6,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>org.jetbrains.intellij-ce</artifactId>
+			<groupId>org.xtext.idea</groupId>
+			<artifactId>intellij-ce</artifactId>
 			<version>14.0</version>
 			<type>zip</type>
 			<classifier>win</classifier>
@@ -28,7 +28,7 @@
 							<goal>unpack-dependencies</goal>
 						</goals>
 						<configuration>
-							<includeArtifactIds>org.jetbrains.intellij-ce</includeArtifactIds>
+							<includeArtifactIds>intellij-ce</includeArtifactIds>
 							<outputDirectory>${basedir}</outputDirectory>
 							<includes>lib/*.jar</includes>
 						</configuration>
@@ -55,63 +55,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-dependency-plugin
-										</artifactId>
-										<versionRange>
-											[2.3,)
-										</versionRange>
-										<goals>
-											<goal>
-												unpack-dependencies
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.googlecode.addjars-maven-plugin
-										</groupId>
-										<artifactId>
-											addjars-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.0.5,)
-										</versionRange>
-										<goals>
-											<goal>add-jars</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
-
 </project>
