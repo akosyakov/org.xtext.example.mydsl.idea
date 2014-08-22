@@ -7,10 +7,17 @@ Setup
 3. From this repository import the existing projects into eclipse.
 4. Configure the ClassPathVariable 'INTELLIJ_IDEA' to point to the checked-out git repository
 5. Configure the the string substitution variable 'INTELLIJ_IDEA' to point to the checked-out git repository
-6. Run or Debug 'Launch IntelliJ.launch'
+6. Configure the the string substitution variable 'INTELLIJ_IDEA_PLUGINS to point to the checked-out org.xtext.example.mydsl.idea git repository
+
+Running/Debugging
+-----
+
+* Run or Debug MyDsl Language ’MyDsl Launch IntelliJ.launch’
+* Run or Debug Domainmodel Language ’Domainmodel Launch Intellij.launch’
+* Run or Debug All Languages ‘All Launch IntelliJ.launch’
 
 Testing
 -----
 
-1. Run or Debug ‘Test Intellij.launch’
-2. Clean ${INTELLIJ_IDEA}/test-system to remove indexes and caches
+* Run or Debug ‘Test Intellij.launch’
+* Clean ${INTELLIJ_IDEA}/test-system to remove indexes and caches
