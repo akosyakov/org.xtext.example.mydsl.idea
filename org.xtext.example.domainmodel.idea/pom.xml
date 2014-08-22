@@ -1,11 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>xtext-idea</artifactId>
+	<artifactId>org.xtext.example.domainmodel.idea</artifactId>
+	<name>Domainmodel IntelliJ Plugin</name>
+	<description>Domainmodel Xtext Plugin for intellij</description>
+
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<vendor.url>https://github.com/akosyakov/org.xtext.example.mydsl.idea</vendor.url>
+		<vendor.email>alle-ki@itemis.de</vendor.email>
+		<vendor.name>itemis AG</vendor.name>
 	</properties>
 	<build>
+		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
 				<directory>.</directory>
@@ -15,7 +21,6 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -30,7 +35,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>xtend-gen</source>
+								<source>src-gen</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -75,16 +80,22 @@
 			</plugin>
 		</plugins>
 	</build>
+	<parent>
+		<groupId>org.xtext.idea</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
+	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext.xbase.lib</artifactId>
-			<version>2.7.0-SNAPSHOT</version>
+			<groupId>org.xtext.idea</groupId>
+			<artifactId>xtext-idea</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext.xtext</artifactId>
-			<version>2.7.0-SNAPSHOT</version>
+			<groupId>org.xtext.idea</groupId>
+			<artifactId>org.xtext.example.domainmodel</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.xtext.idea</groupId>
@@ -93,10 +104,4 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	<parent>
-		<artifactId>parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<groupId>org.xtext.idea</groupId>
-		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
-	</parent>
 </project>

@@ -1,23 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>org.xtext.example.mydsl</artifactId>
+	<artifactId>xtext-idea-builder</artifactId>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>model/**/*</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src-gen</directory>
-				<excludes>
-					<exclude>**/*java</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -32,40 +21,36 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>src-gen</source>
 								<source>xtend-gen</source>
 							</sources>
-
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-	<parent>
-		<groupId>org.xtext.idea</groupId>
-		<artifactId>parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
-	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext</artifactId>
+			<artifactId>org.eclipse.xtext.xbase.lib</artifactId>
 			<version>2.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext.xtext</artifactId>
 			<version>2.7.0-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.xtext.idea</groupId>
-			<artifactId>xtext-idea</artifactId>
+			<artifactId>intellij-dependencies</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-	<name>Mydsl Runtime Plugin</name>
+	<parent>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<groupId>org.xtext.idea</groupId>
+		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
+	</parent>
 </project>
