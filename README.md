@@ -7,7 +7,7 @@ Setup
 3. From this repository import the existing projects into eclipse.
 4. Configure the ClassPathVariable 'INTELLIJ_IDEA' to point to the checked-out git repository
 5. Configure the the string substitution variable 'INTELLIJ_IDEA' to point to the checked-out git repository
-6. Configure the the string substitution variable 'INTELLIJ_IDEA_PLUGINS to point to the checked-out org.xtext.example.mydsl.idea git repository
+6. Configure the the string substitution variable 'INTELLIJ_IDEA_PLUGINS’ to point to the checked-out org.xtext.example.mydsl.idea git repository
 
 Running/Debugging
 -----
