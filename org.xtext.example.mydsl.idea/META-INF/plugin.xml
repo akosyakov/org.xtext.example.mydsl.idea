@@ -31,9 +31,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
   	  <buildProcess.parametersProvider implementation="org.xtext.example.mydsl.idea.server.MyDslBuildProcessParametersProvider" />
-  	  <compileServer.plugin classpath="xtext-idea.jar;org.eclipse.emf.common.jar;org.eclipse.emf.ecore.jar;org.eclipse.emf.ecore.xmi.jar;javax.inject.jar;com.google.inject.jar;com.google.guava.jar;org.antlr.runtime.jar;org.eclipse.xtext.jar;org.eclipse.xtext.util.jar;org.eclipse.xtext.xbase.lib.jar"/> 
-      <!-- Add your extensions here -->
-      <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
+  	  <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
       <stubElementTypeHolder class="org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider"/>
       <lang.ast.factory language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
       <lang.parserDefinition language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.xtext.example.mydsl.idea.lang.parser.MyDslParserDefinition"/>
@@ -49,13 +47,6 @@
   </application-components>
 
   <project-components>
-      <!-- Add your project components here -->
-      <component>
-          <implementation-class>org.eclipse.xtext.idea.resource.PsiFileUpdater</implementation-class>
-      </component>
-      <component>
-      	  <implementation-class>org.eclipse.xtext.idea.build.XtextCompilerComponent</implementation-class>
-      </component>
   </project-components>
 
   <actions>

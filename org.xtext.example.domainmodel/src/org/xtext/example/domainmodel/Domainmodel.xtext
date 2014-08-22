@@ -1,0 +1,30 @@
+grammar org.xtext.example.domainmodel.Domainmodel with org.eclipse.xtext.xbase.Xbase
+
+generate domainmodel "http://www.xtext.org/example/domainmodel/Domainmodel"
+
+DomainModel:
+	importSection=XImportSection?
+	elements+=AbstractElement*;
+	
+AbstractElement:
+	PackageDeclaration | Entity;
+
+PackageDeclaration:
+	'package' name=QualifiedName '{'
+		elements+=AbstractElement*
+	'}';
+
+Entity:
+	'entity' name=ValidID ('extends' superType=JvmParameterizedTypeReference)? '{'
+		features+=Feature*
+	'}';
+
+Feature:
+	Property | Operation;
+
+Property:
+	name=ValidID ':' type=JvmTypeReference;
+
+Operation:
+	'op' name=ValidID '(' (params+=FullJvmFormalParameter (',' params+=FullJvmFormalParameter)*)? ')' (':' type=JvmTypeReference)? 
+		body=XBlockExpression;

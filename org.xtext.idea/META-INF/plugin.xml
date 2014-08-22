@@ -1,0 +1,23 @@
+<idea-plugin version="2">
+	<id>org.xtext.idea</id>
+	<name>Xtext IDEA Core</name>
+	<description>Xtext IDEA Core.</description>
+	<version>1.0.0</version>
+	<vendor>Eclipse Modeling Project</vendor>
+
+	<idea-version since-build="131"/>
+	
+	<extensions defaultExtensionNs="com.intellij">
+		<compileServer.plugin classpath="org.eclipse.emf.common_2.11.0.v20140815-0133.jar;org.eclipse.emf.ecore_2.11.0.v20140815-0133.jar;org.eclipse.emf.ecore.xmi_2.11.0.v20140815-0133.jar;javax.inject_1.0.0.v20091030.jar;com.google.inject_3.0.0.v201312141243.jar;com.google.guava_15.0.0.v201403281430.jar;org.antlr.runtime_3.2.0.v201101311130.jar;org.eclipse.xtext_2.7.0.v201408150954.jar;org.eclipse.xtext.util_2.7.0.v201408150954.jar;org.eclipse.xtext.xbase.lib_2.7.0.v201408150954.jar"/>
+  	</extensions>
+
+	<project-components>
+		<component>
+			<implementation-class>org.eclipse.xtext.idea.resource.PsiFileUpdater</implementation-class>
+		</component>
+		<component>
+			<implementation-class>org.eclipse.xtext.idea.build.XtextCompilerComponent</implementation-class>
+		</component>
+	</project-components>
+
+</idea-plugin>

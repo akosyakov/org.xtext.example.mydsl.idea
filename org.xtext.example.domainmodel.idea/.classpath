@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src-gen"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/intellij-dependencies"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.idea"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.domainmodel"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

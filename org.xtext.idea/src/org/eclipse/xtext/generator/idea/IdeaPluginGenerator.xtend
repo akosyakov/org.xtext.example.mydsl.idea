@@ -23,8 +23,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	
 	private static String PLUGIN = "PLUGIN"
 	
-	private static String DOT_IDEA = "DOT_IDEA"
-	
 	private String encoding
 	
 	private String fileExtension
@@ -89,12 +87,9 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			var output = new OutputImpl();
 			output.addOutlet(PLUGIN, pathIdeaPluginProject);
 			output.addOutlet(META_INF_PLUGIN, pathIdeaPluginProject + "/META-INF");
-			output.addOutlet(DOT_IDEA, pathIdeaPluginProject + "/.idea");
 			
+			output.writeFile(PLUGIN, '''«grammar.name.toSimpleName» Launch Intellij.launch''', grammar.compileLaunchIntellij(pathIdeaPluginProject.split('/').last))
 			output.writeFile(META_INF_PLUGIN, "plugin.xml", grammar.compilePluginXml)
-			output.writeFile(PLUGIN, iml, grammar.compileIml)
-			output.writeFile(DOT_IDEA, "modules.xml", grammar.compileModulesXml);
-			output.writeFile(DOT_IDEA, "misc.xml", grammar.compileMiscXml);
 		}
 	}
 	
@@ -206,25 +201,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		this.pathIdeaPluginProject = pathIdeaPluginProject
 	}
 	
-	def compileModulesXml(Grammar grammar)'''
-		<?xml version="1.0" encoding="UTF-8"?>
-		<project version="4">
-		  <component name="ProjectModuleManager">
-		    <modules>
-		      <module fileurl="file://$PROJECT_DIR$/«iml»" filepath="$PROJECT_DIR$/«iml»" />
-		    </modules>
-		  </component>
-		</project>
-	'''
-	
-	def compileMiscXml(Grammar grammar)'''
-		<?xml version="1.0" encoding="UTF-8"?>
-		<project version="4">
-		  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA IC-123.72" project-jdk-type="IDEA JDK" />
-		  <output url="file://$PROJECT_DIR$/out" />
-		</project>
-	'''
-	
 	def compilePluginXml(Grammar grammar)'''
 		<idea-plugin version="2">
 			<id>«grammar.languageID»</id>
@@ -236,41 +212,38 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			<vendor>My Company</vendor>
 		
 			<idea-version since-build="131"/>
-		
+
 			<extensions defaultExtensionNs="com.intellij">
-				<lang.syntaxHighlighterFactory key="«grammar.languageID»" implementationClass="«grammar.syntaxHighlighterFactoryName»"/>
-				<lang.parserDefinition language="«grammar.languageID»" implementationClass="«grammar.parserDefinitionName»"/>
 				<fileTypeFactory implementation="«grammar.fileTypeFactoryName»"/>
+				<stubElementTypeHolder class="«grammar.fileTypeFactoryName»"/>
+				<lang.ast.factory language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
+		      	<lang.parserDefinition language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="«grammar.parserDefinitionName»"/>
+		      	<lang.findUsagesProvider language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
+		      	<lang.refactoringSupport language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
+		      	<lang.syntaxHighlighterFactory key="«grammar.languageID»" implementationClass="«grammar.syntaxHighlighterFactoryName»" />
+		      	<stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
+		      	<annotator language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
 			</extensions>
 		
 		</idea-plugin>
 	'''
 	
-	def compileIml(Grammar grammar)'''
-		<?xml version="1.0" encoding="UTF-8"?>
-		<module type="PLUGIN_MODULE" version="4">
-		  <component name="DevKit.ModuleBuildProperties" url="file://$MODULE_DIR$/META-INF/plugin.xml" />
-		  <component name="NewModuleRootManager" inherit-compiler-output="true">
-		    <exclude-output />
-		    <content url="file://$MODULE_DIR$">
-		      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-		      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
-		    </content>
-		 	<orderEntry type="jdk" jdkName="IDEA IC-123.72" jdkType="IDEA JDK" />
-		    <orderEntry type="sourceFolder" forTests="false" />
-		    «FOR library:libraries»
-		    <orderEntry type="module-library">
-		      <library>
-		        <CLASSES>
-		          <root url="jar://«library»!/" />
-		        </CLASSES>
-		        <JAVADOC />
-		        <SOURCES />
-		      </library>
-		    </orderEntry>
-		    «ENDFOR»
-		  </component>
-		</module>
+	def compileLaunchIntellij(Grammar grammar, String path)'''
+		<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+			<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+			<stringAttribute key="bad_container_name" value="/«path»/«grammar.name.toSimpleName.toLowerCase»_launch_intellij.launch"/>
+			<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+				<listEntry value="/«path»"/>
+			</listAttribute>
+			<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+				<listEntry value="4"/>
+			</listAttribute>
+			<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="false"/>
+			<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 6 [1.6.0_65-b14-462]"/>
+			<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.intellij.idea.Main"/>
+			<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="«path»"/>
+			<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Didea.plugins.path=${INTELLIJ_IDEA_PLUGINS} -Didea.home.path=${INTELLIJ_IDEA} -Didea.ProcessCanceledException=disabled -Dcompiler.process.debug.port=-1"/>
+		</launchConfiguration>
 	'''
 	
 	def compilePsiElement(Grammar grammar, AbstractRule rule)'''
