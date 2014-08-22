@@ -8,30 +8,26 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
+import com.intellij.psi.PsiNamedElement;
+
 public class StubEObjectDescription implements IEObjectDescription {
-
-	private final EClass type;
-
-	private final QualifiedName qualifiedName;
 
 	private final PsiNamedEObject psiNamedEObject;
 
 	public StubEObjectDescription(PsiNamedEObject psiNamedEObject) {
 		this.psiNamedEObject = psiNamedEObject;
-		this.qualifiedName = psiNamedEObject.getQualifiedName();
-		this.type = psiNamedEObject.getEClass();
 	}
-	
-	public PsiNamedEObject getPsiNamedEObject() {
+
+	public PsiNamedElement getPsiNamedEObject() {
 		return psiNamedEObject;
 	}
 
 	public QualifiedName getName() {
-		return qualifiedName;
+		return getQualifiedName();
 	}
 
 	public QualifiedName getQualifiedName() {
-		return qualifiedName;
+		return psiNamedEObject.getQualifiedName();
 	}
 
 	public EObject getEObjectOrProxy() {
@@ -44,7 +40,7 @@ public class StubEObjectDescription implements IEObjectDescription {
 	}
 
 	public EClass getEClass() {
-		return type;
+		return getEObjectOrProxy().eClass();
 	}
 
 	public String getUserData(String key) {

@@ -49,8 +49,10 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
         List<LookupElement> variants = new ArrayList<LookupElement>();
         for (IEObjectDescription objectDescription : crossReferenceDescription.getVariants()) {
         	String name = qualifiedNameConverter.toString(objectDescription.getName());
-            PsiElement element = psiModelAssociations.getPsiElement(objectDescription);
-            variants.add(LookupElementBuilder.create(name).withTypeText(element.getContainingFile().getName()));
+            PsiElement element = psiModelAssociations.getPsiElement(objectDescription, myElement.getEObject());
+            if (element != null) {
+            	variants.add(LookupElementBuilder.create(name).withTypeText(element.getContainingFile().getName()));
+            }
         }
         return variants.toArray();
 	}

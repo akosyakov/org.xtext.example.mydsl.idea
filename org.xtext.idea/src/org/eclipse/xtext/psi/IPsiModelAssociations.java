@@ -13,7 +13,7 @@ public interface IPsiModelAssociations {
 
 	PsiElement getPsiElement(EObject object);
 
-	PsiElement getPsiElement(IEObjectDescription objectDescription);
+	PsiElement getPsiElement(IEObjectDescription objectDescription, EObject context);
 
 	ICrossReferenceDescription getCrossReferenceDescription(PsiReferenceEObject element);
 }

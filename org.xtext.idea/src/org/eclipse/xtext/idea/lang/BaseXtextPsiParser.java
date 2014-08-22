@@ -5,11 +5,8 @@ import static org.eclipse.xtext.psi.PsiEObject.XTEXT_NODE_KEY;
 import static org.eclipse.xtext.psi.PsiReferenceEObject.XTEXT_ECONTEXT_KEY;
 import static org.eclipse.xtext.psi.PsiReferenceEObject.XTEXT_INDEX_KEY;
 
-import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.emf.common.notify.Adapter;
-import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -26,6 +23,7 @@ import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.psi.PsiModelAssociations;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
@@ -81,36 +79,8 @@ public class BaseXtextPsiParser implements PsiParser {
 			composite.putUserData(XTEXT_ECONTEXT_KEY, context);
 			
 			if (semanticElement != null) {
-				semanticElement.eAdapters().add(new PsiAdapter(composite));
+				semanticElement.eAdapters().add(new PsiModelAssociations.PsiAdapter(composite));
 			}
-		}
-		
-	}
-	
-	public static class PsiAdapter extends AdapterImpl {
-
-		private final CompositeElement composite;
-
-		public PsiAdapter(CompositeElement composite) {
-			this.composite = composite;
-		}
-		
-		public CompositeElement getComposite() {
-			return composite;
-		}
-		
-		public static CompositeElement getComposite(EObject object) {
-			if (object == null) {
-				return null;
-			}
-			Iterator<Adapter> adapters = object.eAdapters().iterator();
-			while (adapters.hasNext()) {
-				Adapter adapter = adapters.next();
-				if (adapter instanceof PsiAdapter) {
-					return ((PsiAdapter) adapter).getComposite();
-				}
-			}
-			return null;
 		}
 		
 	}
