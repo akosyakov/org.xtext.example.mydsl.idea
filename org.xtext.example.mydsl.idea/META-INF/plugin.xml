@@ -1,12 +1,17 @@
 <idea-plugin version="2">
-  <id>org.xtext.example.mydsl.idea</id>
-  <name>MyDsl language support</name>
-  <version>1.0</version>
+  <!--
+   <id>${project.artifactId}</id>
+  <name>${project.name}</name>
+  <version>${project.version}</version>
+  <vendor email="${vendor.email}" url="${vendor.url}">${vendor.name}</vendor>
+  -->
+  <id>mydsl-idea</id>
+  <name>MyDsl Language</name>
+  <version>1.2</version>
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+     ${project.description}
     ]]></description>
 
   <change-notes><![CDATA[
@@ -26,7 +31,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
   	  <buildProcess.parametersProvider implementation="org.xtext.example.mydsl.idea.server.MyDslBuildProcessParametersProvider" />
-      <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
+  	  <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
       <stubElementTypeHolder class="org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider"/>
       <lang.ast.factory language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
       <lang.parserDefinition language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.xtext.example.mydsl.idea.lang.parser.MyDslParserDefinition"/>

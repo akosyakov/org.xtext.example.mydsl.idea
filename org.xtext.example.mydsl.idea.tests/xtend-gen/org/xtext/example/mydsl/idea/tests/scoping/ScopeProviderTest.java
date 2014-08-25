@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import java.util.Iterator;
 import java.util.Set;
-import junit.framework.TestCase;
+import junit.framework.Assert;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
@@ -67,22 +67,22 @@ public class ScopeProviderTest extends LightCodeInsightFixtureTestCase {
     final Set<QualifiedName> names = IterableExtensions.<QualifiedName>toSet(_map);
     String _string = names.toString();
     int _size = names.size();
-    TestCase.assertEquals(_string, 5, _size);
+    Assert.assertEquals(_string, 5, _size);
     QualifiedName _qualifiedName = nameConverter.toQualifiedName("Person");
     boolean _contains = names.contains(_qualifiedName);
-    TestCase.assertTrue(_contains);
+    Assert.assertTrue(_contains);
     QualifiedName _qualifiedName_1 = nameConverter.toQualifiedName("String");
     boolean _contains_1 = names.contains(_qualifiedName_1);
-    TestCase.assertTrue(_contains_1);
+    Assert.assertTrue(_contains_1);
     QualifiedName _qualifiedName_2 = nameConverter.toQualifiedName("foo.bar");
     boolean _contains_2 = names.contains(_qualifiedName_2);
-    TestCase.assertTrue(_contains_2);
+    Assert.assertTrue(_contains_2);
     QualifiedName _qualifiedName_3 = nameConverter.toQualifiedName("foo.bar.Person");
     boolean _contains_3 = names.contains(_qualifiedName_3);
-    TestCase.assertTrue(_contains_3);
+    Assert.assertTrue(_contains_3);
     QualifiedName _qualifiedName_4 = nameConverter.toQualifiedName("foo.bar.String");
     boolean _contains_4 = names.contains(_qualifiedName_4);
-    TestCase.assertTrue(_contains_4);
+    Assert.assertTrue(_contains_4);
   }
   
   public void testRelativeContext() {
@@ -124,19 +124,19 @@ public class ScopeProviderTest extends LightCodeInsightFixtureTestCase {
     final Set<QualifiedName> names = IterableExtensions.<QualifiedName>toSet(_map);
     String _string = names.toString();
     int _size = names.size();
-    TestCase.assertEquals(_string, 4, _size);
+    Assert.assertEquals(_string, 4, _size);
     QualifiedName _qualifiedName = nameConverter.toQualifiedName("Person");
     boolean _contains = names.contains(_qualifiedName);
-    TestCase.assertTrue(_contains);
+    Assert.assertTrue(_contains);
     QualifiedName _qualifiedName_1 = nameConverter.toQualifiedName("stuff.Person");
     boolean _contains_1 = names.contains(_qualifiedName_1);
-    TestCase.assertTrue(_contains_1);
+    Assert.assertTrue(_contains_1);
     QualifiedName _qualifiedName_2 = nameConverter.toQualifiedName("baz.String");
     boolean _contains_2 = names.contains(_qualifiedName_2);
-    TestCase.assertTrue(_contains_2);
+    Assert.assertTrue(_contains_2);
     QualifiedName _qualifiedName_3 = nameConverter.toQualifiedName("stuff.baz.String");
     boolean _contains_3 = names.contains(_qualifiedName_3);
-    TestCase.assertTrue(_contains_3);
+    Assert.assertTrue(_contains_3);
   }
   
   public void testRelativePath() {
@@ -181,21 +181,21 @@ public class ScopeProviderTest extends LightCodeInsightFixtureTestCase {
     final Set<QualifiedName> names = IterableExtensions.<QualifiedName>toSet(_map);
     String _string = names.toString();
     int _size = names.size();
-    TestCase.assertEquals(_string, 5, _size);
+    Assert.assertEquals(_string, 5, _size);
     QualifiedName _qualifiedName = nameConverter.toQualifiedName("Person");
     boolean _contains = names.contains(_qualifiedName);
-    TestCase.assertTrue(_contains);
+    Assert.assertTrue(_contains);
     QualifiedName _qualifiedName_1 = nameConverter.toQualifiedName("stuff.Person");
     boolean _contains_1 = names.contains(_qualifiedName_1);
-    TestCase.assertTrue(_contains_1);
+    Assert.assertTrue(_contains_1);
     QualifiedName _qualifiedName_2 = nameConverter.toQualifiedName("String");
     boolean _contains_2 = names.contains(_qualifiedName_2);
-    TestCase.assertTrue(_contains_2);
+    Assert.assertTrue(_contains_2);
     QualifiedName _qualifiedName_3 = nameConverter.toQualifiedName("baz.String");
     boolean _contains_3 = names.contains(_qualifiedName_3);
-    TestCase.assertTrue(_contains_3);
+    Assert.assertTrue(_contains_3);
     QualifiedName _qualifiedName_4 = nameConverter.toQualifiedName("stuff.baz.String");
     boolean _contains_4 = names.contains(_qualifiedName_4);
-    TestCase.assertTrue(_contains_4);
+    Assert.assertTrue(_contains_4);
   }
 }

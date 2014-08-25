@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.xtext.idea</groupId>
+	<artifactId>parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>../intellij-ce-wrapper</module>
+		<module>../intellij-dependencies</module>
+
+		<module>../org.xtext.idea.builder</module>
+		<module>../org.xtext.idea</module>
+
+		<module>../org.xtext.example.mydsl</module>
+		<module>../org.xtext.example.mydsl.idea</module>
+		<module>../org.xtext.example.mydsl.idea.tests</module>
+		<module>../org.xtext.example.domainmodel</module>
+		<module>../org.xtext.example.domainmodel.idea</module>
+	</modules>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<INTELLIJ_IDEA>/Users/dhuebner/git/intellij-community/</INTELLIJ_IDEA>
+		<INTELLIJ_IDEA_PLUGINS>/Users/dhuebner/git/org.xtext.example.mydsl.idea/</INTELLIJ_IDEA_PLUGINS>
+	</properties>
+</project>

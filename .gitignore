@@ -1,6 +1,7 @@
 bin
 .DS_Store
 out
+target
 *.java._trace
 *.java_trace
 *.smap
