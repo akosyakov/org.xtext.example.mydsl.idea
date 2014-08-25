@@ -1,53 +1,75 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.xtext.idea</groupId>
 	<artifactId>intellij-dependencies</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<parent>
+		<groupId>org.xtext.idea</groupId>
+		<artifactId>parent</artifactId>
+		<relativePath>../org.xtext.idea.parent/pom.xml</relativePath>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>org.xtext.idea</groupId>
 			<artifactId>intellij-ce</artifactId>
 			<version>14.0</version>
 			<type>zip</type>
-			<classifier>win</classifier>
+			<classifier>${idea-classifier}</classifier>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
+	<profiles>
+		<profile>
+			<id>unpack-idea</id>
+			<activation>
+				<file>
+					<missing>../intellij-dependencies/idea/</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.3</version>
+						<executions>
+							<execution>
+								<phase>prepare-package</phase>
+								<id>unzip-distribution</id>
+								<goals>
+									<goal>unpack-dependencies</goal>
+								</goals>
+								<configuration>
+									<includeArtifactIds>intellij-ce</includeArtifactIds>
+									<outputDirectory>${basedir}/idea/</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.3</version>
-				<executions>
-					<execution>
-						<id>unzip-distribution</id>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeArtifactIds>intellij-ce</includeArtifactIds>
-							<outputDirectory>${basedir}</outputDirectory>
-							<includes>lib/*.jar</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>com.googlecode.addjars-maven-plugin</groupId>
 				<artifactId>addjars-maven-plugin</artifactId>
 				<version>1.0.5</version>
 				<executions>
 					<execution>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>add-jars</goal>
 						</goals>
 						<configuration>
 							<resources>
 								<resource>
-									<directory>${basedir}/lib</directory>
+									<directory>${basedir}/idea/</directory>
+									<includes>
+										<include>**/lib/*.jar</include>
+									</includes>
 								</resource>
 							</resources>
 						</configuration>

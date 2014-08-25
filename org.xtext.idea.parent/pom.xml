@@ -18,9 +18,53 @@
 		<module>../org.xtext.example.domainmodel</module>
 		<module>../org.xtext.example.domainmodel.idea</module>
 	</modules>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<INTELLIJ_IDEA>/Users/dhuebner/git/intellij-community/</INTELLIJ_IDEA>
 		<INTELLIJ_IDEA_PLUGINS>/Users/dhuebner/git/org.xtext.example.mydsl.idea/</INTELLIJ_IDEA_PLUGINS>
+		<idea-classifier>unknown</idea-classifier>
+		<idea-zip-prefix>unknown.zip</idea-zip-prefix>
+		<idea-lib-location>lib/</idea-lib-location>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>windows-system</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<idea-classifier>win</idea-classifier>
+				<idea-zip-prefix>win.zip</idea-zip-prefix>
+			</properties>
+		</profile>
+		<profile>
+			<id>linux-system</id>
+			<activation>
+				<os>
+					<family>unix</family>
+				</os>
+			</activation>
+			<properties>
+				<idea-classifier>linux</idea-classifier>
+				<idea-zip-prefix>tar.gz</idea-zip-prefix>
+			</properties>
+		</profile>
+		<profile>
+			<id>mac-system</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<idea-classifier>mac</idea-classifier>
+				<idea-zip-prefix>mac.zip</idea-zip-prefix>
+				<idea-lib-location>IntelliJ IDEA 14 CE EAP.app/Contents/lib</idea-lib-location>
+			</properties>
+		</profile>
+	</profiles>
 </project>
