@@ -1,3 +1,5 @@
+Download ideaIC-138.SNAPSHOT.win.zip and put it into the root of this project.
+
 In http://teamcity.jetbrains.com/viewLog.html?buildId=153679&buildTypeId=bt410&tab=artifacts
 
 Find out how to access latest: http://teamcity.jetbrains.com/repository/download/bt410/
