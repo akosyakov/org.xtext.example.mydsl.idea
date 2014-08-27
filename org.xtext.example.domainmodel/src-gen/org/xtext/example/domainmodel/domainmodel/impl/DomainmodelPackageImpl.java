@@ -6,15 +6,10 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.xtext.common.types.TypesPackage;
-
 import org.eclipse.xtext.xbase.XbasePackage;
-
 import org.eclipse.xtext.xtype.XtypePackage;
-
 import org.xtext.example.domainmodel.domainmodel.AbstractElement;
 import org.xtext.example.domainmodel.domainmodel.DomainModel;
 import org.xtext.example.domainmodel.domainmodel.DomainmodelFactory;

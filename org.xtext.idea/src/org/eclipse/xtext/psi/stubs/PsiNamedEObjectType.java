@@ -32,6 +32,9 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 	private IElementTypeProvider elementTypeProvider;
 	
 	@Inject
+	private PsiNamedEObjectIndex psiNamedEObjectIndex;
+	
+	@Inject
 	private IDefaultResourceDescriptionStrategy resourceDescriptionStrategy;
 
 	public PsiNamedEObjectType(String debugName, Language language) {
@@ -65,7 +68,7 @@ public class PsiNamedEObjectType extends IStubElementType<PsiNamedEObjectStub, P
 	}
 
 	public void indexStub(PsiNamedEObjectStub stub, IndexSink sink) {
-		sink.occurrence(PsiNamedEObjectIndex.NAME_INDEX_KEY, stub.getName());
+		sink.occurrence(psiNamedEObjectIndex.getKey(), stub.getName());
 	}
 
 	@Override

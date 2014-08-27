@@ -5,9 +5,9 @@
   <version>${project.version}</version>
   <vendor email="${vendor.email}" url="${vendor.url}">${vendor.name}</vendor>
   -->
-  <id>mydsl-idea</id>
-  <name>MyDsl Language</name>
-  <version>1.2</version>
+  <id>org.xtext.example.mydsl.idea</id>
+  <name>MyDsl language support</name>
+  <version>1.0</version>
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
@@ -31,14 +31,16 @@
 
   <extensions defaultExtensionNs="com.intellij">
   	  <buildProcess.parametersProvider implementation="org.xtext.example.mydsl.idea.server.MyDslBuildProcessParametersProvider" />
-  	  <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
+  	  
+      <stubIndex implementation="org.xtext.example.mydsl.idea.lang.psi.stubindex.MyDslPsiNamedEObjectIndex"/>
+      
+      <fileTypeFactory implementation="org.xtext.example.mydsl.idea.lang.MyDslFileTypeFactory"/>
       <stubElementTypeHolder class="org.xtext.example.mydsl.idea.lang.MyDslElementTypeProvider"/>
       <lang.ast.factory language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
       <lang.parserDefinition language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.xtext.example.mydsl.idea.lang.parser.MyDslParserDefinition"/>
       <lang.findUsagesProvider language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
       <lang.refactoringSupport language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
       <lang.syntaxHighlighterFactory key="org.xtext.example.mydsl.MyDsl" implementationClass="org.xtext.example.mydsl.idea.lang.MyDslSyntaxHighlighterFactory" />
-      <stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
       <annotator language="org.xtext.example.mydsl.MyDsl" factoryClass="org.xtext.example.mydsl.idea.MyDslExtensionFactory" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
   </extensions>
 

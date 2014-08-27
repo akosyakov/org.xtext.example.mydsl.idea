@@ -379,6 +379,11 @@
               <option name="myPluginName" />
               <option name="myBundled" value="false" />
             </plugin>
+            <plugin>
+              <option name="myPluginId" value="org.intellij.clojure" />
+              <option name="myPluginName" />
+              <option name="myBundled" value="false" />
+            </plugin>
           </set>
         </option>
       </plugins>
@@ -1120,6 +1125,19 @@
         </option>
       </plugins>
     </entry>
+    <entry key="*.impex">
+      <plugins>
+        <option name="myPlugins">
+          <set>
+            <plugin>
+              <option name="myPluginId" value="ccom.intellij.idea.plugin.hybris.impex" />
+              <option name="myPluginName" />
+              <option name="myBundled" value="false" />
+            </plugin>
+          </set>
+        </option>
+      </plugins>
+    </entry>
     <entry key="*.inc">
       <plugins>
         <option name="myPlugins">
@@ -1513,6 +1531,19 @@
           <set>
             <plugin>
               <option name="myPluginId" value="org.dylanfoundry.deft" />
+              <option name="myPluginName" />
+              <option name="myBundled" value="false" />
+            </plugin>
+          </set>
+        </option>
+      </plugins>
+    </entry>
+    <entry key="*.lks">
+      <plugins>
+        <option name="myPlugins">
+          <set>
+            <plugin>
+              <option name="myPluginId" value="com.plopiplop.leekwars" />
               <option name="myPluginName" />
               <option name="myBundled" value="false" />
             </plugin>

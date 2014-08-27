@@ -43,7 +43,7 @@ public abstract class BaseXtextFile extends PsiFileBase {
         try {
             resource.load(virtualFile.getInputStream(), null);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return resource;
     }

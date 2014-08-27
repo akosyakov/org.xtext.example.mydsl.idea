@@ -1,24 +1,17 @@
 package org.xtext.example.domainmodel.serializer;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.common.types.JvmFormalParameter;
 import org.eclipse.xtext.common.types.JvmGenericArrayTypeReference;
+import org.eclipse.xtext.common.types.JvmInnerTypeReference;
 import org.eclipse.xtext.common.types.JvmLowerBound;
 import org.eclipse.xtext.common.types.JvmParameterizedTypeReference;
 import org.eclipse.xtext.common.types.JvmTypeParameter;
 import org.eclipse.xtext.common.types.JvmUpperBound;
 import org.eclipse.xtext.common.types.JvmWildcardTypeReference;
 import org.eclipse.xtext.common.types.TypesPackage;
-import org.eclipse.xtext.serializer.acceptor.ISemanticSequenceAcceptor;
 import org.eclipse.xtext.serializer.acceptor.SequenceFeeder;
-import org.eclipse.xtext.serializer.diagnostic.ISemanticSequencerDiagnosticProvider;
-import org.eclipse.xtext.serializer.diagnostic.ISerializationDiagnostic.Acceptor;
-import org.eclipse.xtext.serializer.sequencer.GenericSequencer;
 import org.eclipse.xtext.serializer.sequencer.ISemanticNodeProvider.INodesForEObjectProvider;
-import org.eclipse.xtext.serializer.sequencer.ISemanticSequencer;
-import org.eclipse.xtext.serializer.sequencer.ITransientValueService;
 import org.eclipse.xtext.serializer.sequencer.ITransientValueService.ValueTransient;
 import org.eclipse.xtext.xbase.XAssignment;
 import org.eclipse.xtext.xbase.XBasicForLoopExpression;
@@ -64,6 +57,8 @@ import org.xtext.example.domainmodel.domainmodel.Operation;
 import org.xtext.example.domainmodel.domainmodel.PackageDeclaration;
 import org.xtext.example.domainmodel.domainmodel.Property;
 import org.xtext.example.domainmodel.services.DomainmodelGrammarAccess;
+
+import com.google.inject.Inject;
 
 @SuppressWarnings("all")
 public class DomainmodelSemanticSequencer extends XbaseSemanticSequencer {
@@ -127,6 +122,16 @@ public class DomainmodelSemanticSequencer extends XbaseSemanticSequencer {
 					return; 
 				}
 				else break;
+			case TypesPackage.JVM_INNER_TYPE_REFERENCE:
+				if(context == grammarAccess.getJvmArgumentTypeReferenceRule() ||
+				   context == grammarAccess.getJvmParameterizedTypeReferenceRule() ||
+				   context == grammarAccess.getJvmParameterizedTypeReferenceAccess().getJvmInnerTypeReferenceOuterAction_1_4_0_0_0() ||
+				   context == grammarAccess.getJvmTypeReferenceRule() ||
+				   context == grammarAccess.getJvmTypeReferenceAccess().getJvmGenericArrayTypeReferenceComponentTypeAction_0_1_0_0()) {
+					sequence_JvmParameterizedTypeReference(context, (JvmInnerTypeReference) semanticObject); 
+					return; 
+				}
+				else break;
 			case TypesPackage.JVM_LOWER_BOUND:
 				if(context == grammarAccess.getJvmLowerBoundAndedRule()) {
 					sequence_JvmLowerBoundAnded(context, (JvmLowerBound) semanticObject); 
@@ -140,6 +145,7 @@ public class DomainmodelSemanticSequencer extends XbaseSemanticSequencer {
 			case TypesPackage.JVM_PARAMETERIZED_TYPE_REFERENCE:
 				if(context == grammarAccess.getJvmArgumentTypeReferenceRule() ||
 				   context == grammarAccess.getJvmParameterizedTypeReferenceRule() ||
+				   context == grammarAccess.getJvmParameterizedTypeReferenceAccess().getJvmInnerTypeReferenceOuterAction_1_4_0_0_0() ||
 				   context == grammarAccess.getJvmTypeReferenceRule() ||
 				   context == grammarAccess.getJvmTypeReferenceAccess().getJvmGenericArrayTypeReferenceComponentTypeAction_0_1_0_0()) {
 					sequence_JvmParameterizedTypeReference(context, (JvmParameterizedTypeReference) semanticObject); 

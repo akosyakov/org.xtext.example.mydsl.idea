@@ -10,7 +10,7 @@ import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 
-public class PsiNamedEObjectStubImpl extends StubBase<PsiNamedEObject> implements PsiNamedEObjectStub {
+public class PsiNamedEObjectStubImpl<T extends PsiNamedEObject> extends StubBase<T> implements PsiNamedEObjectStub<T> {
 	
 	private final EClass type;
 

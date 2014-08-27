@@ -3,7 +3,6 @@
 package org.xtext.example.domainmodel.domainmodel;
 
 import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.xtext.common.types.JvmTypeReference;
 
 /**

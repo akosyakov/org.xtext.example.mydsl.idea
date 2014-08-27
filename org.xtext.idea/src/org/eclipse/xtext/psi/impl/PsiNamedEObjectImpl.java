@@ -14,17 +14,20 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 
-public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> implements PsiNamedEObject {
-	
+public class PsiNamedEObjectImpl<T extends PsiNamedEObjectStub> extends PsiEObjectImpl<T> implements PsiNamedEObject<T> {
+
 	private QualifiedName qualifiedName;
-	
+
 	private final IElementType nameType;
-	
-	public PsiNamedEObjectImpl(PsiNamedEObjectStub stub, IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> nodeType, IElementType nameType) {
+
+	public PsiNamedEObjectImpl(
+			T stub,
+			IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> nodeType,
+			IElementType nameType) {
 		super(stub, nodeType);
 		this.nameType = nameType;
 	}
-	
+
 	public PsiNamedEObjectImpl(ASTNode node, IElementType nameType) {
 		super(node);
 		this.nameType = nameType;
@@ -54,7 +57,7 @@ public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> imp
 	public void setQualifiedName(QualifiedName qualifiedName) {
 		this.qualifiedName = qualifiedName;
 	}
-	
+
 	@Override
 	public EClass getEClass() {
 		PsiNamedEObjectStub stub = getStub();
@@ -69,7 +72,8 @@ public class PsiNamedEObjectImpl extends PsiEObjectImpl<PsiNamedEObjectStub> imp
 		if (nameIdentifier != null) {
 			ASTNode nameNode = nameIdentifier.getNode();
 			ASTNode oldNode = nameNode.getFirstChildNode();
-			LeafElement newChild = ASTFactory.leaf(oldNode.getElementType(), name);
+			LeafElement newChild = ASTFactory.leaf(oldNode.getElementType(),
+					name);
 			CodeEditUtil.setNodeGenerated(newChild, true);
 			nameNode.replaceChild(oldNode, newChild);
 		}

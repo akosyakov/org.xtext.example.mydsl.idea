@@ -10,14 +10,20 @@
 	<idea-version since-build="131"/>
 
 	<extensions defaultExtensionNs="com.intellij">
+		<java.elementFinder implementation="org.xtext.example.domainmodel.idea.lang.types.psi.DomainmodelJvmTypesElementFinder"/>
+    	<java.shortNamesCache implementation="org.xtext.example.domainmodel.idea.lang.types.DomainmodelJvmTypesShortNamesCache"/>
+    	
+    	<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.psi.stubindex.DomainmodelPsiNamedEObjectIndex"/>
+      	<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeShortNameIndex"/>
+      	<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeFullClassNameIndex"/>
+		
 		<fileTypeFactory implementation="org.xtext.example.domainmodel.idea.lang.DomainmodelFileTypeFactory"/>
-		<stubElementTypeHolder class="org.xtext.example.domainmodel.idea.lang.DomainmodelFileTypeFactory"/>
+		<stubElementTypeHolder class="org.xtext.example.domainmodel.idea.lang.DomainmodelElementTypeProvider"/>
 		<lang.ast.factory language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
       	<lang.parserDefinition language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.xtext.example.domainmodel.idea.lang.parser.DomainmodelParserDefinition"/>
       	<lang.findUsagesProvider language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
       	<lang.refactoringSupport language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
       	<lang.syntaxHighlighterFactory key="org.xtext.example.domainmodel.Domainmodel" implementationClass="org.xtext.example.domainmodel.idea.lang.DomainmodelSyntaxHighlighterFactory" />
-      	<stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
       	<annotator language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
 	</extensions>
 

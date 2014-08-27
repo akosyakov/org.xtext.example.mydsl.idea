@@ -17,10 +17,12 @@ import org.eclipse.xtext.psi.impl.PsiEObjectImpl
 import org.eclipse.xtext.psi.impl.PsiNamedEObjectImpl
 import org.eclipse.xtext.psi.impl.PsiReferenceEObjectImpl
 import org.jetbrains.annotations.NotNull
+import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class AbstractXtextParserDefinition implements ParserDefinition {
 
 	@Inject
+	@Accessors(PROTECTED_GETTER)
 	private IElementTypeProvider elementTypeProvider;
 	
 	@Inject

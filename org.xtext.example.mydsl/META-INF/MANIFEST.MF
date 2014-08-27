@@ -18,3 +18,5 @@ Export-Package: org.xtext.example.mydsl,
  org.xtext.example.mydsl.scoping,
  org.xtext.example.mydsl.generator,
  org.xtext.example.mydsl.formatting
+Require-Bundle: org.eclipse.emf.mwe2.launch;bundle-version="2.7.0",
+ org.eclipse.xtext.generator;bundle-version="2.7.0"

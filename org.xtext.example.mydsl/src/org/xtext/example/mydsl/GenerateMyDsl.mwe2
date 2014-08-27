@@ -117,7 +117,7 @@ Workflow {
     		// provides a compare view
     		fragment = compare.CompareFragment auto-inject {}
     		
-    		fragment = idea.IdeaPluginGenerator { 
+    		fragment = idea.IdeaPluginGenerator {
     			pathIdeaPluginProject = "${runtimeProject}.idea"
 	            fileExtensions = fileExtensions
 	        }

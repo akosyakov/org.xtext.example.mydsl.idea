@@ -215,7 +215,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 
 			<extensions defaultExtensionNs="com.intellij">
 				<fileTypeFactory implementation="«grammar.fileTypeFactoryName»"/>
-				<stubElementTypeHolder class="«grammar.fileTypeFactoryName»"/>
+				<stubElementTypeHolder class="«grammar.elementTypeProviderName»"/>
 				<lang.ast.factory language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
 		      	<lang.parserDefinition language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="«grammar.parserDefinitionName»"/>
 		      	<lang.findUsagesProvider language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>

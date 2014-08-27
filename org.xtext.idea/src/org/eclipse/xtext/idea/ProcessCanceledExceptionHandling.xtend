@@ -1,6 +1,7 @@
 package org.eclipse.xtext.idea
 
 import com.intellij.openapi.progress.ProcessCanceledException
+import org.eclipse.emf.common.util.WrappedException
 
 class ProcessCanceledExceptionHandling {
 	static class CheckedProcessCanceledException extends Exception {
@@ -14,6 +15,9 @@ class ProcessCanceledExceptionHandling {
 	}
 	
 	def static RuntimeException unWrappedReThrow(Exception exception) {
+		if (exception instanceof WrappedException && exception.cause instanceof CheckedProcessCanceledException) {
+			throw exception.cause.cause	
+		}
 		if (exception instanceof CheckedProcessCanceledException) {
 			throw exception.cause
 		}

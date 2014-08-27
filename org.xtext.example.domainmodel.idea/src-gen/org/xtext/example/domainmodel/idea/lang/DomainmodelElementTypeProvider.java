@@ -1,17 +1,19 @@
 package org.xtext.example.domainmodel.idea.lang;
 
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
-import org.eclipse.xtext.psi.PsiNamedEObject;
-import org.eclipse.xtext.psi.PsiNamedEObjectStub;
-import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType;
+import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject;
+import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub;
+import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType;
 import org.xtext.example.domainmodel.idea.lang.psi.impl.DomainmodelFileImpl;
 
+import com.google.inject.Singleton;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.PsiFileStub;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.IStubFileElementType;
 
+@Singleton
 public class DomainmodelElementTypeProvider implements IElementTypeProvider {
 
 	public static final IFileElementType FILE_TYPE = new IStubFileElementType<PsiFileStub<DomainmodelFileImpl>>(DomainmodelLanguage.INSTANCE);
@@ -20,7 +22,7 @@ public class DomainmodelElementTypeProvider implements IElementTypeProvider {
 	
 	public static final IElementType EOBJECT_TYPE = new IElementType("EOBJECT_TYPE", DomainmodelLanguage.INSTANCE);
 	
-	public static final IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> NAMED_EOBJECT_TYPE = new PsiNamedEObjectType("NAMED_EOBJECT", DomainmodelLanguage.INSTANCE);
+	public static final IStubElementType<PsiJvmNamedEObjectStub, PsiJvmNamedEObject> NAMED_EOBJECT_TYPE = new PsiJvmNamedEObjectType("NAMED_EOBJECT", DomainmodelLanguage.INSTANCE);
 	
 	public static final IElementType CROSS_REFERENCE_TYPE = new IElementType("CROSS_REFERENCE", DomainmodelLanguage.INSTANCE);
 
@@ -40,7 +42,7 @@ public class DomainmodelElementTypeProvider implements IElementTypeProvider {
 		return NAME_TYPE;
 	}
 
-	public IStubElementType<PsiNamedEObjectStub, PsiNamedEObject> getNamedObjectType() {
+	public IStubElementType<PsiJvmNamedEObjectStub, PsiJvmNamedEObject> getNamedObjectType() {
 		return NAMED_EOBJECT_TYPE;
 	}
 

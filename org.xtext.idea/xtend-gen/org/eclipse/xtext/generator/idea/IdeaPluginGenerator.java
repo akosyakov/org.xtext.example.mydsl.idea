@@ -626,8 +626,8 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.newLineIfNotEmpty();
     _builder.append("\t\t");
     _builder.append("<stubElementTypeHolder class=\"");
-    String _fileTypeFactoryName_1 = this._ideaPluginClassNames.getFileTypeFactoryName(grammar);
-    _builder.append(_fileTypeFactoryName_1, "\t\t");
+    String _elementTypeProviderName = this._ideaPluginClassNames.getElementTypeProviderName(grammar);
+    _builder.append(_elementTypeProviderName, "\t\t");
     _builder.append("\"/>");
     _builder.newLineIfNotEmpty();
     _builder.append("\t\t");

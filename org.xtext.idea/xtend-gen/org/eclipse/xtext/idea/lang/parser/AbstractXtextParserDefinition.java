@@ -13,6 +13,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import javax.inject.Provider;
+import org.eclipse.xtend.lib.annotations.AccessorType;
+import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.generator.idea.TokenTypeProvider;
 import org.eclipse.xtext.idea.lang.BaseXtextPsiParser;
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
@@ -21,11 +23,13 @@ import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 import org.eclipse.xtext.psi.impl.PsiEObjectImpl;
 import org.eclipse.xtext.psi.impl.PsiNamedEObjectImpl;
 import org.eclipse.xtext.psi.impl.PsiReferenceEObjectImpl;
+import org.eclipse.xtext.xbase.lib.Pure;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("all")
 public abstract class AbstractXtextParserDefinition implements ParserDefinition {
   @Inject
+  @Accessors(AccessorType.PROTECTED_GETTER)
   private IElementTypeProvider elementTypeProvider;
   
   @Inject
@@ -77,7 +81,7 @@ public abstract class AbstractXtextParserDefinition implements ParserDefinition 
     boolean _equals = _namedObjectType.equals(_elementType);
     if (_equals) {
       IElementType _nameType = this.elementTypeProvider.getNameType();
-      return new PsiNamedEObjectImpl(node, _nameType);
+      return new PsiNamedEObjectImpl<PsiNamedEObjectStub>(node, _nameType);
     }
     IElementType _crossReferenceType = this.elementTypeProvider.getCrossReferenceType();
     IElementType _elementType_1 = node.getElementType();
@@ -86,5 +90,10 @@ public abstract class AbstractXtextParserDefinition implements ParserDefinition 
       return new PsiReferenceEObjectImpl<StubElement>(node);
     }
     return new PsiEObjectImpl<StubElement>(node);
+  }
+  
+  @Pure
+  protected IElementTypeProvider getElementTypeProvider() {
+    return this.elementTypeProvider;
   }
 }

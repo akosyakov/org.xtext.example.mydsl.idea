@@ -18,6 +18,7 @@ import org.eclipse.xtext.resource.impl.AbstractResourceDescription;
 
 import com.google.inject.Inject;
 import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Processor;
@@ -51,18 +52,20 @@ public class StubResourceDescription extends AbstractResourceDescription impleme
 	protected List<IEObjectDescription> computeExportedObjects() {
 		try {
 			final List<IEObjectDescription> allDescriptions = new ArrayList<IEObjectDescription>();
-			final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(project);
-			psiNamedEObjectIndex.processAllKeys(project, new Processor<String>() {
-				
-				public boolean process(String key) {
-					Collection<PsiNamedEObject> psiNamedObjects = psiNamedEObjectIndex.get(key, project, projectScope);
-					for (PsiNamedEObject psiNamedObject : psiNamedObjects) {
-						allDescriptions.add(new StubEObjectDescription(psiNamedObject));
+			if (!DumbService.isDumb(project)) {
+				final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(project);
+				psiNamedEObjectIndex.processAllKeys(project, new Processor<String>() {
+					
+					public boolean process(String key) {
+						Collection<PsiNamedEObject> psiNamedObjects = psiNamedEObjectIndex.get(key, project, projectScope);
+						for (PsiNamedEObject psiNamedObject : psiNamedObjects) {
+							allDescriptions.add(new StubEObjectDescription(psiNamedObject));
+						}
+						return true;
 					}
-					return true;
-				}
-	
-			});
+		
+				});
+			}
 			return allDescriptions;
 		} catch (ProcessCanceledException e) {
 			throw ProcessCanceledExceptionHandling.wrappedReThrow(e);

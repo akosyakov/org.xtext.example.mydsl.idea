@@ -21,8 +21,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<INTELLIJ_IDEA>/Users/dhuebner/git/intellij-community/</INTELLIJ_IDEA>
-		<INTELLIJ_IDEA_PLUGINS>/Users/dhuebner/git/org.xtext.example.mydsl.idea/</INTELLIJ_IDEA_PLUGINS>
+		<INTELLIJ_IDEA>/Users/kosyakov/IdeaProjects/community/</INTELLIJ_IDEA>
+		<INTELLIJ_IDEA_PLUGINS>/Users/kosyakov/git/org.xtext.example.mydsl.idea/</INTELLIJ_IDEA_PLUGINS>
 		<idea-classifier>unknown</idea-classifier>
 		<idea-zip-prefix>unknown.zip</idea-zip-prefix>
 		<idea-lib-location>lib/</idea-lib-location>
@@ -67,4 +67,16 @@
 			</properties>
 		</profile>
 	</profiles>
+	<repositories>
+		<repository>
+			<id>central snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

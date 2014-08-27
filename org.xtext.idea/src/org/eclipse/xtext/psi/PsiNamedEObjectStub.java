@@ -5,7 +5,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 
 import com.intellij.psi.stubs.NamedStub;
 
-public interface PsiNamedEObjectStub extends NamedStub<PsiNamedEObject> {
+public interface PsiNamedEObjectStub<T extends PsiNamedEObject> extends NamedStub<T> {
 
 	EClass getEClass();
 

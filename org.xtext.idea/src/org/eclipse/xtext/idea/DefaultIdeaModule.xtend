@@ -11,11 +11,6 @@ import org.eclipse.xtext.service.AbstractGenericModule
 
 class DefaultIdeaModule extends AbstractGenericModule {
 
-	@Singleton
-	def Class<? extends PsiNamedEObjectIndex> bindPsiNamedEObjectIndex() {
-		return PsiNamedEObjectIndex
-	}
-
 	def void configureIResourceDescriptions(Binder binder) {
 		binder.bind(IResourceDescriptions).to(StubBasedResourceDescriptions)
 	}

@@ -503,7 +503,7 @@
             menubarPath="debug"
             id="org.xtext.example.domainmodel.Domainmodel.ide.rulerContextMenu.enableDisableBreakpointAction">
          </action>
-         <action>
+         <action
            label="Breakpoint Properties"
            helpContextId="breakpoint_properties_action_context"
            class="org.xtext.example.domainmodel.ui.DomainmodelExecutableExtensionFactory:org.eclipse.jdt.debug.ui.actions.JavaBreakpointPropertiesRulerActionDelegate"

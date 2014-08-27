@@ -3,7 +3,6 @@
 package org.xtext.example.domainmodel.domainmodel.impl;
 
 import org.eclipse.emf.ecore.EClass;
-
 import org.xtext.example.domainmodel.domainmodel.DomainmodelPackage;
 import org.xtext.example.domainmodel.domainmodel.Property;
 
