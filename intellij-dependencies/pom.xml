@@ -35,7 +35,7 @@
 						<version>2.3</version>
 						<executions>
 							<execution>
-								<phase>prepare-package</phase>
+								<phase>validate</phase>
 								<id>unzip-distribution</id>
 								<goals>
 									<goal>unpack-dependencies</goal>
@@ -69,6 +69,7 @@
 									<directory>${basedir}/idea/</directory>
 									<includes>
 										<include>**/lib/*.jar</include>
+										<include>**/lib/rt/*.jar</include>
 									</includes>
 								</resource>
 							</resources>
