@@ -8,7 +8,7 @@
 	<idea-version since-build="131"/>
 	
 	<extensions defaultExtensionNs="com.intellij">
- 	  <compileServer.plugin classpath="org.eclipse.emf.common.jar;org.eclipse.emf.ecore.jar;org.eclipse.emf.ecore.xmi.jar;javax.inject.jar;com.google.inject.jar;com.google.guava.jar;org.antlr.runtime.jar;org.eclipse.xtext.jar;org.eclipse.xtext.util.jar;org.eclipse.xtext.xbase.lib.jar"/> 
+ 	  <compileServer.plugin classpath="aopalliance.jar;org.eclipse.emf.common.jar;org.eclipse.emf.ecore.jar;org.eclipse.emf.ecore.xmi.jar;javax.inject.jar;guice.jar;guava.jar;antlr-runtime.jar;org.eclipse.xtext.jar;org.eclipse.xtext.util.jar;org.eclipse.xtext.xbase.lib.jar"/> 
    	</extensions>
 
 	<project-components>
