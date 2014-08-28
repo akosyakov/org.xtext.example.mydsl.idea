@@ -59,5 +59,13 @@ public class AbstractDomainmodelIdeaModule extends org.eclipse.xtext.idea.Defaul
 	public Class<? extends org.eclipse.xtext.idea.lang.IElementTypeProvider> bindIElementTypeProvider() {
 		return org.xtext.example.domainmodel.idea.lang.DomainmodelElementTypeProvider.class;
 	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public Class<? extends org.eclipse.xtext.common.types.access.IJvmTypeProvider.Factory> bindIJvmTypeProvider$Factory() {
+		return org.eclipse.xtext.idea.types.access.StubTypeProviderFactory.class;
+	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public Class<? extends org.eclipse.xtext.common.types.xtext.AbstractTypeScopeProvider> bindAbstractTypeScopeProvider() {
+		return org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider.class;
+	}
 	
 }

@@ -10,7 +10,7 @@ var projectName = "org.xtext.example.domainmodel"
 var runtimeProject = "../${projectName}"
 var generateXtendStub = true
 var encoding = "UTF-8"
-
+ 
 Workflow {
     bean = StandaloneSetup {
     	scanClassPath = true

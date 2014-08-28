@@ -6,10 +6,13 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.idea.resource.impl.StubEObjectDescription;
 import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 
+import com.google.inject.Inject;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.CompositeElement;
 
@@ -74,6 +77,9 @@ public class PsiModelAssociations implements IPsiModelAssociations {
 		
 	}
 	
+	@Inject
+	private IJvmModelAssociations jvmModelAssociations;
+	
     public EObject getEObject(PsiEObject element) {
     	if (element == null) {
             return null;
@@ -82,6 +88,9 @@ public class PsiModelAssociations implements IPsiModelAssociations {
     }
 
     public PsiElement getPsiElement(EObject object) {
+    	if (object instanceof JvmDeclaredType) {
+    		return PsiAdapter.getPsi(jvmModelAssociations.getPrimarySourceElement(object));
+    	}
         return PsiAdapter.getPsi(object);
     }
     

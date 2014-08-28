@@ -10,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.xtext"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.mydsl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
