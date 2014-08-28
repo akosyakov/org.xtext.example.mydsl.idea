@@ -12,7 +12,7 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>${project.build.directory}/dependency/</directory>
+			<directory>${basedir}/lib/</directory>
 			<outputDirectory>${project.artifactId}/lib</outputDirectory>
 		</fileSet>
 	</fileSets>

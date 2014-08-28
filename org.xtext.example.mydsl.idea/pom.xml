@@ -23,6 +23,33 @@
 		</resources>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>lib-clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>${basedir}/lib/</directory>
+									<includes>
+										<include>*.jar</include>
+									</includes>
+									<excludes>
+										<exclude>.gitignore</exclude>
+									</excludes>
+								</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.8</version>
@@ -54,9 +81,11 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
+							<outputDirectory>${basedir}/lib</outputDirectory>
 							<includeScope>runtime</includeScope>
 							<excludeScope>provided</excludeScope>
 							<stripVersion>true</stripVersion>
+							<excludeTransitive>true</excludeTransitive>
 						</configuration>
 					</execution>
 				</executions>
@@ -92,6 +121,7 @@
 			<groupId>org.xtext.idea</groupId>
 			<artifactId>xtext-idea</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.xtext.idea</groupId>
