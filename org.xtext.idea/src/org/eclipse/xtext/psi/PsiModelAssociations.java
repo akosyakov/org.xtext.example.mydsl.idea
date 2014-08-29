@@ -88,10 +88,15 @@ public class PsiModelAssociations implements IPsiModelAssociations {
     }
 
     public PsiElement getPsiElement(EObject object) {
+        PsiElement psi = PsiAdapter.getPsi(object);
+        if (psi != null) {
+        	return psi;
+        }
     	if (object instanceof JvmDeclaredType) {
-    		return PsiAdapter.getPsi(jvmModelAssociations.getPrimarySourceElement(object));
+    		EObject sourceElement = jvmModelAssociations.getPrimarySourceElement(object);
+			return PsiAdapter.getPsi(sourceElement);
     	}
-        return PsiAdapter.getPsi(object);
+		return null;
     }
     
 	public PsiElement getPsiElement(IEObjectDescription objectDescription, EObject context) {

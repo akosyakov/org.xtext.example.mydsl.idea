@@ -3162,6 +3162,19 @@
         </option>
       </plugins>
     </entry>
+    <entry key=".eslintrc">
+      <plugins>
+        <option name="myPlugins">
+          <set>
+            <plugin>
+              <option name="myPluginId" value="com.wix.eslint" />
+              <option name="myPluginName" />
+              <option name="myBundled" value="false" />
+            </plugin>
+          </set>
+        </option>
+      </plugins>
+    </entry>
     <entry key=".gitignore">
       <plugins>
         <option name="myPlugins">

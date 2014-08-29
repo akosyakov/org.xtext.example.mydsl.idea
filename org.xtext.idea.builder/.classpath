@@ -13,5 +13,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/intellij-dependencies"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.idea"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
