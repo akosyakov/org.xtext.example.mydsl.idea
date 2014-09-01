@@ -53,6 +53,10 @@ class IdeaPluginClassNames {
 		basePackageName+'.lang.'+it.name.toSimpleName+'Language'
 	}
 	
+	def String buildProcessParametersProviderName(Grammar it) {
+		basePackageName+'.server.'+it.name.toSimpleName+'BuildProcessParametersProvider'
+	}
+	
 	def String getJvmTypesElementFinderName(Grammar it) {
 		basePackageName+'.lang.types.psi.'+it.name.toSimpleName+'JvmTypesElementFinder'
 	}

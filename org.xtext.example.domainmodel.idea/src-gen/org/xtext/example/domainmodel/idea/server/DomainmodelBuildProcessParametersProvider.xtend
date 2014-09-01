@@ -7,7 +7,7 @@ import com.intellij.openapi.extensions.PluginId
 class DomainmodelBuildProcessParametersProvider extends BuildProcessParametersProvider {
 
 	override getClassPath() {
-		val plugin = PluginManager.getPlugin(PluginId.getId("org.xtext.example.domainmodel.idea"));
+		val plugin = PluginManager.getPlugin(PluginId.getId("org.xtext.example.domainmodel.Domainmodel"));
 		val path = plugin.path.path
 
 		#[

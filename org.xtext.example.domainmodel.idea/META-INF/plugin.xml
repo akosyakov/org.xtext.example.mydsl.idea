@@ -1,6 +1,6 @@
 <idea-plugin version="2">
-	<id>org.xtext.example.domainmodel.idea</id>
-	<name>Domainmodel language support</name>
+	<id>org.xtext.example.domainmodel.Domainmodel</id>
+	<name>Domainmodel Support</name>
 	<description>
       This plugin enables smart editing of Domainmodel files.
 	</description>
@@ -10,15 +10,15 @@
 	<idea-version since-build="131"/>
 
 	<extensions defaultExtensionNs="com.intellij">
-  	  	<buildProcess.parametersProvider implementation="org.xtext.example.domainmodel.idea.server.DomainmodelBuildProcessParametersProvider" />
-  	  
-		<java.elementFinder implementation="org.xtext.example.domainmodel.idea.lang.types.psi.DomainmodelJvmTypesElementFinder"/>
-    	<java.shortNamesCache implementation="org.xtext.example.domainmodel.idea.lang.types.DomainmodelJvmTypesShortNamesCache"/>
-    	
-    	<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.psi.stubindex.DomainmodelPsiNamedEObjectIndex"/>
-      	<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeShortNameIndex"/>
-      	<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeFullClassNameIndex"/>
+		<buildProcess.parametersProvider implementation="org.xtext.example.domainmodel.idea.server.DomainmodelBuildProcessParametersProvider"/>
 		
+		<java.elementFinder implementation="org.xtext.example.domainmodel.idea.lang.types.psi.DomainmodelJvmTypesElementFinder"/>
+		<java.shortNamesCache implementation="org.xtext.example.domainmodel.idea.lang.types.DomainmodelJvmTypesShortNamesCache"/>
+		
+		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.psi.stubindex.DomainmodelPsiNamedEObjectIndex"/>
+		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeShortNameIndex"/>
+		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeFullClassNameIndex"/>
+
 		<fileTypeFactory implementation="org.xtext.example.domainmodel.idea.lang.DomainmodelFileTypeFactory"/>
 		<stubElementTypeHolder class="org.xtext.example.domainmodel.idea.lang.DomainmodelElementTypeProvider"/>
 		<lang.ast.factory language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>

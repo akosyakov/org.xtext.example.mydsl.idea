@@ -2,8 +2,11 @@ package org.eclipse.xtext.generator.idea
 
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
+import com.intellij.compiler.server.BuildProcessParametersProvider
+import com.intellij.ide.plugins.PluginManager
 import com.intellij.lang.ParserDefinition
 import com.intellij.lexer.Lexer
+import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.psi.stubs.StubIndexKey
@@ -54,6 +57,9 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	private Set<String> libraries = newHashSet();
 	
 	private String pathIdeaPluginProject
+	
+	@Accessors(PUBLIC_SETTER)
+	private String pathRuntimePluginProject
 	
 	@Accessors(PUBLIC_SETTER)
 	private boolean typesIntegrationRequired = false
@@ -140,6 +146,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		ctx.writeFile(outlet_src_gen, grammar.syntaxHighlighterFactoryName.toJavaPath, grammar.compileSyntaxHighlighterFactory)
 		ctx.writeFile(outlet_src_gen, grammar.abstractIdeaModuleName.toJavaPath, grammar.compileGuiceModuleIdeaGenerated(bindings))
 		ctx.writeFile(outlet_src_gen, grammar.extensionFactoryName.toJavaPath, grammar.compileExtensionFactory)
+		ctx.writeFile(outlet_src_gen, grammar.buildProcessParametersProviderName.toXtendPath, grammar.compileBuildProcessParametersProvider)
 		ctx.writeFile(outlet_src_gen, grammar.psiNamedEObjectIndexName.toXtendPath, grammar.compilePsiNamedEObjectIndex)
 		if (typesIntegrationRequired) {
 			ctx.writeFile(outlet_src_gen, grammar.jvmDeclaredTypeShortNameIndexName.toXtendPath, grammar.compilejvmDeclaredTypeShortNameIndex)
@@ -227,6 +234,28 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 				return «grammar.languageName.toSimpleName».INSTANCE.<Object> getInstance(clazz);
 			}
 
+		}
+	'''
+	
+	def compileBuildProcessParametersProvider(Grammar grammar) '''
+		package «grammar.buildProcessParametersProviderName.toPackageName»
+		
+		import «BuildProcessParametersProvider.name»
+		import «PluginManager.name»
+		import «PluginId.name»
+		
+		class «grammar.buildProcessParametersProviderName.toSimpleName» extends «BuildProcessParametersProvider.simpleName» {
+		
+			override getClassPath() {
+				val plugin = PluginManager.getPlugin(PluginId.getId("«grammar.languageID»"));
+				val path = plugin.path.path
+		
+				#[
+					path + "/bin",
+					path + "/«pathRuntimePluginProject»/bin"
+				]
+			}
+		
 		}
 	'''
 	
@@ -357,6 +386,19 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			<idea-version since-build="131"/>
 
 			<extensions defaultExtensionNs="com.intellij">
+				<buildProcess.parametersProvider implementation="«grammar.buildProcessParametersProviderName»"/>
+				«IF typesIntegrationRequired»
+				
+				<java.elementFinder implementation="«grammar.jvmTypesElementFinderName»"/>
+				<java.shortNamesCache implementation="«grammar.jvmTypesShortNamesCacheName»"/>
+				«ENDIF»
+				
+				<stubIndex implementation="«grammar.psiNamedEObjectIndexName»"/>
+				«IF typesIntegrationRequired»
+				<stubIndex implementation="«grammar.jvmDeclaredTypeShortNameIndexName»"/>
+				<stubIndex implementation="«grammar.jvmDeclaredTypeFullClassNameIndexName»"/>
+		      	«ENDIF»
+		
 				<fileTypeFactory implementation="«grammar.fileTypeFactoryName»"/>
 				<stubElementTypeHolder class="«grammar.elementTypeProviderName»"/>
 				<lang.ast.factory language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
@@ -364,7 +406,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		      	<lang.findUsagesProvider language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
 		      	<lang.refactoringSupport language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
 		      	<lang.syntaxHighlighterFactory key="«grammar.languageID»" implementationClass="«grammar.syntaxHighlighterFactoryName»" />
-		      	<stubIndex implementation="org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex"/>
 		      	<annotator language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
 			</extensions>
 		
@@ -385,7 +426,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 6 [1.6.0_65-b14-462]"/>
 			<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.intellij.idea.Main"/>
 			<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="«path»"/>
-			<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Didea.plugins.path=${INTELLIJ_IDEA_PLUGINS} -Didea.home.path=${INTELLIJ_IDEA} -Didea.ProcessCanceledException=disabled -Dcompiler.process.debug.port=-1"/>
+			<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2g -XX:MaxPermSize=320m -Didea.plugins.path=${INTELLIJ_IDEA_PLUGINS} -Didea.home.path=${INTELLIJ_IDEA} -Didea.ProcessCanceledException=disabled -Dcompiler.process.debug.port=-1"/>
 		</launchConfiguration>
 	'''
 	

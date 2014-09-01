@@ -3,8 +3,11 @@ package org.eclipse.xtext.generator.idea;
 import com.google.common.base.Objects;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
+import com.intellij.compiler.server.BuildProcessParametersProvider;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lexer.Lexer;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.stubs.IStubElementType;
@@ -75,6 +78,9 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
   private Set<String> libraries = CollectionLiterals.<String>newHashSet();
   
   private String pathIdeaPluginProject;
+  
+  @Accessors(AccessorType.PUBLIC_SETTER)
+  private String pathRuntimePluginProject;
   
   @Accessors(AccessorType.PUBLIC_SETTER)
   private boolean typesIntegrationRequired = false;
@@ -325,27 +331,31 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     String _javaPath_13 = this._ideaPluginClassNames.toJavaPath(_extensionFactoryName);
     CharSequence _compileExtensionFactory = this.compileExtensionFactory(grammar);
     ctx.writeFile(outlet_src_gen, _javaPath_13, _compileExtensionFactory);
+    String _buildProcessParametersProviderName = this._ideaPluginClassNames.buildProcessParametersProviderName(grammar);
+    String _xtendPath = this._ideaPluginClassNames.toXtendPath(_buildProcessParametersProviderName);
+    CharSequence _compileBuildProcessParametersProvider = this.compileBuildProcessParametersProvider(grammar);
+    ctx.writeFile(outlet_src_gen, _xtendPath, _compileBuildProcessParametersProvider);
     String _psiNamedEObjectIndexName_1 = this._ideaPluginClassNames.getPsiNamedEObjectIndexName(grammar);
-    String _xtendPath = this._ideaPluginClassNames.toXtendPath(_psiNamedEObjectIndexName_1);
+    String _xtendPath_1 = this._ideaPluginClassNames.toXtendPath(_psiNamedEObjectIndexName_1);
     CharSequence _compilePsiNamedEObjectIndex = this.compilePsiNamedEObjectIndex(grammar);
-    ctx.writeFile(outlet_src_gen, _xtendPath, _compilePsiNamedEObjectIndex);
+    ctx.writeFile(outlet_src_gen, _xtendPath_1, _compilePsiNamedEObjectIndex);
     if (this.typesIntegrationRequired) {
       String _jvmDeclaredTypeShortNameIndexName_1 = this._ideaPluginClassNames.getJvmDeclaredTypeShortNameIndexName(grammar);
-      String _xtendPath_1 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeShortNameIndexName_1);
+      String _xtendPath_2 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeShortNameIndexName_1);
       CharSequence _compilejvmDeclaredTypeShortNameIndex = this.compilejvmDeclaredTypeShortNameIndex(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_1, _compilejvmDeclaredTypeShortNameIndex);
+      ctx.writeFile(outlet_src_gen, _xtendPath_2, _compilejvmDeclaredTypeShortNameIndex);
       String _jvmDeclaredTypeFullClassNameIndexName_1 = this._ideaPluginClassNames.getJvmDeclaredTypeFullClassNameIndexName(grammar);
-      String _xtendPath_2 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeFullClassNameIndexName_1);
+      String _xtendPath_3 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeFullClassNameIndexName_1);
       CharSequence _compileJvmDeclaredTypeFullClassNameIndex = this.compileJvmDeclaredTypeFullClassNameIndex(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_2, _compileJvmDeclaredTypeFullClassNameIndex);
+      ctx.writeFile(outlet_src_gen, _xtendPath_3, _compileJvmDeclaredTypeFullClassNameIndex);
       String _jvmTypesElementFinderName = this._ideaPluginClassNames.getJvmTypesElementFinderName(grammar);
-      String _xtendPath_3 = this._ideaPluginClassNames.toXtendPath(_jvmTypesElementFinderName);
+      String _xtendPath_4 = this._ideaPluginClassNames.toXtendPath(_jvmTypesElementFinderName);
       CharSequence _compileJvmTypesElementFinder = this.compileJvmTypesElementFinder(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_3, _compileJvmTypesElementFinder);
+      ctx.writeFile(outlet_src_gen, _xtendPath_4, _compileJvmTypesElementFinder);
       String _jvmTypesShortNamesCacheName = this._ideaPluginClassNames.getJvmTypesShortNamesCacheName(grammar);
-      String _xtendPath_4 = this._ideaPluginClassNames.toXtendPath(_jvmTypesShortNamesCacheName);
+      String _xtendPath_5 = this._ideaPluginClassNames.toXtendPath(_jvmTypesShortNamesCacheName);
       CharSequence _compileJvmTypesShortNamesCache = this.compileJvmTypesShortNamesCache(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_4, _compileJvmTypesShortNamesCache);
+      ctx.writeFile(outlet_src_gen, _xtendPath_5, _compileJvmTypesShortNamesCache);
     }
     boolean _notEquals_1 = (!Objects.equal(this.pathIdeaPluginProject, null));
     if (_notEquals_1) {
@@ -716,6 +726,73 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     return _builder;
   }
   
+  public CharSequence compileBuildProcessParametersProvider(final Grammar grammar) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("package ");
+    String _buildProcessParametersProviderName = this._ideaPluginClassNames.buildProcessParametersProviderName(grammar);
+    String _packageName = this._ideaPluginClassNames.toPackageName(_buildProcessParametersProviderName);
+    _builder.append(_packageName, "");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("import ");
+    String _name = BuildProcessParametersProvider.class.getName();
+    _builder.append(_name, "");
+    _builder.newLineIfNotEmpty();
+    _builder.append("import ");
+    String _name_1 = PluginManager.class.getName();
+    _builder.append(_name_1, "");
+    _builder.newLineIfNotEmpty();
+    _builder.append("import ");
+    String _name_2 = PluginId.class.getName();
+    _builder.append(_name_2, "");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("class ");
+    String _buildProcessParametersProviderName_1 = this._ideaPluginClassNames.buildProcessParametersProviderName(grammar);
+    String _simpleName = this._ideaPluginClassNames.toSimpleName(_buildProcessParametersProviderName_1);
+    _builder.append(_simpleName, "");
+    _builder.append(" extends ");
+    String _simpleName_1 = BuildProcessParametersProvider.class.getSimpleName();
+    _builder.append(_simpleName_1, "");
+    _builder.append(" {");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("override getClassPath() {");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("val plugin = PluginManager.getPlugin(PluginId.getId(\"");
+    String _languageID = this._ideaPluginExtension.getLanguageID(grammar);
+    _builder.append(_languageID, "\t\t");
+    _builder.append("\"));");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t");
+    _builder.append("val path = plugin.path.path");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("#[");
+    _builder.newLine();
+    _builder.append("\t\t\t");
+    _builder.append("path + \"/bin\",");
+    _builder.newLine();
+    _builder.append("\t\t\t");
+    _builder.append("path + \"/");
+    _builder.append(this.pathRuntimePluginProject, "\t\t\t");
+    _builder.append("/bin\"");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t");
+    _builder.append("]");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    return _builder;
+  }
+  
   public CharSequence compilePsiNamedEObjectIndex(final Grammar grammar) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("package ");
@@ -1049,6 +1126,55 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.append("<extensions defaultExtensionNs=\"com.intellij\">");
     _builder.newLine();
     _builder.append("\t\t");
+    _builder.append("<buildProcess.parametersProvider implementation=\"");
+    String _buildProcessParametersProviderName = this._ideaPluginClassNames.buildProcessParametersProviderName(grammar);
+    _builder.append(_buildProcessParametersProviderName, "\t\t");
+    _builder.append("\"/>");
+    _builder.newLineIfNotEmpty();
+    {
+      if (this.typesIntegrationRequired) {
+        _builder.append("\t\t");
+        _builder.newLine();
+        _builder.append("\t\t");
+        _builder.append("<java.elementFinder implementation=\"");
+        String _jvmTypesElementFinderName = this._ideaPluginClassNames.getJvmTypesElementFinderName(grammar);
+        _builder.append(_jvmTypesElementFinderName, "\t\t");
+        _builder.append("\"/>");
+        _builder.newLineIfNotEmpty();
+        _builder.append("\t\t");
+        _builder.append("<java.shortNamesCache implementation=\"");
+        String _jvmTypesShortNamesCacheName = this._ideaPluginClassNames.getJvmTypesShortNamesCacheName(grammar);
+        _builder.append(_jvmTypesShortNamesCacheName, "\t\t");
+        _builder.append("\"/>");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    _builder.append("\t\t");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("<stubIndex implementation=\"");
+    String _psiNamedEObjectIndexName = this._ideaPluginClassNames.getPsiNamedEObjectIndexName(grammar);
+    _builder.append(_psiNamedEObjectIndexName, "\t\t");
+    _builder.append("\"/>");
+    _builder.newLineIfNotEmpty();
+    {
+      if (this.typesIntegrationRequired) {
+        _builder.append("\t\t");
+        _builder.append("<stubIndex implementation=\"");
+        String _jvmDeclaredTypeShortNameIndexName = this._ideaPluginClassNames.getJvmDeclaredTypeShortNameIndexName(grammar);
+        _builder.append(_jvmDeclaredTypeShortNameIndexName, "\t\t");
+        _builder.append("\"/>");
+        _builder.newLineIfNotEmpty();
+        _builder.append("\t\t");
+        _builder.append("<stubIndex implementation=\"");
+        String _jvmDeclaredTypeFullClassNameIndexName = this._ideaPluginClassNames.getJvmDeclaredTypeFullClassNameIndexName(grammar);
+        _builder.append(_jvmDeclaredTypeFullClassNameIndexName, "\t\t");
+        _builder.append("\"/>");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    _builder.newLine();
+    _builder.append("\t\t");
     _builder.append("<fileTypeFactory implementation=\"");
     String _fileTypeFactoryName = this._ideaPluginClassNames.getFileTypeFactoryName(grammar);
     _builder.append(_fileTypeFactoryName, "\t\t");
@@ -1108,9 +1234,6 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.append(_syntaxHighlighterFactoryName, "      \t");
     _builder.append("\" />");
     _builder.newLineIfNotEmpty();
-    _builder.append("      \t");
-    _builder.append("<stubIndex implementation=\"org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex\"/>");
-    _builder.newLine();
     _builder.append("      \t");
     _builder.append("<annotator language=\"");
     String _languageID_6 = this._ideaPluginExtension.getLanguageID(grammar);
@@ -1181,7 +1304,7 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.append("\"/>");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    _builder.append("<stringAttribute key=\"org.eclipse.jdt.launching.VM_ARGUMENTS\" value=\"-Xmx512m -Didea.plugins.path=${INTELLIJ_IDEA_PLUGINS} -Didea.home.path=${INTELLIJ_IDEA} -Didea.ProcessCanceledException=disabled -Dcompiler.process.debug.port=-1\"/>");
+    _builder.append("<stringAttribute key=\"org.eclipse.jdt.launching.VM_ARGUMENTS\" value=\"-Xmx2g -XX:MaxPermSize=320m -Didea.plugins.path=${INTELLIJ_IDEA_PLUGINS} -Didea.home.path=${INTELLIJ_IDEA} -Didea.ProcessCanceledException=disabled -Dcompiler.process.debug.port=-1\"/>");
     _builder.newLine();
     _builder.append("</launchConfiguration>");
     _builder.newLine();
@@ -2290,6 +2413,10 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
       _xifexpression = AbstractXtextParserDefinition.class;
     }
     return _xifexpression;
+  }
+  
+  public void setPathRuntimePluginProject(final String pathRuntimePluginProject) {
+    this.pathRuntimePluginProject = pathRuntimePluginProject;
   }
   
   public void setTypesIntegrationRequired(final boolean typesIntegrationRequired) {

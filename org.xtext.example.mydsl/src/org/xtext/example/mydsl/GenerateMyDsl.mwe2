@@ -123,6 +123,7 @@ Workflow {
     		
     		fragment = idea.IdeaPluginGenerator {
     			pathIdeaPluginProject = "${runtimeProject}.idea"
+    			pathRuntimePluginProject = runtimeProject
 	            fileExtensions = fileExtensions
 	        }
     	}
