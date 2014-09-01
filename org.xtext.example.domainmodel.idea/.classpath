@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="xtend-gen"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src-gen"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/intellij-dependencies"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.idea"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.domainmodel"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/intellij-dependencies"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.xtext.idea"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.xtext.example.domainmodel"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.xtend.XTEND_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.xtend.XTEND_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
