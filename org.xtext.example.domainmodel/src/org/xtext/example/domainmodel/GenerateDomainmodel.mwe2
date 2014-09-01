@@ -36,6 +36,10 @@ Workflow {
     	directory = "${runtimeProject}.tests/src-gen"
     }
     
+    component = DirectoryCleaner {
+    	directory = "${runtimeProject}.idea/src-gen"
+    }
+    
     component = Generator {
     	pathRtProject = runtimeProject
     	pathUiProject = "${runtimeProject}.ui"
@@ -131,6 +135,7 @@ Workflow {
     		fragment = idea.IdeaPluginGenerator {
     			pathIdeaPluginProject = "${runtimeProject}.idea"
 	            fileExtensions = fileExtensions
+	            typesIntegrationRequired = true
 	        }
     	}
     }

@@ -6,14 +6,12 @@ import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub;
 import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType;
 import org.xtext.example.domainmodel.idea.lang.psi.impl.DomainmodelFileImpl;
 
-import com.google.inject.Singleton;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.PsiFileStub;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.IStubFileElementType;
 
-@Singleton
 public class DomainmodelElementTypeProvider implements IElementTypeProvider {
 
 	public static final IFileElementType FILE_TYPE = new IStubFileElementType<PsiFileStub<DomainmodelFileImpl>>(DomainmodelLanguage.INSTANCE);

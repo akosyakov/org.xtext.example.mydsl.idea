@@ -3,7 +3,9 @@
 package org.xtext.example.domainmodel.domainmodel;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.xtext.common.types.JvmFormalParameter;
+
 import org.eclipse.xtext.xbase.XExpression;
 
 /**

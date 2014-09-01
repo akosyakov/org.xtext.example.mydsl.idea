@@ -3,10 +3,10 @@
 */
 package org.xtext.example.domainmodel.parser.antlr;
 
+import com.google.inject.Inject;
+
 import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 import org.xtext.example.domainmodel.services.DomainmodelGrammarAccess;
-
-import com.google.inject.Inject;
 
 public class DomainmodelParser extends org.eclipse.xtext.parser.antlr.AbstractAntlrParser {
 	

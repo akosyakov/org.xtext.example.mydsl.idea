@@ -3,6 +3,7 @@
 package org.xtext.example.domainmodel.domainmodel;
 
 import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.xtext.common.types.JvmParameterizedTypeReference;
 
 /**

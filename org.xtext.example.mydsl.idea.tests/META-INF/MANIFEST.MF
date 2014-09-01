@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.xtext.example.mydsl.idea.tests
+Bundle-SymbolicName: org.xtext.example.mydsl.idea.tests
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org,
+ org.xtext,
+ org.xtext.example,
+ org.xtext.example.mydsl,
+ org.xtext.example.mydsl.idea,
+ org.xtext.example.mydsl.idea.tests.linking,
+ org.xtext.example.mydsl.idea.tests.parsing,
+ org.xtext.example.mydsl.idea.tests.refactoring,
+ org.xtext.example.mydsl.idea.tests.scoping
+Require-Bundle: org.xtext.example.mydsl.idea;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

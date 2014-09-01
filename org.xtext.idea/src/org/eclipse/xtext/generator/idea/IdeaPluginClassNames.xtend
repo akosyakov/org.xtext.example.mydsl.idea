@@ -17,6 +17,10 @@ class IdeaPluginClassNames {
 		return fullName.replace('.','/')+'.java'
 	}
 	
+	def String toXtendPath(String fullName) {
+		return fullName.replace('.','/')+'.xtend'
+	}
+	
 	def getBasePackageName(Grammar grammar) {
 		grammar.name.toPackageName+".idea"
 	}
@@ -47,6 +51,26 @@ class IdeaPluginClassNames {
 	
 	def String getLanguageName(Grammar it) {
 		basePackageName+'.lang.'+it.name.toSimpleName+'Language'
+	}
+	
+	def String getJvmTypesElementFinderName(Grammar it) {
+		basePackageName+'.lang.types.psi.'+it.name.toSimpleName+'JvmTypesElementFinder'
+	}
+	
+	def String getJvmTypesShortNamesCacheName(Grammar it) {
+		basePackageName+'.lang.types.'+it.name.toSimpleName+'JvmTypesShortNamesCache'
+	}
+	
+	def String getPsiNamedEObjectIndexName(Grammar it) {
+		basePackageName+'.lang.psi.stubindex.'+it.name.toSimpleName+'PsiNamedEObjectIndex'
+	}
+	
+	def String getJvmDeclaredTypeShortNameIndexName(Grammar it) {
+		basePackageName+'.lang.types.stubindex.'+it.name.toSimpleName+'JvmDeclaredTypeShortNameIndex'
+	}
+	
+	def String getJvmDeclaredTypeFullClassNameIndexName(Grammar it) {
+		basePackageName+'.lang.types.stubindex.'+it.name.toSimpleName+'JvmDeclaredTypeFullClassNameIndex'
 	}
 	
 	def String getSyntaxHighlighterName(Grammar it) {

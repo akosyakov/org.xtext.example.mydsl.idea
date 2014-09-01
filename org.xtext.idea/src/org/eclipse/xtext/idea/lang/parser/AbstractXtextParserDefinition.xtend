@@ -69,12 +69,12 @@ abstract class AbstractXtextParserDefinition implements ParserDefinition {
 
 	@NotNull
 	override PsiElement createElement(ASTNode node) {
-		if (elementTypeProvider.getNamedObjectType().equals(node.getElementType())) {
-			return new PsiNamedEObjectImpl(node, elementTypeProvider.getNameType());
+		if (elementTypeProvider.namedObjectType == node.elementType) {
+			return new PsiNamedEObjectImpl(node, elementTypeProvider.nameType)
 		}
-		if (elementTypeProvider.getCrossReferenceType().equals(node.getElementType())) {
-			return new PsiReferenceEObjectImpl(node);
+		if (elementTypeProvider.crossReferenceType == node.elementType) {
+			return new PsiReferenceEObjectImpl(node)
 		}
-		return new PsiEObjectImpl(node);
+		return new PsiEObjectImpl(node)
 	}	
 }

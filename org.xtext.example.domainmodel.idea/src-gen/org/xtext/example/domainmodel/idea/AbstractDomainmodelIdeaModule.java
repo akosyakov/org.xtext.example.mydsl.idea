@@ -1,42 +1,32 @@
 package org.xtext.example.domainmodel.idea;
 
-import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject;
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex;
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
-import org.eclipse.xtext.psi.IPsiModelAssociations;
-import org.eclipse.xtext.psi.PsiNamedEObject;
-import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
-
-import com.google.inject.Binder;
-import com.google.inject.TypeLiteral;
-import com.google.inject.name.Names;
-import com.intellij.psi.stubs.StubIndexKey;
-
-
 public class AbstractDomainmodelIdeaModule extends org.eclipse.xtext.idea.DefaultIdeaModule {
 	
-	public void configureStubKeys(Binder binder) {
-		binder.bind(new TypeLiteral<StubIndexKey<String, PsiNamedEObject>>() {}).annotatedWith(Names.named(PsiNamedEObjectIndex.EOBJECT_NAME))
-				.toInstance(StubIndexKey.<String, PsiNamedEObject>createIndexKey("org.xtext.example.domainmodel.Domainmodel.eobject.name"));
-		binder.bind(new TypeLiteral<StubIndexKey<String, PsiJvmNamedEObject>>() {}).annotatedWith(Names.named(JvmDeclaredTypeShortNameIndex.CLASS_SHORT_NAMES))
-				.toInstance(StubIndexKey.<String, PsiJvmNamedEObject>createIndexKey("org.xtext.example.domainmodel.Domainmodel.java.class.shortname"));
-		binder.bind(new TypeLiteral<StubIndexKey<String, PsiJvmNamedEObject>>() {}).annotatedWith(Names.named(JvmDeclaredTypeFullClassNameIndex.CLASS_FQN))
-				.toInstance(StubIndexKey.<String, PsiJvmNamedEObject>createIndexKey("org.xtext.example.domainmodel.Domainmodel.java.class.fqn"));
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public void configureStubKeys(com.google.inject.Binder binder) {
+		binder.bind(new com.google.inject.TypeLiteral<com.intellij.psi.stubs.StubIndexKey<String, org.eclipse.xtext.psi.PsiNamedEObject>>() {}) 
+			.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex.EOBJECT_NAME))
+			.toInstance(com.intellij.psi.stubs.StubIndexKey.<String, org.eclipse.xtext.psi.PsiNamedEObject>createIndexKey("org.xtext.example.domainmodel.Domainmodel" + org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex.EOBJECT_NAME));
+		binder.bind(new com.google.inject.TypeLiteral<com.intellij.psi.stubs.StubIndexKey<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>>() {}) 
+			.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex.CLASS_SHORT_NAMES))
+			.toInstance(com.intellij.psi.stubs.StubIndexKey.<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>createIndexKey("org.xtext.example.domainmodel.Domainmodel" + org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex.CLASS_SHORT_NAMES));
+		binder.bind(new com.google.inject.TypeLiteral<com.intellij.psi.stubs.StubIndexKey<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>>() {}) 
+			.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex.CLASS_FQN))
+			.toInstance(com.intellij.psi.stubs.StubIndexKey.<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>createIndexKey("org.xtext.example.domainmodel.Domainmodel" + org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex.CLASS_FQN));
 	}
-	
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends PsiNamedEObjectIndex> bindPsiNamedEObjectIndex() {
+	public Class<? extends org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex> bindPsiNamedEObjectIndex() {
 		return org.xtext.example.domainmodel.idea.lang.psi.stubindex.DomainmodelPsiNamedEObjectIndex.class;
 	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends JvmDeclaredTypeShortNameIndex> bindJvmDeclaredTypeShortNameIndex() {
+	public Class<? extends org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex> bindJvmDeclaredTypeShortNameIndex() {
 		return org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeShortNameIndex.class;
 	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends JvmDeclaredTypeFullClassNameIndex> bindJvmDeclaredTypeFullClassNameIndex() {
+	public Class<? extends org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex> bindJvmDeclaredTypeFullClassNameIndex() {
 		return org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeFullClassNameIndex.class;
 	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
@@ -70,8 +60,9 @@ public class AbstractDomainmodelIdeaModule extends org.eclipse.xtext.idea.Defaul
 	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends IPsiModelAssociations> bindIPsiModelAssociations() {
+	public Class<? extends org.eclipse.xtext.psi.IPsiModelAssociations> bindIPsiModelAssociations() {
 		return org.eclipse.xtext.idea.types.psi.PsiJvmModelAssociations.class;
 	}
+	
 	
 }

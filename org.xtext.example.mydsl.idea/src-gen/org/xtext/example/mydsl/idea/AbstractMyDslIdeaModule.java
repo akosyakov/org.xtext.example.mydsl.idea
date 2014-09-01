@@ -1,23 +1,16 @@
 package org.xtext.example.mydsl.idea;
 
-import org.eclipse.xtext.psi.PsiNamedEObject;
-import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
-
-import com.google.inject.Binder;
-import com.google.inject.TypeLiteral;
-import com.google.inject.name.Names;
-import com.intellij.psi.stubs.StubIndexKey;
-
 public class AbstractMyDslIdeaModule extends org.eclipse.xtext.idea.DefaultIdeaModule {
 	
-	public void configureStubKeys(Binder binder) {
-		binder.bind(new TypeLiteral<StubIndexKey<String, PsiNamedEObject>>() {}).annotatedWith(Names.named(PsiNamedEObjectIndex.EOBJECT_NAME))
-				.toInstance(StubIndexKey.<String, PsiNamedEObject>createIndexKey("org.xtext.example.mydsl.MyDsl.eobject.name"));
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public void configureStubKeys(com.google.inject.Binder binder) {
+		binder.bind(new com.google.inject.TypeLiteral<com.intellij.psi.stubs.StubIndexKey<String, org.eclipse.xtext.psi.PsiNamedEObject>>() {}) 
+			.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex.EOBJECT_NAME))
+			.toInstance(com.intellij.psi.stubs.StubIndexKey.<String, org.eclipse.xtext.psi.PsiNamedEObject>createIndexKey("org.xtext.example.mydsl.MyDsl" + org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex.EOBJECT_NAME));
 	}
-	
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends PsiNamedEObjectIndex> bindPsiNamedEObjectIndex() {
+	public Class<? extends org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex> bindPsiNamedEObjectIndex() {
 		return org.xtext.example.mydsl.idea.lang.psi.stubindex.MyDslPsiNamedEObjectIndex.class;
 	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator

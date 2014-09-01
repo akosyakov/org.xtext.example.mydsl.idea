@@ -5,17 +5,12 @@ package org.xtext.example.domainmodel.domainmodel.impl;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-import org.xtext.example.domainmodel.domainmodel.AbstractElement;
-import org.xtext.example.domainmodel.domainmodel.DomainModel;
-import org.xtext.example.domainmodel.domainmodel.DomainmodelFactory;
-import org.xtext.example.domainmodel.domainmodel.DomainmodelPackage;
-import org.xtext.example.domainmodel.domainmodel.Entity;
-import org.xtext.example.domainmodel.domainmodel.Feature;
-import org.xtext.example.domainmodel.domainmodel.Operation;
-import org.xtext.example.domainmodel.domainmodel.PackageDeclaration;
-import org.xtext.example.domainmodel.domainmodel.Property;
+
+import org.xtext.example.domainmodel.domainmodel.*;
 
 /**
  * <!-- begin-user-doc -->

@@ -1,5 +1,6 @@
 package org.eclipse.xtext.idea.lang.parser;
 
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
@@ -78,14 +79,14 @@ public abstract class AbstractXtextParserDefinition implements ParserDefinition 
   public PsiElement createElement(final ASTNode node) {
     IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> _namedObjectType = this.elementTypeProvider.getNamedObjectType();
     IElementType _elementType = node.getElementType();
-    boolean _equals = _namedObjectType.equals(_elementType);
+    boolean _equals = Objects.equal(_namedObjectType, _elementType);
     if (_equals) {
       IElementType _nameType = this.elementTypeProvider.getNameType();
       return new PsiNamedEObjectImpl<PsiNamedEObjectStub>(node, _nameType);
     }
     IElementType _crossReferenceType = this.elementTypeProvider.getCrossReferenceType();
     IElementType _elementType_1 = node.getElementType();
-    boolean _equals_1 = _crossReferenceType.equals(_elementType_1);
+    boolean _equals_1 = Objects.equal(_crossReferenceType, _elementType_1);
     if (_equals_1) {
       return new PsiReferenceEObjectImpl<StubElement>(node);
     }

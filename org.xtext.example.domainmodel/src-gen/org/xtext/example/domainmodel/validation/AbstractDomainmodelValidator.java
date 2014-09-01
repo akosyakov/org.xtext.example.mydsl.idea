@@ -5,7 +5,6 @@ package org.xtext.example.domainmodel.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.emf.ecore.EPackage;
 
 public class AbstractDomainmodelValidator extends org.eclipse.xtext.xbase.validation.XbaseValidator {

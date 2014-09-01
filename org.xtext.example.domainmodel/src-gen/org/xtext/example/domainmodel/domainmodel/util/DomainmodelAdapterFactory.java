@@ -4,16 +4,12 @@ package org.xtext.example.domainmodel.domainmodel.util;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
+
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
+
 import org.eclipse.emf.ecore.EObject;
-import org.xtext.example.domainmodel.domainmodel.AbstractElement;
-import org.xtext.example.domainmodel.domainmodel.DomainModel;
-import org.xtext.example.domainmodel.domainmodel.DomainmodelPackage;
-import org.xtext.example.domainmodel.domainmodel.Entity;
-import org.xtext.example.domainmodel.domainmodel.Feature;
-import org.xtext.example.domainmodel.domainmodel.Operation;
-import org.xtext.example.domainmodel.domainmodel.PackageDeclaration;
-import org.xtext.example.domainmodel.domainmodel.Property;
+
+import org.xtext.example.domainmodel.domainmodel.*;
 
 /**
  * <!-- begin-user-doc -->
