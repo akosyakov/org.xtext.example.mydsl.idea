@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Idea
+Bundle-SymbolicName: org.xtext.example.domainmodel.idea
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.xtext.example.domainmodel.idea,
+ org.xtext.example.domainmodel.idea.lang,
+ org.xtext.example.domainmodel.idea.lang.parser,
+ org.xtext.example.domainmodel.idea.lang.psi.impl,
+ org.xtext.example.domainmodel.idea.lang.psi.stubindex,
+ org.xtext.example.domainmodel.idea.lang.types,
+ org.xtext.example.domainmodel.idea.lang.types.psi,
+ org.xtext.example.domainmodel.idea.lang.types.stubindex,
+ org.xtext.example.domainmodel.idea.server
+Require-Bundle: org.xtext.example.domainmodel;bundle-version="1.0.0",
+ org.xtext.idea;bundle-version="1.0.0"
