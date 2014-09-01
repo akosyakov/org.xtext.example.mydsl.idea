@@ -1,6 +1,6 @@
 <idea-plugin version="2">
-	<id>org.xtext.example.domainmodel.Domainmodel</id>
-	<name>Domainmodel Support</name>
+	<id>org.xtext.example.domainmodel.idea</id>
+	<name>Domainmodel language support</name>
 	<description>
       This plugin enables smart editing of Domainmodel files.
 	</description>
@@ -10,6 +10,8 @@
 	<idea-version since-build="131"/>
 
 	<extensions defaultExtensionNs="com.intellij">
+  	  	<buildProcess.parametersProvider implementation="org.xtext.example.domainmodel.idea.server.DomainmodelBuildProcessParametersProvider" />
+  	  
 		<java.elementFinder implementation="org.xtext.example.domainmodel.idea.lang.types.psi.DomainmodelJvmTypesElementFinder"/>
     	<java.shortNamesCache implementation="org.xtext.example.domainmodel.idea.lang.types.DomainmodelJvmTypesShortNamesCache"/>
     	

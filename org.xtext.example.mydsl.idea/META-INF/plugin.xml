@@ -11,7 +11,7 @@
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
-     ${project.description}
+     This plugin enables smart editing of MyDsl files.
     ]]></description>
 
   <change-notes><![CDATA[

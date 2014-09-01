@@ -15,9 +15,10 @@ public class MyDslBuildProcessParametersProvider extends BuildProcessParametersP
 		IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("org.xtext.example.mydsl.idea"));
 		String path = plugin.getPath().getPath();
 		
-		return Arrays.asList(path + "/bin",
-				path + "/../org.xtext.example.mydsl/bin",
-				path + "/../org.xtext.idea.builder/bin");
+		return Arrays.asList(
+				path + "/bin",
+				path + "/../org.xtext.example.mydsl/bin"
+		);
 	}
 
 }
