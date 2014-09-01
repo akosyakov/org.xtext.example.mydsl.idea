@@ -4,9 +4,12 @@ import com.google.inject.Binder;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
 import org.eclipse.xtext.idea.resource.impl.StubContainerManager;
+import org.eclipse.xtext.psi.IPsiModelAssociations;
+import org.eclipse.xtext.psi.PsiModelAssociations;
 import org.eclipse.xtext.resource.IContainer;
 import org.eclipse.xtext.resource.IResourceDescriptions;
 import org.eclipse.xtext.service.AbstractGenericModule;
+import org.eclipse.xtext.service.SingletonBinding;
 
 @SuppressWarnings("all")
 public class DefaultIdeaModule extends AbstractGenericModule {
@@ -17,5 +20,10 @@ public class DefaultIdeaModule extends AbstractGenericModule {
   
   public Class<? extends IContainer.Manager> bindIContainer$Manager() {
     return StubContainerManager.class;
+  }
+  
+  @SingletonBinding
+  public Class<? extends IPsiModelAssociations> bindIPsiModelAssociations() {
+    return PsiModelAssociations.class;
   }
 }

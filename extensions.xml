@@ -1564,19 +1564,6 @@
         </option>
       </plugins>
     </entry>
-    <entry key="*.lsf">
-      <plugins>
-        <option name="myPlugins">
-          <set>
-            <plugin>
-              <option name="myPluginId" value="com.yourcompany.unique.plugin.id" />
-              <option name="myPluginName" />
-              <option name="myBundled" value="false" />
-            </plugin>
-          </set>
-        </option>
-      </plugins>
-    </entry>
     <entry key="*.ltp">
       <plugins>
         <option name="myPlugins">

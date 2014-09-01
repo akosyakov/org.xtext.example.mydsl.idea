@@ -3,6 +3,7 @@ package org.xtext.example.domainmodel.idea;
 import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
+import org.eclipse.xtext.psi.IPsiModelAssociations;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
 
@@ -66,6 +67,11 @@ public class AbstractDomainmodelIdeaModule extends org.eclipse.xtext.idea.Defaul
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	public Class<? extends org.eclipse.xtext.common.types.xtext.AbstractTypeScopeProvider> bindAbstractTypeScopeProvider() {
 		return org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider.class;
+	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	@org.eclipse.xtext.service.SingletonBinding
+	public Class<? extends IPsiModelAssociations> bindIPsiModelAssociations() {
+		return org.eclipse.xtext.idea.types.psi.PsiJvmModelAssociations.class;
 	}
 	
 }
