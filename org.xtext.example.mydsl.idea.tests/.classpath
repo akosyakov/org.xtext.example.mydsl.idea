@@ -3,7 +3,9 @@
 	<classpathentry kind="src" path="xtend-gen"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.mydsl.idea"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/intellij-dependencies"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.idea"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.xtext.example.mydsl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

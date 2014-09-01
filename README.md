@@ -8,7 +8,7 @@ Setup
 4. Configure the ClassPathVariable 'INTELLIJ_IDEA' to point to the checked-out git repository
 5. Configure the the string substitution variable 'INTELLIJ_IDEA' to point to the checked-out git repository
 6. Configure the the string substitution variable 'INTELLIJ_IDEA_PLUGINS’ to point to the checked-out org.xtext.example.mydsl.idea git repository
-7. Run org.xtext.idea.parent/maven-build-all.launch to generate jars (org.xtext.idea/lib) for the external build process.
+7. Run mvn install on org.xtext.idea project to generate jars (org.xtext.idea/lib) for the external build process.
 
 Running/Debugging
 -----
