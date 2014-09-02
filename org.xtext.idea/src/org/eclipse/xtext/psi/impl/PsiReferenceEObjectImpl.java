@@ -7,6 +7,7 @@ import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 import org.eclipse.xtext.psi.PsiEObjectReference;
 import org.eclipse.xtext.psi.PsiReferenceEObject;
 
+import com.google.inject.Inject;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiReference;
@@ -15,6 +16,9 @@ import com.intellij.psi.stubs.StubElement;
 
 @SuppressWarnings("rawtypes")
 public class PsiReferenceEObjectImpl<T extends StubElement> extends PsiEObjectImpl<T> implements PsiReferenceEObject {
+	
+	@Inject
+	private CrossReferenceDescriptionProvider crossReferenceDescriptionProvider;
 
 	protected PsiReferenceEObjectImpl(T stub, IStubElementType nodeType) {
 		super(stub, nodeType);
@@ -46,7 +50,7 @@ public class PsiReferenceEObjectImpl<T extends StubElement> extends PsiEObjectIm
 		Integer index = getIndex();
 		EObject context = getEContext();
 		EReference reference = getEReference();
-		return getXtextLanguage().getInstance(CrossReferenceDescriptionProvider.class).get(context, reference, index);
+		return crossReferenceDescriptionProvider.get(context, reference, index);
 	}
 
 }

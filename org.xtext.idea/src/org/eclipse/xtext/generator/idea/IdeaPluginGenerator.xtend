@@ -32,17 +32,17 @@ import org.eclipse.xtext.idea.types.JvmTypesShortNamesCache
 import org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory
 import org.eclipse.xtext.idea.types.psi.JvmTypesElementFinder
-import org.eclipse.xtext.idea.types.psi.PsiJvmModelAssociations
 import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject
 import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub
 import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex
-import org.eclipse.xtext.psi.IPsiModelAssociations
 import org.eclipse.xtext.psi.PsiNamedEObject
 import org.eclipse.xtext.psi.PsiNamedEObjectStub
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType
+import org.eclipse.xtext.xbase.jvmmodel.JvmModelCompleter
+import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelCompleter
 
 class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	
@@ -128,7 +128,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		if (typesIntegrationRequired) {
 			bindFactory.addTypeToType(IJvmTypeProvider.Factory.name, StubTypeProviderFactory.name)
 			bindFactory.addTypeToType(AbstractTypeScopeProvider.name, StubBasedTypeScopeProvider.name)
-			bindFactory.addTypeToTypeSingleton(IPsiModelAssociations.name, PsiJvmModelAssociations.name)
+			bindFactory.addTypeToType(JvmModelCompleter.name, PsiJvmModelCompleter.name)
 		}
 		val bindings = bindFactory.bindings
 		

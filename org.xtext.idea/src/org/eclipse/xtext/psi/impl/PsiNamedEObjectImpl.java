@@ -72,8 +72,7 @@ public class PsiNamedEObjectImpl<T extends PsiNamedEObjectStub> extends PsiEObje
 		if (nameIdentifier != null) {
 			ASTNode nameNode = nameIdentifier.getNode();
 			ASTNode oldNode = nameNode.getFirstChildNode();
-			LeafElement newChild = ASTFactory.leaf(oldNode.getElementType(),
-					name);
+			LeafElement newChild = ASTFactory.leaf(oldNode.getElementType(), name);
 			CodeEditUtil.setNodeGenerated(newChild, true);
 			nameNode.replaceChild(oldNode, newChild);
 		}

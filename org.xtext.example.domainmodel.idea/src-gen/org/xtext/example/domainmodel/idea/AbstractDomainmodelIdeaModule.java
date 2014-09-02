@@ -59,9 +59,8 @@ public class AbstractDomainmodelIdeaModule extends org.eclipse.xtext.idea.Defaul
 		return org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider.class;
 	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
-	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends org.eclipse.xtext.psi.IPsiModelAssociations> bindIPsiModelAssociations() {
-		return org.eclipse.xtext.idea.types.psi.PsiJvmModelAssociations.class;
+	public Class<? extends org.eclipse.xtext.xbase.jvmmodel.JvmModelCompleter> bindJvmModelCompleter() {
+		return org.eclipse.xtext.idea.jvmmodel.PsiJvmModelCompleter.class;
 	}
 	
 	

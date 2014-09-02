@@ -5,18 +5,28 @@ import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.tree.IElementType
 import java.io.IOException
 import org.eclipse.xtext.common.types.JvmDeclaredType
+import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType
 import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject
 import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub
+import org.eclipse.xtext.psi.IPsiModelAssociations
 import org.eclipse.xtext.psi.PsiNamedEObject
 import org.eclipse.xtext.psi.PsiNamedEObjectStub
 import org.eclipse.xtext.psi.impl.PsiNamedEObjectImpl
 import org.eclipse.xtext.resource.DerivedStateAwareResource
 import org.eclipse.xtext.util.RuntimeIOException
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
+import com.google.inject.Inject
 
 class PsiJvmNamedEObjectImpl extends PsiNamedEObjectImpl<PsiJvmNamedEObjectStub> implements PsiJvmNamedEObject {
+	
+	@Inject
+	extension IPsiModelAssociations
+	
+	@Inject
+	extension IJvmModelAssociations	
 
-	new(PsiJvmNamedEObjectStub stub, IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> nodeType, IElementType nameType) {
+	new(PsiJvmNamedEObjectStub stub, IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> nodeType,
+		IElementType nameType) {
 		super(stub, nodeType, nameType);
 	}
 
@@ -36,17 +46,22 @@ class PsiJvmNamedEObjectImpl extends PsiNamedEObjectImpl<PsiJvmNamedEObjectStub>
 		val stub = stub
 		val manager = manager
 		val language = language
-		if (stub != null) { 
+		if (stub != null) {
 			stub.classes.map [
 				new PsiJvmDeclaredTypeImpl(qualifiedName, type, this, manager, language)
 			]
 		} else {
-			jvmElements.filter(JvmDeclaredType).toList.map [
-				new PsiJvmDeclaredTypeImpl(it, this, manager, language)
-			]
+			val result = newArrayList
+			for (jvmElement : jvmElements.filter(JvmDeclaredType)) {
+				val psiJvmDeclaredType = jvmElement.psiElement 
+				if (psiJvmDeclaredType instanceof PsiJvmDeclaredType) {
+					result += psiJvmDeclaredType
+				}	
+			}
+			result
 		}
 	}
-	
+
 	protected def getJvmElements() {
 		switch resource : resource {
 			DerivedStateAwareResource: {
@@ -61,9 +76,9 @@ class PsiJvmNamedEObjectImpl extends PsiNamedEObjectImpl<PsiJvmNamedEObjectStub>
 				try {
 					if (!isInitialized) {
 						resource.eSetDeliver(false);
-						resource.installDerivedState(true);
+						resource.installDerivedState(false);
 					}
-					xtextLanguage.getInstance(IJvmModelAssociations).getJvmElements(EObject)
+					EObject.jvmElements
 				} finally {
 					if (!isInitialized) {
 						resource.discardDerivedState();
@@ -71,7 +86,8 @@ class PsiJvmNamedEObjectImpl extends PsiNamedEObjectImpl<PsiJvmNamedEObjectStub>
 					}
 				}
 			}
-			default: emptyList
+			default:
+				emptyList
 		}
 	}
 

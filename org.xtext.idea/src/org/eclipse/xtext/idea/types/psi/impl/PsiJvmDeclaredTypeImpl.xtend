@@ -42,7 +42,7 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 	
 	val PsiNamedEObject psiNamedEObject
 
-	protected new(JvmDeclaredType declaredType, PsiNamedEObject psiNamedEObject, PsiManager manager, Language language) {
+	new(JvmDeclaredType declaredType, PsiNamedEObject psiNamedEObject, PsiManager manager, Language language) {
 		this(declaredType.qualifiedName, declaredType.eClass, psiNamedEObject, manager, language)
 	}
 

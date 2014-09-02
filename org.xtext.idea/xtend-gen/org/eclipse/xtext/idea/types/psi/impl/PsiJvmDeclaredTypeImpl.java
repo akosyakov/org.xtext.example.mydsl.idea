@@ -48,7 +48,7 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
   
   private final PsiNamedEObject psiNamedEObject;
   
-  protected PsiJvmDeclaredTypeImpl(final JvmDeclaredType declaredType, final PsiNamedEObject psiNamedEObject, final PsiManager manager, final Language language) {
+  public PsiJvmDeclaredTypeImpl(final JvmDeclaredType declaredType, final PsiNamedEObject psiNamedEObject, final PsiManager manager, final Language language) {
     this(declaredType.getQualifiedName(), declaredType.eClass(), psiNamedEObject, manager, language);
   }
   

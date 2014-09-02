@@ -2,12 +2,15 @@ package org.eclipse.xtext.idea.types.psi.impl;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.PsiManagerEx;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +20,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
-import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
 import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject;
 import org.eclipse.xtext.idea.types.psi.impl.PsiJvmDeclaredTypeImpl;
 import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmDeclaredTypeDTO;
 import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub;
+import org.eclipse.xtext.psi.IPsiModelAssociations;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 import org.eclipse.xtext.psi.impl.PsiNamedEObjectImpl;
@@ -31,12 +34,21 @@ import org.eclipse.xtext.util.RuntimeIOException;
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ListExtensions;
 
 @SuppressWarnings("all")
 public class PsiJvmNamedEObjectImpl extends PsiNamedEObjectImpl<PsiJvmNamedEObjectStub> implements PsiJvmNamedEObject {
+  @Inject
+  @Extension
+  private IPsiModelAssociations _iPsiModelAssociations;
+  
+  @Inject
+  @Extension
+  private IJvmModelAssociations _iJvmModelAssociations;
+  
   public PsiJvmNamedEObjectImpl(final PsiJvmNamedEObjectStub stub, final IStubElementType<? extends PsiNamedEObjectStub, ? extends PsiNamedEObject> nodeType, final IElementType nameType) {
     super(stub, nodeType, nameType);
   }
@@ -88,15 +100,22 @@ public class PsiJvmNamedEObjectImpl extends PsiNamedEObjectImpl<PsiJvmNamedEObje
         };
         _xifexpression = ListExtensions.<PsiJvmDeclaredTypeDTO, PsiJvmDeclaredType>map(_classes, _function);
       } else {
-        Collection<EObject> _jvmElements = this.getJvmElements();
-        Iterable<JvmDeclaredType> _filter = Iterables.<JvmDeclaredType>filter(_jvmElements, JvmDeclaredType.class);
-        List<JvmDeclaredType> _list = IterableExtensions.<JvmDeclaredType>toList(_filter);
-        final Function1<JvmDeclaredType, PsiJvmDeclaredType> _function_1 = new Function1<JvmDeclaredType, PsiJvmDeclaredType>() {
-          public PsiJvmDeclaredType apply(final JvmDeclaredType it) {
-            return new PsiJvmDeclaredTypeImpl(it, PsiJvmNamedEObjectImpl.this, manager, language);
+        ArrayList<PsiJvmDeclaredType> _xblockexpression_1 = null;
+        {
+          final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
+          Collection<EObject> _jvmElements = this.getJvmElements();
+          Iterable<JvmDeclaredType> _filter = Iterables.<JvmDeclaredType>filter(_jvmElements, JvmDeclaredType.class);
+          for (final JvmDeclaredType jvmElement : _filter) {
+            {
+              final PsiElement psiJvmDeclaredType = this._iPsiModelAssociations.getPsiElement(jvmElement);
+              if ((psiJvmDeclaredType instanceof PsiJvmDeclaredType)) {
+                result.add(((PsiJvmDeclaredType)psiJvmDeclaredType));
+              }
+            }
           }
-        };
-        _xifexpression = ListExtensions.<JvmDeclaredType, PsiJvmDeclaredType>map(_list, _function_1);
+          _xblockexpression_1 = result;
+        }
+        _xifexpression = _xblockexpression_1;
       }
       _xblockexpression = _xifexpression;
     }
@@ -144,12 +163,10 @@ public class PsiJvmNamedEObjectImpl extends PsiNamedEObjectImpl<PsiJvmNamedEObje
             {
               if ((!isInitialized)) {
                 ((DerivedStateAwareResource)resource).eSetDeliver(false);
-                ((DerivedStateAwareResource)resource).installDerivedState(true);
+                ((DerivedStateAwareResource)resource).installDerivedState(false);
               }
-              IXtextLanguage _xtextLanguage = this.getXtextLanguage();
-              IJvmModelAssociations _instance = _xtextLanguage.<IJvmModelAssociations>getInstance(IJvmModelAssociations.class);
               EObject _eObject = this.getEObject();
-              _xblockexpression_1 = _instance.getJvmElements(_eObject);
+              _xblockexpression_1 = this._iJvmModelAssociations.getJvmElements(_eObject);
             }
             _xtrycatchfinallyexpression = _xblockexpression_1;
           } finally {

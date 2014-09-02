@@ -21,11 +21,13 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 	protected PsiEObjectImpl(T stub, IStubElementType nodeType) {
 		super(stub, nodeType);
 		this.elementType = nodeType;
+		getXtextLanguage().injectMembers(this);
 	}
 
 	public PsiEObjectImpl(ASTNode node) {
 		super(node);
 		this.elementType = node.getElementType();
+		getXtextLanguage().injectMembers(this);
 	}
 	
 	public EClass getEClass() {
