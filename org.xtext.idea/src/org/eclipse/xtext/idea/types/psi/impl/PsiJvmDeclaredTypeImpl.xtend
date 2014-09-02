@@ -78,6 +78,10 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 		psiNamedEObject
 	}
 	
+	override isValid() {
+		psiNamedEObject.valid
+	}
+	
 	override equals(Object object) {
 		if (this === object) { 
 			return true

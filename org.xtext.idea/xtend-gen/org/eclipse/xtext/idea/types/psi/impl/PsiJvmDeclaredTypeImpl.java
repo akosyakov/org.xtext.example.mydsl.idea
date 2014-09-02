@@ -104,6 +104,10 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
     return this.psiNamedEObject;
   }
   
+  public boolean isValid() {
+    return this.psiNamedEObject.isValid();
+  }
+  
   public boolean equals(final Object object) {
     boolean _xblockexpression = false;
     {
