@@ -104,6 +104,42 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
     return this.psiNamedEObject;
   }
   
+  public boolean equals(final Object object) {
+    boolean _xblockexpression = false;
+    {
+      boolean _tripleEquals = (this == object);
+      if (_tripleEquals) {
+        return true;
+      }
+      if ((object instanceof PsiJvmDeclaredTypeImpl)) {
+        return Objects.equal(this.qualifiedName, ((PsiJvmDeclaredTypeImpl)object).qualifiedName);
+      }
+      _xblockexpression = false;
+    }
+    return _xblockexpression;
+  }
+  
+  public int hashCode() {
+    return this.qualifiedName.hashCode();
+  }
+  
+  public boolean isEquivalentTo(final PsiElement another) {
+    boolean _xblockexpression = false;
+    {
+      if ((another instanceof PsiJvmDeclaredType)) {
+        return this.isEquivalent(this, ((PsiJvmDeclaredType)another));
+      }
+      _xblockexpression = false;
+    }
+    return _xblockexpression;
+  }
+  
+  protected boolean isEquivalent(final PsiJvmDeclaredType one, final PsiJvmDeclaredType another) {
+    String _qualifiedName = one.getQualifiedName();
+    String _qualifiedName_1 = another.getQualifiedName();
+    return Objects.equal(_qualifiedName, _qualifiedName_1);
+  }
+  
   @Pure
   public EClass getType() {
     return this.type;

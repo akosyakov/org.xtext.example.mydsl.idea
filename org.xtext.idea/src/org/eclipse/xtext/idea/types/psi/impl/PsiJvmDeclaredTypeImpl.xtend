@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.lang.Language
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiManager
@@ -75,6 +76,31 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 	
 	override getNavigationElement() {
 		psiNamedEObject
+	}
+	
+	override equals(Object object) {
+		if (this === object) { 
+			return true
+		}
+		if (object instanceof PsiJvmDeclaredTypeImpl) {
+			return qualifiedName == object.qualifiedName
+		}
+		false
+	}
+	
+	override hashCode() {
+		qualifiedName.hashCode
+	}
+	
+	override isEquivalentTo(PsiElement another) {
+		if (another instanceof PsiJvmDeclaredType) {
+			return isEquivalent(another)
+		}
+		false
+	}
+	
+	protected def isEquivalent(PsiJvmDeclaredType one, PsiJvmDeclaredType another) {
+		one.qualifiedName == another.qualifiedName
 	}
 
 }
