@@ -25,14 +25,21 @@ import org.eclipse.xtext.generator.Binding
 import org.eclipse.xtext.generator.Generator
 import org.eclipse.xtext.generator.Xtend2ExecutionContext
 import org.eclipse.xtext.generator.Xtend2GeneratorFragment
+import org.eclipse.xtext.idea.annotation.IssueAnnotator
+import org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider
+import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelCompleter
+import org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator
+import org.eclipse.xtext.idea.lang.BaseXtextASTFactory
 import org.eclipse.xtext.idea.lang.IElementTypeProvider
 import org.eclipse.xtext.idea.lang.parser.AbstractXtextParserDefinition
+import org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider
 import org.eclipse.xtext.idea.types.AbstractJvmTypesParserDefinition
 import org.eclipse.xtext.idea.types.JvmTypesShortNamesCache
 import org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory
 import org.eclipse.xtext.idea.types.psi.JvmTypesElementFinder
 import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject
+import org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch
 import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub
 import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex
@@ -42,7 +49,6 @@ import org.eclipse.xtext.psi.PsiNamedEObjectStub
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType
 import org.eclipse.xtext.xbase.jvmmodel.JvmModelCompleter
-import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelCompleter
 
 class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	
@@ -341,7 +347,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	}
 	
 	def addOutlet(Output output, String outletName, String path) {
-		output.addOutlet(new Outlet(false, getEncoding(), outletName, false, path))
+		output.addOutlet(new Outlet(false, getEncoding(), outletName, true, path))
 	}
 	
 	def writeFile(Output output, String outletName, String filename, CharSequence contents) {
@@ -398,18 +404,29 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 				<stubIndex implementation="«grammar.jvmDeclaredTypeShortNameIndexName»"/>
 				<stubIndex implementation="«grammar.jvmDeclaredTypeFullClassNameIndexName»"/>
 		      	«ENDIF»
+				«IF typesIntegrationRequired»
+
+				<referencesSearch implementation="«JvmTypesReferencesSearch.name»"/>
+				«grammar.compileExtension('targetElementEvaluator', PsiJvmTargetElementEvaluator.name)»
+				«ENDIF»
 		
 				<fileTypeFactory implementation="«grammar.fileTypeFactoryName»"/>
 				<stubElementTypeHolder class="«grammar.elementTypeProviderName»"/>
-				<lang.ast.factory language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
-		      	<lang.parserDefinition language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="«grammar.parserDefinitionName»"/>
-		      	<lang.findUsagesProvider language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
-		      	<lang.refactoringSupport language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
+				«grammar.compileExtension('lang.ast.factory', BaseXtextASTFactory.name)»
+				«grammar.compileExtension('lang.parserDefinition', grammar.parserDefinitionName)»
+				«grammar.compileExtension('lang.findUsagesProvider', BaseXtextFindUsageProvider.name)»
+				«grammar.compileExtension('lang.refactoringSupport', BaseXtextRefactoringSupportProvider.name)»
 		      	<lang.syntaxHighlighterFactory key="«grammar.languageID»" implementationClass="«grammar.syntaxHighlighterFactoryName»" />
-		      	<annotator language="«grammar.languageID»" factoryClass="«grammar.extensionFactoryName»" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
+		      	«grammar.compileExtension('annotator', IssueAnnotator.name)»
 			</extensions>
 		
 		</idea-plugin>
+	'''
+	
+	def compileExtension(Grammar grammar, String extensionPointId, String implementationClass) '''
+		<«extensionPointId» language="«grammar.languageID»"
+								factoryClass="«grammar.extensionFactoryName»"
+								implementationClass="«implementationClass»"/>
 	'''
 	
 	def compileLaunchIntellij(Grammar grammar, String path)'''

@@ -39,15 +39,21 @@ import org.eclipse.xtext.generator.Xtend2GeneratorFragment;
 import org.eclipse.xtext.generator.idea.IdeaPluginClassNames;
 import org.eclipse.xtext.generator.idea.IdeaPluginExtension;
 import org.eclipse.xtext.generator.idea.TokenTypeProvider;
+import org.eclipse.xtext.idea.annotation.IssueAnnotator;
+import org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider;
 import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelCompleter;
+import org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator;
+import org.eclipse.xtext.idea.lang.BaseXtextASTFactory;
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
 import org.eclipse.xtext.idea.lang.parser.AbstractXtextParserDefinition;
+import org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider;
 import org.eclipse.xtext.idea.types.AbstractJvmTypesParserDefinition;
 import org.eclipse.xtext.idea.types.JvmTypesShortNamesCache;
 import org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider;
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory;
 import org.eclipse.xtext.idea.types.psi.JvmTypesElementFinder;
 import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject;
+import org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch;
 import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub;
 import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex;
@@ -1046,7 +1052,7 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
   
   public void addOutlet(final Output output, final String outletName, final String path) {
     String _encoding = this.getEncoding();
-    Outlet _outlet = new Outlet(false, _encoding, outletName, false, path);
+    Outlet _outlet = new Outlet(false, _encoding, outletName, true, path);
     output.addOutlet(_outlet);
   }
   
@@ -1173,6 +1179,22 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
         _builder.newLineIfNotEmpty();
       }
     }
+    {
+      if (this.typesIntegrationRequired) {
+        _builder.newLine();
+        _builder.append("\t\t");
+        _builder.append("<referencesSearch implementation=\"");
+        String _name = JvmTypesReferencesSearch.class.getName();
+        _builder.append(_name, "\t\t");
+        _builder.append("\"/>");
+        _builder.newLineIfNotEmpty();
+        _builder.append("\t\t");
+        String _name_1 = PsiJvmTargetElementEvaluator.class.getName();
+        CharSequence _compileExtension = this.compileExtension(grammar, "targetElementEvaluator", _name_1);
+        _builder.append(_compileExtension, "\t\t");
+        _builder.newLineIfNotEmpty();
+      }
+    }
     _builder.newLine();
     _builder.append("\t\t");
     _builder.append("<fileTypeFactory implementation=\"");
@@ -1187,61 +1209,38 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.append("\"/>");
     _builder.newLineIfNotEmpty();
     _builder.append("\t\t");
-    _builder.append("<lang.ast.factory language=\"");
-    String _languageID_1 = this._ideaPluginExtension.getLanguageID(grammar);
-    _builder.append(_languageID_1, "\t\t");
-    _builder.append("\" factoryClass=\"");
-    String _extensionFactoryName = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
-    _builder.append(_extensionFactoryName, "\t\t");
-    _builder.append("\" implementationClass=\"org.eclipse.xtext.idea.lang.BaseXtextASTFactory\"/>");
+    String _name_2 = BaseXtextASTFactory.class.getName();
+    CharSequence _compileExtension_1 = this.compileExtension(grammar, "lang.ast.factory", _name_2);
+    _builder.append(_compileExtension_1, "\t\t");
     _builder.newLineIfNotEmpty();
-    _builder.append("      \t");
-    _builder.append("<lang.parserDefinition language=\"");
-    String _languageID_2 = this._ideaPluginExtension.getLanguageID(grammar);
-    _builder.append(_languageID_2, "      \t");
-    _builder.append("\" factoryClass=\"");
-    String _extensionFactoryName_1 = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
-    _builder.append(_extensionFactoryName_1, "      \t");
-    _builder.append("\" implementationClass=\"");
+    _builder.append("\t\t");
     String _parserDefinitionName = this._ideaPluginClassNames.getParserDefinitionName(grammar);
-    _builder.append(_parserDefinitionName, "      \t");
-    _builder.append("\"/>");
+    CharSequence _compileExtension_2 = this.compileExtension(grammar, "lang.parserDefinition", _parserDefinitionName);
+    _builder.append(_compileExtension_2, "\t\t");
     _builder.newLineIfNotEmpty();
-    _builder.append("      \t");
-    _builder.append("<lang.findUsagesProvider language=\"");
-    String _languageID_3 = this._ideaPluginExtension.getLanguageID(grammar);
-    _builder.append(_languageID_3, "      \t");
-    _builder.append("\" factoryClass=\"");
-    String _extensionFactoryName_2 = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
-    _builder.append(_extensionFactoryName_2, "      \t");
-    _builder.append("\" implementationClass=\"org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider\"/>");
+    _builder.append("\t\t");
+    String _name_3 = BaseXtextFindUsageProvider.class.getName();
+    CharSequence _compileExtension_3 = this.compileExtension(grammar, "lang.findUsagesProvider", _name_3);
+    _builder.append(_compileExtension_3, "\t\t");
     _builder.newLineIfNotEmpty();
-    _builder.append("      \t");
-    _builder.append("<lang.refactoringSupport language=\"");
-    String _languageID_4 = this._ideaPluginExtension.getLanguageID(grammar);
-    _builder.append(_languageID_4, "      \t");
-    _builder.append("\" factoryClass=\"");
-    String _extensionFactoryName_3 = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
-    _builder.append(_extensionFactoryName_3, "      \t");
-    _builder.append("\" implementationClass=\"org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider\"/>");
+    _builder.append("\t\t");
+    String _name_4 = BaseXtextRefactoringSupportProvider.class.getName();
+    CharSequence _compileExtension_4 = this.compileExtension(grammar, "lang.refactoringSupport", _name_4);
+    _builder.append(_compileExtension_4, "\t\t");
     _builder.newLineIfNotEmpty();
     _builder.append("      \t");
     _builder.append("<lang.syntaxHighlighterFactory key=\"");
-    String _languageID_5 = this._ideaPluginExtension.getLanguageID(grammar);
-    _builder.append(_languageID_5, "      \t");
+    String _languageID_1 = this._ideaPluginExtension.getLanguageID(grammar);
+    _builder.append(_languageID_1, "      \t");
     _builder.append("\" implementationClass=\"");
     String _syntaxHighlighterFactoryName = this._ideaPluginClassNames.getSyntaxHighlighterFactoryName(grammar);
     _builder.append(_syntaxHighlighterFactoryName, "      \t");
     _builder.append("\" />");
     _builder.newLineIfNotEmpty();
     _builder.append("      \t");
-    _builder.append("<annotator language=\"");
-    String _languageID_6 = this._ideaPluginExtension.getLanguageID(grammar);
-    _builder.append(_languageID_6, "      \t");
-    _builder.append("\" factoryClass=\"");
-    String _extensionFactoryName_4 = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
-    _builder.append(_extensionFactoryName_4, "      \t");
-    _builder.append("\" implementationClass=\"org.eclipse.xtext.idea.annotation.IssueAnnotator\"/>");
+    String _name_5 = IssueAnnotator.class.getName();
+    CharSequence _compileExtension_5 = this.compileExtension(grammar, "annotator", _name_5);
+    _builder.append(_compileExtension_5, "      \t");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
     _builder.append("</extensions>");
@@ -1249,6 +1248,29 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.newLine();
     _builder.append("</idea-plugin>");
     _builder.newLine();
+    return _builder;
+  }
+  
+  public CharSequence compileExtension(final Grammar grammar, final String extensionPointId, final String implementationClass) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("<");
+    _builder.append(extensionPointId, "");
+    _builder.append(" language=\"");
+    String _languageID = this._ideaPluginExtension.getLanguageID(grammar);
+    _builder.append(_languageID, "");
+    _builder.append("\"");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t\t\t\t\t");
+    _builder.append("factoryClass=\"");
+    String _extensionFactoryName = this._ideaPluginClassNames.getExtensionFactoryName(grammar);
+    _builder.append(_extensionFactoryName, "\t\t\t\t\t\t");
+    _builder.append("\"");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t\t\t\t\t");
+    _builder.append("implementationClass=\"");
+    _builder.append(implementationClass, "\t\t\t\t\t\t");
+    _builder.append("\"/>");
+    _builder.newLineIfNotEmpty();
     return _builder;
   }
   

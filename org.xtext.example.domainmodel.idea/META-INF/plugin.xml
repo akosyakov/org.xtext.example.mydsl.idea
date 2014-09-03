@@ -18,20 +18,30 @@
 		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.psi.stubindex.DomainmodelPsiNamedEObjectIndex"/>
 		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeShortNameIndex"/>
 		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeFullClassNameIndex"/>
-		
+
 		<referencesSearch implementation="org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch"/>
-		<targetElementEvaluator language="org.xtext.example.domainmodel.Domainmodel" 
-								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" 
-								implementationClass="org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator" />
+		<targetElementEvaluator language="org.xtext.example.domainmodel.Domainmodel"
+								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator"/>
 
 		<fileTypeFactory implementation="org.xtext.example.domainmodel.idea.lang.DomainmodelFileTypeFactory"/>
 		<stubElementTypeHolder class="org.xtext.example.domainmodel.idea.lang.DomainmodelElementTypeProvider"/>
-		<lang.ast.factory language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
-      	<lang.parserDefinition language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.xtext.example.domainmodel.idea.lang.parser.DomainmodelParserDefinition"/>
-      	<lang.findUsagesProvider language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
-      	<lang.refactoringSupport language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
+		<lang.ast.factory language="org.xtext.example.domainmodel.Domainmodel"
+								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
+		<lang.parserDefinition language="org.xtext.example.domainmodel.Domainmodel"
+								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
+								implementationClass="org.xtext.example.domainmodel.idea.lang.parser.DomainmodelParserDefinition"/>
+		<lang.findUsagesProvider language="org.xtext.example.domainmodel.Domainmodel"
+								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
+		<lang.refactoringSupport language="org.xtext.example.domainmodel.Domainmodel"
+								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
       	<lang.syntaxHighlighterFactory key="org.xtext.example.domainmodel.Domainmodel" implementationClass="org.xtext.example.domainmodel.idea.lang.DomainmodelSyntaxHighlighterFactory" />
-      	<annotator language="org.xtext.example.domainmodel.Domainmodel" factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory" implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
+      	<annotator language="org.xtext.example.domainmodel.Domainmodel"
+      							factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
+      							implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
 	</extensions>
 
 </idea-plugin>
