@@ -27,7 +27,7 @@ import org.eclipse.xtext.generator.Xtend2ExecutionContext
 import org.eclipse.xtext.generator.Xtend2GeneratorFragment
 import org.eclipse.xtext.idea.annotation.IssueAnnotator
 import org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider
-import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelCompleter
+import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelAssociator
 import org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator
 import org.eclipse.xtext.idea.lang.BaseXtextASTFactory
 import org.eclipse.xtext.idea.lang.IElementTypeProvider
@@ -48,7 +48,7 @@ import org.eclipse.xtext.psi.PsiNamedEObject
 import org.eclipse.xtext.psi.PsiNamedEObjectStub
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType
-import org.eclipse.xtext.xbase.jvmmodel.JvmModelCompleter
+import org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator
 
 class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	
@@ -134,7 +134,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		if (typesIntegrationRequired) {
 			bindFactory.addTypeToType(IJvmTypeProvider.Factory.name, StubTypeProviderFactory.name)
 			bindFactory.addTypeToType(AbstractTypeScopeProvider.name, StubBasedTypeScopeProvider.name)
-			bindFactory.addTypeToType(JvmModelCompleter.name, PsiJvmModelCompleter.name)
+			bindFactory.addTypeToType(JvmModelAssociator.name, PsiJvmModelAssociator.name)
 		}
 		val bindings = bindFactory.bindings
 		

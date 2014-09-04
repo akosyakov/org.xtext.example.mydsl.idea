@@ -10,25 +10,40 @@ import org.eclipse.xtext.idea.resource.impl.StubEObjectDescription;
 import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
+import com.google.inject.Singleton;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.tree.CompositeElement;
 
-public class PsiModelAssociations implements IPsiModelAssociations {
+@Singleton
+public class PsiModelAssociations implements IPsiModelAssociations, IPsiModelAssociator {
 	
 	public static class PsiAdapter extends AdapterImpl {
 		
-		private final PsiElement psiElement;
-
+		private PsiElement psiElement;
+		
 		private final CompositeElement composite;
 
-		public PsiAdapter(PsiElement psiElement) {
+		private final PsiElementProvider psiElementProvider;
+
+		public PsiAdapter(final PsiElement psiElement) {
+			this(new PsiElementProvider() {
+				
+				@Override
+				public PsiElement get() {
+					return psiElement;
+				}
+				
+			});
+		}
+
+		public PsiAdapter(PsiElementProvider psiElementProvider) {
 			this.composite = null;
-			this.psiElement = psiElement;
+			this.psiElementProvider = psiElementProvider;
 		}
 
 		public PsiAdapter(CompositeElement composite) {
-			this.psiElement = null;
 			this.composite = composite;
+			this.psiElementProvider = null;
 		}
 		
 		public CompositeElement getComposite() {
@@ -38,6 +53,9 @@ public class PsiModelAssociations implements IPsiModelAssociations {
 		public PsiElement getPsi() {
 			if (composite != null) {
 				return composite.getPsi();
+			}
+			if (psiElement == null && psiElementProvider != null) {
+				psiElement = psiElementProvider.get();
 			}
 			return psiElement;
 		}
@@ -107,5 +125,28 @@ public class PsiModelAssociations implements IPsiModelAssociations {
     	}
     	return element.getCrossReferenceDescription();
     }
+
+	@Override
+	public boolean associate(EObject eObject, PsiElementProvider psiElementProvider) {
+		if (eObject == null || psiElementProvider == null) {
+			return false;
+		}
+		if (PsiAdapter.get(eObject) != null) {
+			return false;
+		}
+		return eObject.eAdapters().add(new PsiAdapter(psiElementProvider));
+	}
+
+	@Override
+	public boolean associatePrimary(EObject eObject, PsiElementProvider psiElementProvider) {
+		if (eObject == null || psiElementProvider == null) {
+			return false;
+		}
+		PsiAdapter psiAdapter = PsiAdapter.get(eObject);
+		if (psiAdapter != null) {
+			eObject.eAdapters().remove(psiAdapter);
+		}
+		return eObject.eAdapters().add(new PsiAdapter(psiElementProvider));
+	}
 
 }

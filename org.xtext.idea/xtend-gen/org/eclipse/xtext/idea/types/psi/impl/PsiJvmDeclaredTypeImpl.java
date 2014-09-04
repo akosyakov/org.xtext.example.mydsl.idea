@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiJavaFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.light.AbstractLightClass;
 import java.util.Map;
 import java.util.Set;
@@ -48,24 +47,23 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
   
   private final PsiNamedEObject psiNamedEObject;
   
-  public PsiJvmDeclaredTypeImpl(final JvmDeclaredType declaredType, final PsiNamedEObject psiNamedEObject, final PsiManager manager, final Language language) {
-    this(declaredType.getQualifiedName(), declaredType.eClass(), psiNamedEObject, manager, language);
+  public PsiJvmDeclaredTypeImpl(final JvmDeclaredType declaredType, final PsiNamedEObject psiNamedEObject) {
+    this(declaredType.getQualifiedName(), declaredType.eClass(), psiNamedEObject);
   }
   
-  public PsiJvmDeclaredTypeImpl(final String qualifiedName, final EClass type, final PsiNamedEObject psiNamedEObject, final PsiManager manager, final Language language) {
-    super(manager, language);
-    if ((language instanceof IXtextLanguage)) {
-      ((IXtextLanguage)language).injectMembers(this);
-    }
+  public PsiJvmDeclaredTypeImpl(final String qualifiedName, final EClass type, final PsiNamedEObject psiNamedEObject) {
+    super(psiNamedEObject.getManager(), psiNamedEObject.getLanguage());
     this.type = type;
     this.qualifiedName = qualifiedName;
     this.psiNamedEObject = psiNamedEObject;
+    final Language language = this.getLanguage();
+    if ((language instanceof IXtextLanguage)) {
+      ((IXtextLanguage)language).injectMembers(this);
+    }
   }
   
   public PsiElement copy() {
-    PsiManager _manager = this.getManager();
-    Language _language = this.getLanguage();
-    return new PsiJvmDeclaredTypeImpl(this.qualifiedName, this.type, this.psiNamedEObject, _manager, _language);
+    return new PsiJvmDeclaredTypeImpl(this.qualifiedName, this.type, this.psiNamedEObject);
   }
   
   public PsiClass getDelegate() {

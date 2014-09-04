@@ -25,6 +25,7 @@ import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.psi.PsiModelAssociations;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
+import org.eclipse.xtext.resource.DerivedStateAwareResource;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 
@@ -89,7 +90,8 @@ public class BaseXtextPsiParser implements PsiParser {
 		PsiBuilder.Marker rootMarker = psiBuilder.mark();
 
 		BaseXtextFile containingFile = getContainingFile(psiBuilder);
-		ICompositeNode rootNode = getRootNode(containingFile);
+		Resource resource = containingFile.createResource();
+		ICompositeNode rootNode = getRootNode(resource);
 		if (rootNode != null) {
 			parse(rootNode, new ParsingContext(psiBuilder, containingFile));
 		}
@@ -100,11 +102,17 @@ public class BaseXtextPsiParser implements PsiParser {
 		
 		rootMarker.done(rootType);
 		
-		return psiBuilder.getTreeBuilt();
+		try {
+			return psiBuilder.getTreeBuilt();
+		} finally {
+			if (resource instanceof DerivedStateAwareResource) {
+	        	DerivedStateAwareResource derivedStateAwareResource = (DerivedStateAwareResource) resource;
+	        	derivedStateAwareResource.installDerivedState(true);
+	        }
+		}
 	}
 
-	protected ICompositeNode getRootNode(BaseXtextFile containingFile) {
-		Resource resource = containingFile.createResource();
+	protected ICompositeNode getRootNode(Resource resource) {
 		if (resource == null) {
 			return null;
 		}

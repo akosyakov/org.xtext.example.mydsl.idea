@@ -2,12 +2,10 @@ package org.eclipse.xtext.idea.types.psi.impl
 
 import com.google.inject.Inject
 import com.intellij.ide.highlighter.JavaFileType
-import com.intellij.lang.Language
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiJavaFile
-import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.light.AbstractLightClass
 import java.util.Collections
 import java.util.List
@@ -42,22 +40,23 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 	
 	val PsiNamedEObject psiNamedEObject
 
-	new(JvmDeclaredType declaredType, PsiNamedEObject psiNamedEObject, PsiManager manager, Language language) {
-		this(declaredType.qualifiedName, declaredType.eClass, psiNamedEObject, manager, language)
+	new(JvmDeclaredType declaredType, PsiNamedEObject psiNamedEObject) {
+		this(declaredType.qualifiedName, declaredType.eClass, psiNamedEObject)
 	}
 
-	new(String qualifiedName, EClass type, PsiNamedEObject psiNamedEObject, PsiManager manager, Language language) {
-		super(manager, language)
-		if (language instanceof IXtextLanguage) {
-			language.injectMembers(this)
-		}
+	new(String qualifiedName, EClass type, PsiNamedEObject psiNamedEObject) {
+		super(psiNamedEObject.manager, psiNamedEObject.language)
 		this.type = type
 		this.qualifiedName = qualifiedName
 		this.psiNamedEObject = psiNamedEObject
+		val language = language
+		if (language instanceof IXtextLanguage) {
+			language.injectMembers(this)
+		}
 	}
 
 	override copy() {
-		new PsiJvmDeclaredTypeImpl(qualifiedName, type, psiNamedEObject, manager, language)
+		new PsiJvmDeclaredTypeImpl(qualifiedName, type, psiNamedEObject)
 	}
 
 	override getDelegate() {

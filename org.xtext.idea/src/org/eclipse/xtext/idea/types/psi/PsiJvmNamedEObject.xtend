@@ -10,6 +10,6 @@ interface PsiJvmNamedEObject extends PsiNamedEObject<PsiJvmNamedEObjectStub> {
 	
 	def List<PsiJvmDeclaredType> findClassesByName(String shortName)
 	
-	def List<PsiJvmDeclaredType> getClasses() 
+	def List<PsiJvmDeclaredType> getClasses()
 	
 }

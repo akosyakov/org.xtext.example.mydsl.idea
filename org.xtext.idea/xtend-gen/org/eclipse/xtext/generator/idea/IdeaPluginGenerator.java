@@ -41,7 +41,7 @@ import org.eclipse.xtext.generator.idea.IdeaPluginExtension;
 import org.eclipse.xtext.generator.idea.TokenTypeProvider;
 import org.eclipse.xtext.idea.annotation.IssueAnnotator;
 import org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider;
-import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelCompleter;
+import org.eclipse.xtext.idea.jvmmodel.PsiJvmModelAssociator;
 import org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator;
 import org.eclipse.xtext.idea.lang.BaseXtextASTFactory;
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
@@ -62,7 +62,7 @@ import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType;
-import org.eclipse.xtext.xbase.jvmmodel.JvmModelCompleter;
+import org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.Extension;
@@ -276,8 +276,8 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
       String _name_15 = AbstractTypeScopeProvider.class.getName();
       String _name_16 = StubBasedTypeScopeProvider.class.getName();
       bindFactory.addTypeToType(_name_15, _name_16);
-      String _name_17 = JvmModelCompleter.class.getName();
-      String _name_18 = PsiJvmModelCompleter.class.getName();
+      String _name_17 = JvmModelAssociator.class.getName();
+      String _name_18 = PsiJvmModelAssociator.class.getName();
       bindFactory.addTypeToType(_name_17, _name_18);
     }
     final Set<Binding> bindings = bindFactory.getBindings();
