@@ -41,6 +41,8 @@ public class StubBasedResourceDescriptions extends AbstractCompoundSelectable im
 	}
 
 	private Project project;
+
+	private Notifier context;
 	
 	@Inject
 	private Provider<StubResourceDescription> stubResourceDescriptionProvider;
@@ -51,6 +53,7 @@ public class StubBasedResourceDescriptions extends AbstractCompoundSelectable im
 		}
 		StubResourceDescription stubResourceDescription = stubResourceDescriptionProvider.get();
 		stubResourceDescription.setProject(project);
+		stubResourceDescription.setContext(context);
 		return singletonList((IResourceDescription) stubResourceDescription);
 	}
 
@@ -64,6 +67,7 @@ public class StubBasedResourceDescriptions extends AbstractCompoundSelectable im
 	}
 
 	public void setContext(Notifier ctx) {
+		this.context = ctx;
 		this.project = ProjectAdapter.getProject(ctx);
 	}
 

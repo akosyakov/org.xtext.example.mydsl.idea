@@ -25,6 +25,7 @@ import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.psi.PsiModelAssociations;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
+import org.eclipse.xtext.resource.CompilerPhases;
 import org.eclipse.xtext.resource.DerivedStateAwareResource;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
@@ -40,6 +41,9 @@ import com.intellij.psi.impl.source.tree.CompositeElement;
 import com.intellij.psi.tree.IElementType;
 
 public class BaseXtextPsiParser implements PsiParser {
+	
+	@Inject
+	private CompilerPhases compilerPhases;
 	
 	@Inject
 	private IElementTypeProvider elementTypeProvider;
@@ -105,10 +109,20 @@ public class BaseXtextPsiParser implements PsiParser {
 		try {
 			return psiBuilder.getTreeBuilt();
 		} finally {
-			if (resource instanceof DerivedStateAwareResource) {
-	        	DerivedStateAwareResource derivedStateAwareResource = (DerivedStateAwareResource) resource;
-	        	derivedStateAwareResource.installDerivedState(true);
-	        }
+			installDerivedState(resource);
+		}
+	}
+
+	protected void installDerivedState(Resource resource) {
+		if (resource instanceof DerivedStateAwareResource) {
+			try {
+				compilerPhases.setIndexing(resource, true);
+				
+				DerivedStateAwareResource derivedStateAwareResource = (DerivedStateAwareResource) resource;
+				derivedStateAwareResource.installDerivedState(true);
+			} finally {
+				compilerPhases.setIndexing(resource, false);
+			}
 		}
 	}
 

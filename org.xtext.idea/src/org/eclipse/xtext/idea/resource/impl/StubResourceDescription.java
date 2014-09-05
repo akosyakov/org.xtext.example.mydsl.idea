@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
+import org.eclipse.xtext.resource.CompilerPhases;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IReferenceDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
@@ -26,14 +28,23 @@ import com.intellij.util.Processor;
 public class StubResourceDescription extends AbstractResourceDescription implements IResourceDescription {
 	
 	public static final URI STUB_URI = URI.createURI("stub");
+	
+	@Inject
+	private CompilerPhases compilerPhases;
 
 	@Inject
 	private PsiNamedEObjectIndex psiNamedEObjectIndex;
 	
 	private Project project;
 	
+	private Notifier context;
+	
 	public void setProject(Project project) {
 		this.project = project;
+	}
+	
+	public void setContext(Notifier context) {
+		this.context = context;
 	}
 
 	public Iterable<QualifiedName> getImportedNames() {
@@ -52,7 +63,7 @@ public class StubResourceDescription extends AbstractResourceDescription impleme
 	protected List<IEObjectDescription> computeExportedObjects() {
 		try {
 			final List<IEObjectDescription> allDescriptions = new ArrayList<IEObjectDescription>();
-			if (!DumbService.isDumb(project)) {
+			if (!isIndexing()) {
 				final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(project);
 				psiNamedEObjectIndex.processAllKeys(project, new Processor<String>() {
 					
@@ -70,6 +81,13 @@ public class StubResourceDescription extends AbstractResourceDescription impleme
 		} catch (ProcessCanceledException e) {
 			throw ProcessCanceledExceptionHandling.wrappedReThrow(e);
 		}
+	}
+
+	protected boolean isIndexing() {
+		if (compilerPhases.isIndexing(context)) {
+			return true;
+		}
+		return DumbService.isDumb(project);
 	}
 	
 }
