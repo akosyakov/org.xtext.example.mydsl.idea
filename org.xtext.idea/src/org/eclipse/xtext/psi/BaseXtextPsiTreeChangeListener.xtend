@@ -1,0 +1,43 @@
+package org.eclipse.xtext.psi
+
+import com.intellij.psi.impl.PsiModificationTrackerImpl
+import com.intellij.psi.impl.PsiTreeChangeEventImpl
+import com.intellij.psi.impl.PsiTreeChangePreprocessor
+import com.intellij.psi.util.PsiModificationTracker
+import org.eclipse.xtext.idea.lang.IXtextLanguage
+import org.eclipse.xtend.lib.annotations.Accessors
+
+class BaseXtextCodeBlockModificationListener implements PsiTreeChangePreprocessor {
+
+	@Accessors(PROTECTED_GETTER)
+	val IXtextLanguage language
+
+	@Accessors(PROTECTED_GETTER)
+	val PsiModificationTrackerImpl psiModificationTracker
+
+	new(IXtextLanguage language, PsiModificationTracker psiModificationTracker) {
+		this.language = language
+		language.injectMembers(this)
+
+		this.psiModificationTracker = psiModificationTracker as PsiModificationTrackerImpl
+	}
+
+	override treeChanged(PsiTreeChangeEventImpl event) {
+		if (event.file?.language == language && event.hasStructuralChanges) {
+			if (event.hasJavaStructuralChanges) {
+				psiModificationTracker.incCounter
+			} else {
+				psiModificationTracker.incOutOfCodeBlockModificationCounter
+			}
+		}
+	}
+
+	protected def boolean hasStructuralChanges(PsiTreeChangeEventImpl event) {
+		event.genericChange
+	}
+
+	protected def boolean hasJavaStructuralChanges(PsiTreeChangeEventImpl event) {
+		false
+	}
+
+}

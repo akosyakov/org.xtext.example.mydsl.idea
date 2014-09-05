@@ -18,7 +18,9 @@
 		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.psi.stubindex.DomainmodelPsiNamedEObjectIndex"/>
 		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeShortNameIndex"/>
 		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeFullClassNameIndex"/>
-
+		
+		<psi.treeChangePreprocessor implementation="org.xtext.example.domainmodel.idea.lang.psi.DomainmodelCodeBlockModificationListener"/>
+		
 		<referencesSearch implementation="org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch"/>
 		<targetElementEvaluator language="org.xtext.example.domainmodel.Domainmodel"
 								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
