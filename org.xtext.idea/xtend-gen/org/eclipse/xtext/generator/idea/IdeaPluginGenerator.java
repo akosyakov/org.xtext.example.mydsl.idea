@@ -10,8 +10,10 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.impl.PsiTreeChangeEventImpl;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubIndexKey;
+import com.intellij.psi.util.PsiModificationTracker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +60,7 @@ import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub;
 import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
+import org.eclipse.xtext.psi.BaseXtextCodeBlockModificationListener;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex;
@@ -345,23 +348,27 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     String _xtendPath_1 = this._ideaPluginClassNames.toXtendPath(_psiNamedEObjectIndexName_1);
     CharSequence _compilePsiNamedEObjectIndex = this.compilePsiNamedEObjectIndex(grammar);
     ctx.writeFile(outlet_src_gen, _xtendPath_1, _compilePsiNamedEObjectIndex);
+    String _codeBlockModificationListenerName = this._ideaPluginClassNames.getCodeBlockModificationListenerName(grammar);
+    String _xtendPath_2 = this._ideaPluginClassNames.toXtendPath(_codeBlockModificationListenerName);
+    CharSequence _compileCodeBlockModificationListener = this.compileCodeBlockModificationListener(grammar);
+    ctx.writeFile(outlet_src_gen, _xtendPath_2, _compileCodeBlockModificationListener);
     if (this.typesIntegrationRequired) {
       String _jvmDeclaredTypeShortNameIndexName_1 = this._ideaPluginClassNames.getJvmDeclaredTypeShortNameIndexName(grammar);
-      String _xtendPath_2 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeShortNameIndexName_1);
+      String _xtendPath_3 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeShortNameIndexName_1);
       CharSequence _compilejvmDeclaredTypeShortNameIndex = this.compilejvmDeclaredTypeShortNameIndex(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_2, _compilejvmDeclaredTypeShortNameIndex);
+      ctx.writeFile(outlet_src_gen, _xtendPath_3, _compilejvmDeclaredTypeShortNameIndex);
       String _jvmDeclaredTypeFullClassNameIndexName_1 = this._ideaPluginClassNames.getJvmDeclaredTypeFullClassNameIndexName(grammar);
-      String _xtendPath_3 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeFullClassNameIndexName_1);
+      String _xtendPath_4 = this._ideaPluginClassNames.toXtendPath(_jvmDeclaredTypeFullClassNameIndexName_1);
       CharSequence _compileJvmDeclaredTypeFullClassNameIndex = this.compileJvmDeclaredTypeFullClassNameIndex(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_3, _compileJvmDeclaredTypeFullClassNameIndex);
+      ctx.writeFile(outlet_src_gen, _xtendPath_4, _compileJvmDeclaredTypeFullClassNameIndex);
       String _jvmTypesElementFinderName = this._ideaPluginClassNames.getJvmTypesElementFinderName(grammar);
-      String _xtendPath_4 = this._ideaPluginClassNames.toXtendPath(_jvmTypesElementFinderName);
+      String _xtendPath_5 = this._ideaPluginClassNames.toXtendPath(_jvmTypesElementFinderName);
       CharSequence _compileJvmTypesElementFinder = this.compileJvmTypesElementFinder(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_4, _compileJvmTypesElementFinder);
+      ctx.writeFile(outlet_src_gen, _xtendPath_5, _compileJvmTypesElementFinder);
       String _jvmTypesShortNamesCacheName = this._ideaPluginClassNames.getJvmTypesShortNamesCacheName(grammar);
-      String _xtendPath_5 = this._ideaPluginClassNames.toXtendPath(_jvmTypesShortNamesCacheName);
+      String _xtendPath_6 = this._ideaPluginClassNames.toXtendPath(_jvmTypesShortNamesCacheName);
       CharSequence _compileJvmTypesShortNamesCache = this.compileJvmTypesShortNamesCache(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_5, _compileJvmTypesShortNamesCache);
+      ctx.writeFile(outlet_src_gen, _xtendPath_6, _compileJvmTypesShortNamesCache);
     }
     boolean _notEquals_1 = (!Objects.equal(this.pathIdeaPluginProject, null));
     if (_notEquals_1) {
@@ -845,6 +852,84 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     return _builder;
   }
   
+  public CharSequence compileCodeBlockModificationListener(final Grammar grammar) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("package ");
+    String _codeBlockModificationListenerName = this._ideaPluginClassNames.getCodeBlockModificationListenerName(grammar);
+    String _packageName = this._ideaPluginClassNames.toPackageName(_codeBlockModificationListenerName);
+    _builder.append(_packageName, "");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    {
+      if (this.typesIntegrationRequired) {
+        _builder.append("import ");
+        String _name = PsiTreeChangeEventImpl.class.getName();
+        _builder.append(_name, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    _builder.append("import ");
+    String _name_1 = PsiModificationTracker.class.getName();
+    _builder.append(_name_1, "");
+    _builder.newLineIfNotEmpty();
+    _builder.append("import ");
+    String _name_2 = BaseXtextCodeBlockModificationListener.class.getName();
+    _builder.append(_name_2, "");
+    _builder.newLineIfNotEmpty();
+    _builder.append("import ");
+    String _languageName = this._ideaPluginClassNames.getLanguageName(grammar);
+    _builder.append(_languageName, "");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("class ");
+    String _codeBlockModificationListenerName_1 = this._ideaPluginClassNames.getCodeBlockModificationListenerName(grammar);
+    String _simpleName = this._ideaPluginClassNames.toSimpleName(_codeBlockModificationListenerName_1);
+    _builder.append(_simpleName, "");
+    _builder.append(" extends ");
+    String _simpleName_1 = BaseXtextCodeBlockModificationListener.class.getSimpleName();
+    _builder.append(_simpleName_1, "");
+    _builder.append(" {");
+    _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("new(");
+    String _simpleName_2 = PsiModificationTracker.class.getSimpleName();
+    _builder.append(_simpleName_2, "\t");
+    _builder.append(" psiModificationTracker) {");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t");
+    _builder.append("super(");
+    String _languageName_1 = this._ideaPluginClassNames.getLanguageName(grammar);
+    String _simpleName_3 = this._ideaPluginClassNames.toSimpleName(_languageName_1);
+    _builder.append(_simpleName_3, "\t\t");
+    _builder.append(".INSTANCE, psiModificationTracker)");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("}");
+    _builder.newLine();
+    {
+      if (this.typesIntegrationRequired) {
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("override protected hasJavaStructuralChanges(");
+        String _simpleName_4 = PsiTreeChangeEventImpl.class.getSimpleName();
+        _builder.append(_simpleName_4, "\t");
+        _builder.append(" event) {");
+        _builder.newLineIfNotEmpty();
+        _builder.append("\t\t");
+        _builder.append("true");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("}");
+        _builder.newLine();
+      }
+    }
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    return _builder;
+  }
+  
   public CharSequence compileJvmTypesShortNamesCache(final Grammar grammar) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("package ");
@@ -1179,6 +1264,13 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
         _builder.newLineIfNotEmpty();
       }
     }
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.append("<psi.treeChangePreprocessor implementation=\"");
+    String _codeBlockModificationListenerName = this._ideaPluginClassNames.getCodeBlockModificationListenerName(grammar);
+    _builder.append(_codeBlockModificationListenerName, "\t\t");
+    _builder.append("\"/>");
+    _builder.newLineIfNotEmpty();
     {
       if (this.typesIntegrationRequired) {
         _builder.newLine();

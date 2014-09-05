@@ -6,13 +6,13 @@ import org.eclipse.xtext.psi.BaseXtextCodeBlockModificationListener
 import org.xtext.example.domainmodel.idea.lang.DomainmodelLanguage
 
 class DomainmodelCodeBlockModificationListener extends BaseXtextCodeBlockModificationListener {
-	
+
 	new(PsiModificationTracker psiModificationTracker) {
 		super(DomainmodelLanguage.INSTANCE, psiModificationTracker)
 	}
-	
+
 	override protected hasJavaStructuralChanges(PsiTreeChangeEventImpl event) {
 		true
 	}
-	
+
 }

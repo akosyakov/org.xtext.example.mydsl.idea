@@ -9,7 +9,9 @@ import com.intellij.lexer.Lexer
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.project.Project
+import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.stubs.StubIndexKey
+import com.intellij.psi.util.PsiModificationTracker
 import java.util.Set
 import javax.inject.Inject
 import org.eclipse.xpand2.output.Outlet
@@ -44,6 +46,7 @@ import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub
 import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex
+import org.eclipse.xtext.psi.BaseXtextCodeBlockModificationListener
 import org.eclipse.xtext.psi.PsiNamedEObject
 import org.eclipse.xtext.psi.PsiNamedEObjectStub
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex
@@ -154,6 +157,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		ctx.writeFile(outlet_src_gen, grammar.extensionFactoryName.toJavaPath, grammar.compileExtensionFactory)
 		ctx.writeFile(outlet_src_gen, grammar.buildProcessParametersProviderName.toXtendPath, grammar.compileBuildProcessParametersProvider)
 		ctx.writeFile(outlet_src_gen, grammar.psiNamedEObjectIndexName.toXtendPath, grammar.compilePsiNamedEObjectIndex)
+		ctx.writeFile(outlet_src_gen, grammar.codeBlockModificationListenerName.toXtendPath, grammar.compileCodeBlockModificationListener)
 		if (typesIntegrationRequired) {
 			ctx.writeFile(outlet_src_gen, grammar.jvmDeclaredTypeShortNameIndexName.toXtendPath, grammar.compilejvmDeclaredTypeShortNameIndex)
 			ctx.writeFile(outlet_src_gen, grammar.jvmDeclaredTypeFullClassNameIndexName.toXtendPath, grammar.compileJvmDeclaredTypeFullClassNameIndex)
@@ -276,6 +280,31 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			new() {
 				super(«grammar.languageName.toSimpleName».INSTANCE)
 			}
+		
+		}
+	'''
+	
+	def compileCodeBlockModificationListener(Grammar grammar) '''
+		package «grammar.codeBlockModificationListenerName.toPackageName»
+		
+		«IF typesIntegrationRequired»
+		import «PsiTreeChangeEventImpl.name»
+		«ENDIF»
+		import «PsiModificationTracker.name»
+		import «BaseXtextCodeBlockModificationListener.name»
+		import «grammar.languageName»
+		
+		class «grammar.codeBlockModificationListenerName.toSimpleName» extends «BaseXtextCodeBlockModificationListener.simpleName» {
+		
+			new(«PsiModificationTracker.simpleName» psiModificationTracker) {
+				super(«grammar.languageName.toSimpleName».INSTANCE, psiModificationTracker)
+			}
+		«IF typesIntegrationRequired»
+		
+			override protected hasJavaStructuralChanges(«PsiTreeChangeEventImpl.simpleName» event) {
+				true
+			}
+		«ENDIF»
 		
 		}
 	'''
@@ -404,6 +433,8 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 				<stubIndex implementation="«grammar.jvmDeclaredTypeShortNameIndexName»"/>
 				<stubIndex implementation="«grammar.jvmDeclaredTypeFullClassNameIndexName»"/>
 		      	«ENDIF»
+		
+				<psi.treeChangePreprocessor implementation="«grammar.codeBlockModificationListenerName»"/>
 				«IF typesIntegrationRequired»
 
 				<referencesSearch implementation="«JvmTypesReferencesSearch.name»"/>

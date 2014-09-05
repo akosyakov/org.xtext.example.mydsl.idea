@@ -69,6 +69,10 @@ class IdeaPluginClassNames {
 		basePackageName+'.lang.psi.stubindex.'+it.name.toSimpleName+'PsiNamedEObjectIndex'
 	}
 	
+	def String getCodeBlockModificationListenerName(Grammar it) {
+		basePackageName+'.lang.psi.'+it.name.toSimpleName+'CodeBlockModificationListener'
+	}
+	
 	def String getJvmDeclaredTypeShortNameIndexName(Grammar it) {
 		basePackageName+'.lang.types.stubindex.'+it.name.toSimpleName+'JvmDeclaredTypeShortNameIndex'
 	}
