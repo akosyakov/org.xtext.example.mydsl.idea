@@ -50,8 +50,27 @@ public class BaseXtextCodeBlockModificationListener implements PsiTreeChangePrep
     }
   }
   
-  protected boolean hasStructuralChanges(final PsiTreeChangeEventImpl event) {
-    return event.isGenericChange();
+  protected boolean hasStructuralChanges(final PsiTreeChangeEventImpl it) {
+    boolean _switchResult = false;
+    PsiTreeChangeEventImpl.PsiEventType _code = it.getCode();
+    if (_code != null) {
+      switch (_code) {
+        case CHILD_ADDED:
+        case CHILD_REMOVED:
+        case CHILD_REPLACED:
+        case CHILD_MOVED:
+        case CHILDREN_CHANGED:
+        case PROPERTY_CHANGED:
+          _switchResult = it.isGenericChange();
+          break;
+        default:
+          _switchResult = false;
+          break;
+      }
+    } else {
+      _switchResult = false;
+    }
+    return _switchResult;
   }
   
   protected boolean hasJavaStructuralChanges(final PsiTreeChangeEventImpl event) {

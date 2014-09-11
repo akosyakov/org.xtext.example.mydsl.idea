@@ -1,0 +1,49 @@
+<idea-plugin version="2">
+	<id>org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage</id>
+	<name>RefactoringTestLanguage Support</name>
+	<description>
+      This plugin enables smart editing of RefactoringTestLanguage files.
+	</description>
+	<version>1.0.0</version>
+	<vendor>My Company</vendor>
+
+	<idea-version since-build="131"/>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<buildProcess.parametersProvider implementation="org.eclipse.xtext.common.types.xtext.ui.idea.server.RefactoringTestLanguageBuildProcessParametersProvider"/>
+		
+		<java.elementFinder implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.psi.RefactoringTestLanguageJvmTypesElementFinder"/>
+		<java.shortNamesCache implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.RefactoringTestLanguageJvmTypesShortNamesCache"/>
+		
+		<stubIndex implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.stubindex.RefactoringTestLanguagePsiNamedEObjectIndex"/>
+		<stubIndex implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.stubindex.RefactoringTestLanguageJvmDeclaredTypeShortNameIndex"/>
+		<stubIndex implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.stubindex.RefactoringTestLanguageJvmDeclaredTypeFullClassNameIndex"/>
+
+		<psi.treeChangePreprocessor implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.RefactoringTestLanguageCodeBlockModificationListener"/>
+
+		<referencesSearch implementation="org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch"/>
+		<targetElementEvaluator language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
+								factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator"/>
+
+		<fileTypeFactory implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.RefactoringTestLanguageFileTypeFactory"/>
+		<stubElementTypeHolder class="org.eclipse.xtext.common.types.xtext.ui.idea.lang.RefactoringTestLanguageElementTypeProvider"/>
+		<lang.ast.factory language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
+								factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"/>
+		<lang.parserDefinition language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
+								factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
+								implementationClass="org.eclipse.xtext.common.types.xtext.ui.idea.lang.parser.RefactoringTestLanguageParserDefinition"/>
+		<lang.findUsagesProvider language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
+								factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"/>
+		<lang.refactoringSupport language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
+								factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
+								implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"/>
+      	<lang.syntaxHighlighterFactory key="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage" implementationClass="org.eclipse.xtext.common.types.xtext.ui.idea.lang.RefactoringTestLanguageSyntaxHighlighterFactory" />
+      	<annotator language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
+      							factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
+      							implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"/>
+	</extensions>
+
+</idea-plugin>

@@ -4,8 +4,8 @@ import com.intellij.psi.impl.PsiModificationTrackerImpl
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import com.intellij.psi.util.PsiModificationTracker
-import org.eclipse.xtext.idea.lang.IXtextLanguage
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.eclipse.xtext.idea.lang.IXtextLanguage
 
 class BaseXtextCodeBlockModificationListener implements PsiTreeChangePreprocessor {
 
@@ -32,8 +32,16 @@ class BaseXtextCodeBlockModificationListener implements PsiTreeChangePreprocesso
 		}
 	}
 
-	protected def boolean hasStructuralChanges(PsiTreeChangeEventImpl event) {
-		event.genericChange
+	protected def boolean hasStructuralChanges(PsiTreeChangeEventImpl it) {
+		switch code {
+			case CHILD_ADDED,
+			case CHILD_REMOVED,
+			case CHILD_REPLACED,
+			case CHILD_MOVED,
+			case CHILDREN_CHANGED,
+			case PROPERTY_CHANGED: genericChange
+			default: false
+		}
 	}
 
 	protected def boolean hasJavaStructuralChanges(PsiTreeChangeEventImpl event) {
