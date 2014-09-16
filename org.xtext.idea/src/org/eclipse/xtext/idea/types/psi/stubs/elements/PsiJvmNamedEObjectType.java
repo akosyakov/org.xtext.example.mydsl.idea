@@ -97,7 +97,7 @@ public class PsiJvmNamedEObjectType extends IStubElementType<PsiJvmNamedEObjectS
 		return stubImpl;
 	}
 
-	protected List<PsiJvmDeclaredTypeDTO> readJvmDeclaredTypes(StubInputStream dataStream, PsiJvmNamedEObject psiJvmNamedEObject, StubElement parentStub) throws IOException {
+	protected List<PsiJvmDeclaredTypeDTO> readJvmDeclaredTypes(StubInputStream dataStream, PsiJvmNamedEObject psiJvmNamedEObject, StubElement<?> parentStub) throws IOException {
 		List<PsiJvmDeclaredTypeDTO> jvmDeclaredTypes = Lists.newArrayList();
 		int count = dataStream.readInt();
 		for (int i = 0; i < count; i++) {
@@ -151,7 +151,7 @@ public class PsiJvmNamedEObjectType extends IStubElementType<PsiJvmNamedEObjectS
 	public boolean shouldCreateStub(ASTNode node) {
 		PsiElement psiElement = node.getPsi();
 		if (psiElement instanceof PsiNamedEObject) {
-			final PsiNamedEObject namedEObject = (PsiNamedEObject) psiElement;
+			final PsiNamedEObject<?> namedEObject = (PsiNamedEObject<?>) psiElement;
 			namedEObject.setQualifiedName(null);
 			resourceDescriptionStrategy.createEObjectDescriptions(namedEObject.getEObject(), new IAcceptor<IEObjectDescription>() {
 				

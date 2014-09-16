@@ -5,3 +5,7 @@ target
 *.java._trace
 *.java_trace
 *.smap
+system
+index
+availables.xml
+config

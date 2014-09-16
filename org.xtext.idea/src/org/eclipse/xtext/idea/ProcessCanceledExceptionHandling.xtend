@@ -16,7 +16,7 @@ class ProcessCanceledExceptionHandling {
 	
 	def static RuntimeException unWrappedReThrow(Exception exception) {
 		if (exception instanceof WrappedException) {
-			throw exception.cause.cause	
+			throw exception.cause?.cause ?: exception.cause
 		}
 		if (exception instanceof CheckedProcessCanceledException) {
 			throw exception.cause

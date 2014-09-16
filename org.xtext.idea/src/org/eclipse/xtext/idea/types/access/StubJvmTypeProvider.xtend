@@ -17,6 +17,7 @@ import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess
 import org.eclipse.xtext.common.types.access.impl.URIHelperConstants
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
+import com.intellij.openapi.progress.ProgressIndicatorProvider
 
 class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	
@@ -52,13 +53,14 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 		}
 		new PsiClassMirror(psiClass, psiClassFactory)
 	}
-	
+
 	override findTypeByName(String name) {
 		findTypeByName(name, true)
 	} 
 	
 	override findTypeByName(String name, boolean binaryNestedTypeDelimiter) {
-		val normalizedName = name.nozmalize
+		ProgressIndicatorProvider.checkCanceled
+		val normalizedName = name.normalize
 		val indexedJvmTypeAccess = indexedJvmTypeAccess
 		val resourceURI = normalizedName.createResourceURI
 		if (indexedJvmTypeAccess != null) {
@@ -68,11 +70,12 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 				return candidate
 			}
 		}
+		ProgressIndicatorProvider.checkCanceled
 		val result = resourceSet.getResource(resourceURI, true)
 		normalizedName.findTypeByClass(result)
 	}
 	
-	protected def nozmalize(String name) {
+	protected def normalize(String name) {
 		if (name.startsWith('[')) {
 			SignatureParsing.parseTypeString(new StringCharacterIterator(name))
 		} else {

@@ -2,6 +2,7 @@ package org.eclipse.xtext.idea.types.access;
 
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
+import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiAnnotationMemberValue;
@@ -129,6 +130,7 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
   protected JvmDeclaredType createType(final PsiClass psiClass, final StringBuilder fqn) {
     JvmDeclaredType _xblockexpression = null;
     {
+      ProgressIndicatorProvider.checkCanceled();
       boolean _or = false;
       boolean _isAnonymous = this.isAnonymous(psiClass);
       if (_isAnonymous) {
@@ -171,6 +173,7 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
       }
       final Procedure1<JvmDeclaredType> _function_1 = new Procedure1<JvmDeclaredType>() {
         public void apply(final JvmDeclaredType it) {
+          ProgressIndicatorProvider.checkCanceled();
           PsiClassFactory.this.setTypeModifiers(it, psiClass);
           PsiClassFactory.this.setVisibility(it, psiClass);
           boolean _isDeprecated = psiClass.isDeprecated();
@@ -217,59 +220,64 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
   }
   
   protected Object createField(final PsiField field, final StringBuilder fqn) {
-    JvmField _switchResult = null;
-    boolean _matched = false;
-    if (!_matched) {
-      if (field instanceof PsiEnumConstant) {
-        _matched=true;
-        _switchResult = this._typesFactory.createJvmEnumerationLiteral();
+    JvmField _xblockexpression = null;
+    {
+      ProgressIndicatorProvider.checkCanceled();
+      JvmField _switchResult = null;
+      boolean _matched = false;
+      if (!_matched) {
+        if (field instanceof PsiEnumConstant) {
+          _matched=true;
+          _switchResult = this._typesFactory.createJvmEnumerationLiteral();
+        }
       }
-    }
-    if (!_matched) {
-      JvmField _createJvmField = this._typesFactory.createJvmField();
-      final Procedure1<JvmField> _function = new Procedure1<JvmField>() {
-        public void apply(final JvmField it) {
-          final Object value = field.computeConstantValue();
-          boolean _notEquals = (!Objects.equal(value, null));
-          if (_notEquals) {
-            it.setConstant(true);
-            it.setConstantValue(value);
-          } else {
-            it.setConstant(false);
+      if (!_matched) {
+        JvmField _createJvmField = this._typesFactory.createJvmField();
+        final Procedure1<JvmField> _function = new Procedure1<JvmField>() {
+          public void apply(final JvmField it) {
+            final Object value = field.computeConstantValue();
+            boolean _notEquals = (!Objects.equal(value, null));
+            if (_notEquals) {
+              it.setConstant(true);
+              it.setConstantValue(value);
+            } else {
+              it.setConstant(false);
+            }
           }
+        };
+        _switchResult = ObjectExtensions.<JvmField>operator_doubleArrow(_createJvmField, _function);
+      }
+      final Procedure1<JvmField> _function_1 = new Procedure1<JvmField>() {
+        public void apply(final JvmField it) {
+          String _name = field.getName();
+          StringBuilder _append = fqn.append(_name);
+          String _string = _append.toString();
+          it.internalSetIdentifier(_string);
+          String _name_1 = field.getName();
+          it.setSimpleName(_name_1);
+          PsiModifierList _modifierList = field.getModifierList();
+          boolean _hasModifierProperty = _modifierList.hasModifierProperty(PsiModifier.FINAL);
+          it.setFinal(_hasModifierProperty);
+          PsiModifierList _modifierList_1 = field.getModifierList();
+          boolean _hasModifierProperty_1 = _modifierList_1.hasModifierProperty(PsiModifier.STATIC);
+          it.setStatic(_hasModifierProperty_1);
+          PsiModifierList _modifierList_2 = field.getModifierList();
+          boolean _hasModifierProperty_2 = _modifierList_2.hasModifierProperty(PsiModifier.TRANSIENT);
+          it.setTransient(_hasModifierProperty_2);
+          PsiModifierList _modifierList_3 = field.getModifierList();
+          boolean _hasModifierProperty_3 = _modifierList_3.hasModifierProperty(PsiModifier.VOLATILE);
+          it.setVolatile(_hasModifierProperty_3);
+          boolean _isDeprecated = field.isDeprecated();
+          it.setDeprecated(_isDeprecated);
+          PsiClassFactory.this.setVisibility(it, field);
+          PsiType _type = field.getType();
+          JvmTypeReference _createTypeReference = PsiClassFactory.this.createTypeReference(_type);
+          it.setType(_createTypeReference);
         }
       };
-      _switchResult = ObjectExtensions.<JvmField>operator_doubleArrow(_createJvmField, _function);
+      _xblockexpression = ObjectExtensions.<JvmField>operator_doubleArrow(_switchResult, _function_1);
     }
-    final Procedure1<JvmField> _function_1 = new Procedure1<JvmField>() {
-      public void apply(final JvmField it) {
-        String _name = field.getName();
-        StringBuilder _append = fqn.append(_name);
-        String _string = _append.toString();
-        it.internalSetIdentifier(_string);
-        String _name_1 = field.getName();
-        it.setSimpleName(_name_1);
-        PsiModifierList _modifierList = field.getModifierList();
-        boolean _hasModifierProperty = _modifierList.hasModifierProperty(PsiModifier.FINAL);
-        it.setFinal(_hasModifierProperty);
-        PsiModifierList _modifierList_1 = field.getModifierList();
-        boolean _hasModifierProperty_1 = _modifierList_1.hasModifierProperty(PsiModifier.STATIC);
-        it.setStatic(_hasModifierProperty_1);
-        PsiModifierList _modifierList_2 = field.getModifierList();
-        boolean _hasModifierProperty_2 = _modifierList_2.hasModifierProperty(PsiModifier.TRANSIENT);
-        it.setTransient(_hasModifierProperty_2);
-        PsiModifierList _modifierList_3 = field.getModifierList();
-        boolean _hasModifierProperty_3 = _modifierList_3.hasModifierProperty(PsiModifier.VOLATILE);
-        it.setVolatile(_hasModifierProperty_3);
-        boolean _isDeprecated = field.isDeprecated();
-        it.setDeprecated(_isDeprecated);
-        PsiClassFactory.this.setVisibility(it, field);
-        PsiType _type = field.getType();
-        JvmTypeReference _createTypeReference = PsiClassFactory.this.createTypeReference(_type);
-        it.setType(_createTypeReference);
-      }
-    };
-    return ObjectExtensions.<JvmField>operator_doubleArrow(_switchResult, _function_1);
+    return _xblockexpression;
   }
   
   protected void createSuperTypes(final JvmDeclaredType it, final PsiClass psiClass) {
@@ -746,34 +754,39 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
   }
   
   protected JvmOperation createOperation(final PsiMethod method, final StringBuilder fqn) {
-    JvmOperation _createJvmOperation = this._typesFactory.createJvmOperation();
-    final Procedure1<JvmOperation> _function = new Procedure1<JvmOperation>() {
-      public void apply(final JvmOperation it) {
-        PsiClassFactory.this.enhanceExecutable(it, method, fqn);
-        PsiModifierList _modifierList = method.getModifierList();
-        boolean _hasModifierProperty = _modifierList.hasModifierProperty(PsiModifier.ABSTRACT);
-        it.setAbstract(_hasModifierProperty);
-        PsiModifierList _modifierList_1 = method.getModifierList();
-        boolean _hasModifierProperty_1 = _modifierList_1.hasModifierProperty(PsiModifier.FINAL);
-        it.setFinal(_hasModifierProperty_1);
-        PsiModifierList _modifierList_2 = method.getModifierList();
-        boolean _hasModifierProperty_2 = _modifierList_2.hasModifierProperty(PsiModifier.STATIC);
-        it.setStatic(_hasModifierProperty_2);
-        PsiModifierList _modifierList_3 = method.getModifierList();
-        boolean _hasModifierProperty_3 = _modifierList_3.hasModifierProperty(PsiModifier.STRICTFP);
-        it.setStrictFloatingPoint(_hasModifierProperty_3);
-        PsiModifierList _modifierList_4 = method.getModifierList();
-        boolean _hasModifierProperty_4 = _modifierList_4.hasModifierProperty(PsiModifier.SYNCHRONIZED);
-        it.setSynchronized(_hasModifierProperty_4);
-        PsiModifierList _modifierList_5 = method.getModifierList();
-        boolean _hasModifierProperty_5 = _modifierList_5.hasModifierProperty(PsiModifier.NATIVE);
-        it.setNative(_hasModifierProperty_5);
-        PsiType _returnType = method.getReturnType();
-        JvmTypeReference _createTypeReference = PsiClassFactory.this.createTypeReference(_returnType);
-        it.setReturnType(_createTypeReference);
-      }
-    };
-    return ObjectExtensions.<JvmOperation>operator_doubleArrow(_createJvmOperation, _function);
+    JvmOperation _xblockexpression = null;
+    {
+      ProgressIndicatorProvider.checkCanceled();
+      JvmOperation _createJvmOperation = this._typesFactory.createJvmOperation();
+      final Procedure1<JvmOperation> _function = new Procedure1<JvmOperation>() {
+        public void apply(final JvmOperation it) {
+          PsiClassFactory.this.enhanceExecutable(it, method, fqn);
+          PsiModifierList _modifierList = method.getModifierList();
+          boolean _hasModifierProperty = _modifierList.hasModifierProperty(PsiModifier.ABSTRACT);
+          it.setAbstract(_hasModifierProperty);
+          PsiModifierList _modifierList_1 = method.getModifierList();
+          boolean _hasModifierProperty_1 = _modifierList_1.hasModifierProperty(PsiModifier.FINAL);
+          it.setFinal(_hasModifierProperty_1);
+          PsiModifierList _modifierList_2 = method.getModifierList();
+          boolean _hasModifierProperty_2 = _modifierList_2.hasModifierProperty(PsiModifier.STATIC);
+          it.setStatic(_hasModifierProperty_2);
+          PsiModifierList _modifierList_3 = method.getModifierList();
+          boolean _hasModifierProperty_3 = _modifierList_3.hasModifierProperty(PsiModifier.STRICTFP);
+          it.setStrictFloatingPoint(_hasModifierProperty_3);
+          PsiModifierList _modifierList_4 = method.getModifierList();
+          boolean _hasModifierProperty_4 = _modifierList_4.hasModifierProperty(PsiModifier.SYNCHRONIZED);
+          it.setSynchronized(_hasModifierProperty_4);
+          PsiModifierList _modifierList_5 = method.getModifierList();
+          boolean _hasModifierProperty_5 = _modifierList_5.hasModifierProperty(PsiModifier.NATIVE);
+          it.setNative(_hasModifierProperty_5);
+          PsiType _returnType = method.getReturnType();
+          JvmTypeReference _createTypeReference = PsiClassFactory.this.createTypeReference(_returnType);
+          it.setReturnType(_createTypeReference);
+        }
+      };
+      _xblockexpression = ObjectExtensions.<JvmOperation>operator_doubleArrow(_createJvmOperation, _function);
+    }
+    return _xblockexpression;
   }
   
   protected void enhanceExecutable(final JvmExecutable it, final PsiMethod psiMethod, final StringBuilder fqn) {

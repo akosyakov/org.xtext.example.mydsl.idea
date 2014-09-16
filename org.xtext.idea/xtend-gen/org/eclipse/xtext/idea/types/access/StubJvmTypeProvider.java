@@ -1,6 +1,7 @@
 package org.eclipse.xtext.idea.types.access;
 
 import com.google.common.base.Objects;
+import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.impl.JavaPsiFacadeEx;
@@ -77,7 +78,8 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
   public JvmType findTypeByName(final String name, final boolean binaryNestedTypeDelimiter) {
     JvmType _xblockexpression = null;
     {
-      final String normalizedName = this.nozmalize(name);
+      ProgressIndicatorProvider.checkCanceled();
+      final String normalizedName = this.normalize(name);
       final IndexedJvmTypeAccess indexedJvmTypeAccess = this.getIndexedJvmTypeAccess();
       final URI resourceURI = this.uriHelper.createResourceURI(normalizedName);
       boolean _notEquals = (!Objects.equal(indexedJvmTypeAccess, null));
@@ -90,6 +92,7 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
           return ((JvmType)candidate);
         }
       }
+      ProgressIndicatorProvider.checkCanceled();
       ResourceSet _resourceSet_1 = this.getResourceSet();
       final Resource result = _resourceSet_1.getResource(resourceURI, true);
       _xblockexpression = this.findTypeByClass(normalizedName, result);
@@ -97,7 +100,7 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
     return _xblockexpression;
   }
   
-  protected String nozmalize(final String name) {
+  protected String normalize(final String name) {
     try {
       String _xifexpression = null;
       boolean _startsWith = name.startsWith("[");

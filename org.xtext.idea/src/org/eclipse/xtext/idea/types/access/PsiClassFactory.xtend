@@ -48,6 +48,7 @@ import org.eclipse.xtext.psi.PsiModelAssociations.PsiAdapter
 import org.eclipse.xtext.util.internal.Stopwatches
 import com.intellij.psi.PsiField
 import com.intellij.psi.PsiEnumConstant
+import com.intellij.openapi.progress.ProgressIndicatorProvider
 
 class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 
@@ -86,6 +87,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 	}
 	
 	protected def JvmDeclaredType createType(PsiClass psiClass, StringBuilder fqn) {
+		ProgressIndicatorProvider.checkCanceled
 		if (psiClass.anonymous || psiClass.synthetic) {
 			throw new IllegalStateException("Cannot create type for anonymous or synthetic classes")
 		}
@@ -98,6 +100,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 					strictFloatingPoint = psiClass.modifierList.hasModifierProperty(PsiModifier.STRICTFP)
 				]
 		} => [
+			ProgressIndicatorProvider.checkCanceled
 			setTypeModifiers(psiClass)
 			setVisibility(psiClass)
 			deprecated = psiClass.deprecated
@@ -128,6 +131,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 	}
 	
 	protected def Object createField(PsiField field, StringBuilder fqn) {
+		ProgressIndicatorProvider.checkCanceled
 		switch field {
 			PsiEnumConstant:
 				createJvmEnumerationLiteral
@@ -335,6 +339,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 	}
 	
 	protected def createOperation(PsiMethod method, StringBuilder fqn) {
+		ProgressIndicatorProvider.checkCanceled
 		createJvmOperation => [
 			enhanceExecutable(method, fqn)
 			abstract = method.modifierList.hasModifierProperty(PsiModifier.ABSTRACT)

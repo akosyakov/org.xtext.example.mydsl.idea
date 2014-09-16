@@ -54,6 +54,7 @@ public class IssueAnnotator implements Annotator {
 	}
 
 	protected List<Issue> getIssues(Resource resource, IResourceValidator resourceValidator) {
+		ProgressIndicatorProvider.checkCanceled();
 		try {
 			return resourceValidator.validate(resource, CheckMode.NORMAL_AND_FAST, new CancelIndicator() {
 				

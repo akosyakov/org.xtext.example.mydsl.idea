@@ -36,6 +36,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.lang.PsiParser;
+import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.psi.impl.source.resolve.FileContextUtil;
 import com.intellij.psi.impl.source.tree.CompositeElement;
 import com.intellij.psi.tree.IElementType;
@@ -90,16 +91,18 @@ public class BaseXtextPsiParser implements PsiParser {
 		
 	}
 	
+	
 	public ASTNode parse(IElementType rootType, PsiBuilder psiBuilder) {
 		PsiBuilder.Marker rootMarker = psiBuilder.mark();
-
+		checkCanceled();
 		BaseXtextFile containingFile = getContainingFile(psiBuilder);
 		Resource resource = containingFile.createResource();
+		checkCanceled();
 		ICompositeNode rootNode = getRootNode(resource);
 		if (rootNode != null) {
 			parse(rootNode, new ParsingContext(psiBuilder, containingFile));
 		}
-		
+		checkCanceled();
 		while(!psiBuilder.eof()) {
 			psiBuilder.advanceLexer();
 		}
@@ -109,8 +112,13 @@ public class BaseXtextPsiParser implements PsiParser {
 		try {
 			return psiBuilder.getTreeBuilt();
 		} finally {
+			checkCanceled();
 			installDerivedState(resource);
 		}
+	}
+	
+	private void checkCanceled() {
+		ProgressIndicatorProvider.checkCanceled();
 	}
 
 	protected void installDerivedState(Resource resource) {

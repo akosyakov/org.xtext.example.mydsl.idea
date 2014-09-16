@@ -64,6 +64,7 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
             return null;
         }
         EObject object = crossReferenceDescription.resolve();
+        ProgressIndicatorProvider.checkCanceled();
         return psiModelAssociations.getPsiElement(object);
 	}
 	
