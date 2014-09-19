@@ -1,5 +1,6 @@
 package org.eclipse.xtext.idea.types.access
 
+import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.impl.JavaPsiFacadeEx
@@ -15,9 +16,9 @@ import org.eclipse.xtext.common.types.access.impl.AbstractRuntimeJvmTypeProvider
 import org.eclipse.xtext.common.types.access.impl.ITypeFactory
 import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess
 import org.eclipse.xtext.common.types.access.impl.URIHelperConstants
+import org.eclipse.xtext.util.Strings
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
-import com.intellij.openapi.progress.ProgressIndicatorProvider
 
 class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	
@@ -45,20 +46,25 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	protected def createStubURIHelper() {
 		new StubURIHelper
 	}
-	
-	override protected createMirrorForFQN(String name) {
-		val psiClass = JavaPsiFacadeEx.getInstanceEx(project).findClass(name)
-		if (psiClass == null) {
-			return null
-		}
-		new PsiClassMirror(psiClass, psiClassFactory)
-	}
 
 	override findTypeByName(String name) {
-		findTypeByName(name, true)
+		doFindTypeByName(name, false)
 	} 
 	
 	override findTypeByName(String name, boolean binaryNestedTypeDelimiter) {
+		var result = doFindTypeByName(name, false)
+		if (result != null || isBinaryNestedTypeDelimiter(name, binaryNestedTypeDelimiter)) {
+			return result
+		}
+		val nameVariants = new ClassNameVariants(name)
+		while (result == null && nameVariants.hasNext) {
+			val nextVariant = nameVariants.next
+			result = doFindTypeByName(nextVariant, true)
+		}
+		result
+	}
+	
+	def doFindTypeByName(String name, boolean traverseNestedTypes) {
 		ProgressIndicatorProvider.checkCanceled
 		val normalizedName = name.normalize
 		val indexedJvmTypeAccess = indexedJvmTypeAccess
@@ -72,7 +78,7 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 		}
 		ProgressIndicatorProvider.checkCanceled
 		val result = resourceSet.getResource(resourceURI, true)
-		normalizedName.findTypeByClass(result)
+		normalizedName.findTypeByClass(result, traverseNestedTypes)
 	}
 	
 	protected def normalize(String name) {
@@ -82,23 +88,29 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 			name
 		}
 	}
-
-//	protected def tryFindTypeInIndex(String name, boolean binaryNestedTypeDelimiter) {
-//		val adapter = EcoreUtil.getAdapter(resourceSet.eAdapters, TypeInResourceSetAdapter) as TypeInResourceSetAdapter
-//		if (adapter != null) {
-//			adapter.tryFindTypeInIndex(name, this, binaryNestedTypeDelimiter)
-//		} else {
-//			doTryFindInIndex(name, binaryNestedTypeDelimiter)
-//		}
-//	}
 	
-	protected def findTypeByClass(String name, Resource resource) {
+	protected def findTypeByClass(String name, Resource resource, boolean traverseNestedTypes) {
 		val fragment = name.fragment
 		val result = resource.getEObject(fragment) as JvmType
-//		if (result == null) {
-//			throw new IllegalStateException("Resource has not been loaded: " + fragment)
-//		}
-		result
+		if (result != null || !traverseNestedTypes) {
+			return result
+		}
+		val rootType = resource.contents.head
+		if (rootType instanceof JvmDeclaredType) {
+			val rootTypeName = resource.URI.segment(1)
+			val nestedTypeName = fragment.substring(rootTypeName.length + 1)
+			val segments = Strings.split(nestedTypeName, '$')
+			return findNestedType(rootType, segments, 0)
+		}
+		return null
+	}
+	
+	protected override createMirrorForFQN(String name) {
+		val psiClass = JavaPsiFacadeEx.getInstanceEx(project).findClass(name)
+		if (psiClass == null || psiClass.containingClass != null) {
+			return null
+		}
+		new PsiClassMirror(psiClass, psiClassFactory)
 	}
 	
 }

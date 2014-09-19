@@ -7,6 +7,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.impl.JavaPsiFacadeEx;
 import com.intellij.psi.impl.compiled.SignatureParsing;
 import java.text.StringCharacterIterator;
+import java.util.List;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -16,6 +18,7 @@ import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.common.types.JvmType;
 import org.eclipse.xtext.common.types.access.IMirror;
+import org.eclipse.xtext.common.types.access.impl.AbstractJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.AbstractRuntimeJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.ITypeFactory;
 import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess;
@@ -23,8 +26,10 @@ import org.eclipse.xtext.common.types.access.impl.URIHelperConstants;
 import org.eclipse.xtext.idea.types.access.PsiClassFactory;
 import org.eclipse.xtext.idea.types.access.PsiClassMirror;
 import org.eclipse.xtext.idea.types.access.StubURIHelper;
+import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Extension;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Pure;
 
 @SuppressWarnings("all")
@@ -57,25 +62,39 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
     return new StubURIHelper();
   }
   
-  protected IMirror createMirrorForFQN(final String name) {
-    PsiClassMirror _xblockexpression = null;
+  public JvmType findTypeByName(final String name) {
+    return this.doFindTypeByName(name, false);
+  }
+  
+  public JvmType findTypeByName(final String name, final boolean binaryNestedTypeDelimiter) {
+    JvmType _xblockexpression = null;
     {
-      JavaPsiFacadeEx _instanceEx = JavaPsiFacadeEx.getInstanceEx(this.project);
-      final PsiClass psiClass = _instanceEx.findClass(name);
-      boolean _equals = Objects.equal(psiClass, null);
-      if (_equals) {
-        return null;
+      JvmType result = this.doFindTypeByName(name, false);
+      boolean _or = false;
+      boolean _notEquals = (!Objects.equal(result, null));
+      if (_notEquals) {
+        _or = true;
+      } else {
+        boolean _isBinaryNestedTypeDelimiter = this.isBinaryNestedTypeDelimiter(name, binaryNestedTypeDelimiter);
+        _or = _isBinaryNestedTypeDelimiter;
       }
-      _xblockexpression = new PsiClassMirror(psiClass, this.psiClassFactory);
+      if (_or) {
+        return result;
+      }
+      final AbstractJvmTypeProvider.ClassNameVariants nameVariants = new AbstractJvmTypeProvider.ClassNameVariants(name);
+      while ((Objects.equal(result, null) && nameVariants.hasNext())) {
+        {
+          final String nextVariant = nameVariants.next();
+          JvmType _doFindTypeByName = this.doFindTypeByName(nextVariant, true);
+          result = _doFindTypeByName;
+        }
+      }
+      _xblockexpression = result;
     }
     return _xblockexpression;
   }
   
-  public JvmType findTypeByName(final String name) {
-    return this.findTypeByName(name, true);
-  }
-  
-  public JvmType findTypeByName(final String name, final boolean binaryNestedTypeDelimiter) {
+  public JvmType doFindTypeByName(final String name, final boolean traverseNestedTypes) {
     JvmType _xblockexpression = null;
     {
       ProgressIndicatorProvider.checkCanceled();
@@ -95,7 +114,7 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
       ProgressIndicatorProvider.checkCanceled();
       ResourceSet _resourceSet_1 = this.getResourceSet();
       final Resource result = _resourceSet_1.getResource(resourceURI, true);
-      _xblockexpression = this.findTypeByClass(normalizedName, result);
+      _xblockexpression = this.findTypeByClass(normalizedName, result, traverseNestedTypes);
     }
     return _xblockexpression;
   }
@@ -116,13 +135,52 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
     }
   }
   
-  protected JvmType findTypeByClass(final String name, final Resource resource) {
-    JvmType _xblockexpression = null;
+  protected JvmType findTypeByClass(final String name, final Resource resource, final boolean traverseNestedTypes) {
+    final String fragment = this.uriHelper.getFragment(name);
+    EObject _eObject = resource.getEObject(fragment);
+    final JvmType result = ((JvmType) _eObject);
+    boolean _or = false;
+    boolean _notEquals = (!Objects.equal(result, null));
+    if (_notEquals) {
+      _or = true;
+    } else {
+      _or = (!traverseNestedTypes);
+    }
+    if (_or) {
+      return result;
+    }
+    EList<EObject> _contents = resource.getContents();
+    final EObject rootType = IterableExtensions.<EObject>head(_contents);
+    if ((rootType instanceof JvmDeclaredType)) {
+      URI _uRI = resource.getURI();
+      final String rootTypeName = _uRI.segment(1);
+      int _length = rootTypeName.length();
+      int _plus = (_length + 1);
+      final String nestedTypeName = fragment.substring(_plus);
+      final List<String> segments = Strings.split(nestedTypeName, "$");
+      return this.findNestedType(((JvmDeclaredType)rootType), segments, 0);
+    }
+    return null;
+  }
+  
+  protected IMirror createMirrorForFQN(final String name) {
+    PsiClassMirror _xblockexpression = null;
     {
-      final String fragment = this.uriHelper.getFragment(name);
-      EObject _eObject = resource.getEObject(fragment);
-      final JvmType result = ((JvmType) _eObject);
-      _xblockexpression = result;
+      JavaPsiFacadeEx _instanceEx = JavaPsiFacadeEx.getInstanceEx(this.project);
+      final PsiClass psiClass = _instanceEx.findClass(name);
+      boolean _or = false;
+      boolean _equals = Objects.equal(psiClass, null);
+      if (_equals) {
+        _or = true;
+      } else {
+        PsiClass _containingClass = psiClass.getContainingClass();
+        boolean _notEquals = (!Objects.equal(_containingClass, null));
+        _or = _notEquals;
+      }
+      if (_or) {
+        return null;
+      }
+      _xblockexpression = new PsiClassMirror(psiClass, this.psiClassFactory);
     }
     return _xblockexpression;
   }

@@ -31,7 +31,7 @@ public class StubJvmTypeProviderTestDelegate extends AbstractTypeProviderTest {
 
 	@Override
 	protected String getCollectionParamName() {
-		return "arg0";
+		return "collection";
 	}
 
 	@Override

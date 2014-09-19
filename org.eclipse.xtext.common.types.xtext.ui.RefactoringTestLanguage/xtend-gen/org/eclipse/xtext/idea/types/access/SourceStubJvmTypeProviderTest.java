@@ -3,7 +3,10 @@ package org.eclipse.xtext.idea.types.access;
 import com.google.common.base.Objects;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.impl.JavaAwareProjectJdkTableImpl;
 import com.intellij.openapi.roots.LanguageLevelProjectExtension;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -17,11 +20,13 @@ import org.eclipse.xtext.xbase.lib.Functions.Function0;
 
 @TestDecorator
 @SuppressWarnings("all")
-public class StubJvmTypeProviderTest extends PsiTestCase {
+public class SourceStubJvmTypeProviderTest extends PsiTestCase {
   private final StubJvmTypeProviderTestDelegate delegate = new StubJvmTypeProviderTestDelegate();
   
   public void setUp() throws Exception {
     super.setUp();
+    Module _module = this.getModule();
+    PsiTestUtil.addLibrary(_module, "Guava", "/Users/kosyakov/.p2/pool/plugins", "com.google.guava_15.0.0.v201403281430.jar");
     Project _project = this.myJavaFacade.getProject();
     LanguageLevelProjectExtension _instance = LanguageLevelProjectExtension.getInstance(_project);
     _instance.setLanguageLevel(LanguageLevel.JDK_1_5);
@@ -45,6 +50,11 @@ public class StubJvmTypeProviderTest extends PsiTestCase {
     }
     Project _project_1 = this.getProject();
     this.delegate.setUp(_project_1);
+  }
+  
+  protected Sdk getTestProjectJdk() {
+    JavaAwareProjectJdkTableImpl _instanceEx = JavaAwareProjectJdkTableImpl.getInstanceEx();
+    return _instanceEx.getInternalJdk();
   }
   
   public void tearDown() throws Exception {

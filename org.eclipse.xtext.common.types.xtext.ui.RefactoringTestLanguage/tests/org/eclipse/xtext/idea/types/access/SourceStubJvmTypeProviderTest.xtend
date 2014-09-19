@@ -1,6 +1,7 @@
 package org.eclipse.xtext.idea.types.access
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.projectRoots.impl.JavaAwareProjectJdkTableImpl
 import com.intellij.openapi.roots.LanguageLevelProjectExtension
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -11,12 +12,14 @@ import com.intellij.testFramework.PsiTestUtil
 import org.eclipse.xtext.idea.tests.TestDecorator
 
 @TestDecorator
-class StubJvmTypeProviderTest extends PsiTestCase {
+class SourceStubJvmTypeProviderTest extends PsiTestCase {
 
 	val StubJvmTypeProviderTestDelegate delegate = new StubJvmTypeProviderTestDelegate
 
 	override void setUp() throws Exception {
 		super.setUp
+		PsiTestUtil.addLibrary(module, "Guava", "/Users/kosyakov/.p2/pool/plugins", "com.google.guava_15.0.0.v201403281430.jar")
+		
 		LanguageLevelProjectExtension.getInstance(myJavaFacade.project).setLanguageLevel(LanguageLevel.JDK_1_5)
 		val testPath = '/Users/kosyakov/oomph/xtext/master/git/xtext/tests/org.eclipse.xtext.common.types.tests/testdata'
 		val testRoot = ApplicationManager.application.runWriteAction(
@@ -27,6 +30,10 @@ class StubJvmTypeProviderTest extends PsiTestCase {
 			PsiTestUtil.addSourceRoot(myModule, testRoot)
 		}
 		delegate.setUp(project)
+	}
+	
+	override protected getTestProjectJdk() {
+		JavaAwareProjectJdkTableImpl.instanceEx.internalJdk
 	}
 
 	override void tearDown() throws Exception {
