@@ -15,13 +15,12 @@
 		<java.elementFinder implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.psi.RefactoringTestLanguageJvmTypesElementFinder"/>
 		<java.shortNamesCache implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.RefactoringTestLanguageJvmTypesShortNamesCache"/>
 		
-		<stubIndex implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.stubindex.RefactoringTestLanguagePsiNamedEObjectIndex"/>
-		<stubIndex implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.stubindex.RefactoringTestLanguageJvmDeclaredTypeShortNameIndex"/>
-		<stubIndex implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.stubindex.RefactoringTestLanguageJvmDeclaredTypeFullClassNameIndex"/>
+		<stubIndex implementation="org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex"/>
+		<stubIndex implementation="org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex"/>
 
 		<psi.treeChangePreprocessor implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.RefactoringTestLanguageCodeBlockModificationListener"/>
 
-		<referencesSearch implementation="org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch"/>
+		<referencesSearch implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.psi.search.RefactoringTestLanguageJvmTypesReferencesSearch"/>
 		<targetElementEvaluator language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
 								factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
 								implementationClass="org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator"/>

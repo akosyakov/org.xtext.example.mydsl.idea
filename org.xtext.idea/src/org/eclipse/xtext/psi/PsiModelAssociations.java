@@ -5,8 +5,6 @@ import java.util.Iterator;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.xtext.idea.resource.impl.StubEObjectDescription;
 import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
@@ -107,15 +105,7 @@ public class PsiModelAssociations implements IPsiModelAssociations, IPsiModelAss
 		if (objectDescription == null) {
 			return null;
 		}
-		if (objectDescription instanceof StubEObjectDescription) {
-			StubEObjectDescription stubEObjectDescription = (StubEObjectDescription) objectDescription;
-			return stubEObjectDescription.getPsiNamedEObject();
-		}
-		EObject object = objectDescription.getEObjectOrProxy();
-		if (object.eIsProxy()) {
-			InternalEObject proxy = (InternalEObject) object;
-			object = context.eResource().getResourceSet().getEObject(proxy.eProxyURI(), true);
-		}
+		EObject object = context.eResource().getResourceSet().getEObject(objectDescription.getEObjectURI(), true);
 		return getPsiElement(object);
 	}
 

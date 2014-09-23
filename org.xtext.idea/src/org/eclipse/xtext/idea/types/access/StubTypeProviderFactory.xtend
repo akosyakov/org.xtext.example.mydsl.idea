@@ -1,10 +1,15 @@
 package org.eclipse.xtext.idea.types.access
 
+import com.google.inject.Inject
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.common.types.access.AbstractTypeProviderFactory
 import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions.ProjectAdapter
+import org.eclipse.xtext.psi.IPsiModelAssociator
 
 class StubTypeProviderFactory extends AbstractTypeProviderFactory {
+	
+	@Inject
+	IPsiModelAssociator psiModelAssociator
 	
 	override createTypeProvider(ResourceSet resourceSet) {
 		if (resourceSet == null)
@@ -12,7 +17,7 @@ class StubTypeProviderFactory extends AbstractTypeProviderFactory {
 		val project = ProjectAdapter.getProject(resourceSet)
 		if (project == null)
 			throw new IllegalArgumentException("project may not be null.")
-		new StubJvmTypeProvider(project, resourceSet, indexedJvmTypeAccess)
+		new StubJvmTypeProvider(project, resourceSet, indexedJvmTypeAccess, psiModelAssociator)
 	}
 	
 }

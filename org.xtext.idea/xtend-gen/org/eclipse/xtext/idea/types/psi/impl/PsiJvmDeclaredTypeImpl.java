@@ -1,6 +1,7 @@
 package org.eclipse.xtext.idea.types.psi.impl;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.lang.Language;
@@ -11,19 +12,18 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.impl.light.AbstractLightClass;
-import java.util.Map;
-import java.util.Set;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.xtend.lib.annotations.AccessorType;
 import org.eclipse.xtend.lib.annotations.Accessors;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
+import org.eclipse.xtext.common.types.JvmMember;
+import org.eclipse.xtext.common.types.JvmOperation;
 import org.eclipse.xtext.common.types.descriptions.IStubGenerator;
-import org.eclipse.xtext.generator.InMemoryFileSystemAccess;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
-import org.eclipse.xtext.idea.types.psi.impl.JvmDeclaredTypeResourceDescription;
 import org.eclipse.xtext.naming.IQualifiedNameConverter;
-import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.xbase.lib.Conversions;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
@@ -47,14 +47,13 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
   
   private final PsiNamedEObject psiNamedEObject;
   
-  public PsiJvmDeclaredTypeImpl(final JvmDeclaredType declaredType, final PsiNamedEObject psiNamedEObject) {
-    this(declaredType.getQualifiedName(), declaredType.eClass(), psiNamedEObject);
-  }
+  private final JvmDeclaredType declaredType;
   
-  public PsiJvmDeclaredTypeImpl(final String qualifiedName, final EClass type, final PsiNamedEObject psiNamedEObject) {
+  public PsiJvmDeclaredTypeImpl(final JvmDeclaredType declaredType, final PsiNamedEObject psiNamedEObject) {
     super(psiNamedEObject.getManager(), psiNamedEObject.getLanguage());
-    this.type = type;
-    this.qualifiedName = qualifiedName;
+    this.type = this.type;
+    this.declaredType = declaredType;
+    this.qualifiedName = this.qualifiedName;
     this.psiNamedEObject = psiNamedEObject;
     final Language language = this.getLanguage();
     if ((language instanceof IXtextLanguage)) {
@@ -63,7 +62,7 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
   }
   
   public PsiElement copy() {
-    return new PsiJvmDeclaredTypeImpl(this.qualifiedName, this.type, this.psiNamedEObject);
+    return new PsiJvmDeclaredTypeImpl(this.declaredType, this.psiNamedEObject);
   }
   
   public PsiClass getDelegate() {
@@ -71,14 +70,38 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
     {
       boolean _equals = Objects.equal(this.delegate, null);
       if (_equals) {
-        final InMemoryFileSystemAccess fsa = new InMemoryFileSystemAccess();
-        QualifiedName _qualifiedName = this.qualifiedNameConverter.toQualifiedName(this.qualifiedName);
-        JvmDeclaredTypeResourceDescription _jvmDeclaredTypeResourceDescription = new JvmDeclaredTypeResourceDescription(_qualifiedName, this.type);
-        this.stubGenerator.doGenerateStubs(fsa, _jvmDeclaredTypeResourceDescription);
-        Map<String, CharSequence> _textFiles = fsa.getTextFiles();
-        Set<Map.Entry<String, CharSequence>> _entrySet = _textFiles.entrySet();
-        Map.Entry<String, CharSequence> _head = IterableExtensions.<Map.Entry<String, CharSequence>>head(_entrySet);
-        final CharSequence text = _head.getValue();
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("package ");
+        String _packageName = this.declaredType.getPackageName();
+        _builder.append(_packageName, "");
+        _builder.append(";");
+        _builder.newLineIfNotEmpty();
+        _builder.newLine();
+        _builder.append("class ");
+        String _simpleName = this.declaredType.getSimpleName();
+        _builder.append(_simpleName, "");
+        _builder.append(" {");
+        _builder.newLineIfNotEmpty();
+        _builder.newLine();
+        {
+          EList<JvmMember> _members = this.declaredType.getMembers();
+          Iterable<JvmOperation> _filter = Iterables.<JvmOperation>filter(_members, JvmOperation.class);
+          for(final JvmOperation method : _filter) {
+            _builder.append("\t");
+            _builder.append("public void ");
+            String _simpleName_1 = method.getSimpleName();
+            _builder.append(_simpleName_1, "\t");
+            _builder.append("(r) {");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+            _builder.append("}");
+            _builder.newLine();
+          }
+        }
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
+        final String text = _builder.toString();
         Project _project = this.getProject();
         PsiFileFactory _instance = PsiFileFactory.getInstance(_project);
         PsiFile _createFileFromText = _instance.createFileFromText("_Dummy_.java", JavaFileType.INSTANCE, text);
@@ -88,8 +111,8 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
           if (psiFile instanceof PsiJavaFile) {
             _matched=true;
             PsiClass[] _classes = ((PsiJavaFile)psiFile).getClasses();
-            PsiClass _head_1 = IterableExtensions.<PsiClass>head(((Iterable<PsiClass>)Conversions.doWrapArray(_classes)));
-            this.delegate = _head_1;
+            PsiClass _head = IterableExtensions.<PsiClass>head(((Iterable<PsiClass>)Conversions.doWrapArray(_classes)));
+            this.delegate = _head;
           }
         }
       }

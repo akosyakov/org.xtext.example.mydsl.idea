@@ -16,6 +16,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassObjectAccessExpression;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiConstantEvaluationHelper;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiEnumConstant;
 import com.intellij.psi.PsiField;
@@ -40,7 +41,6 @@ import com.intellij.psi.PsiWildcardType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -87,7 +87,8 @@ import org.eclipse.xtext.common.types.TypesFactory;
 import org.eclipse.xtext.common.types.access.impl.ITypeFactory;
 import org.eclipse.xtext.common.types.impl.JvmTypeConstraintImplCustom;
 import org.eclipse.xtext.idea.types.access.StubURIHelper;
-import org.eclipse.xtext.psi.PsiModelAssociations;
+import org.eclipse.xtext.psi.IPsiModelAssociator;
+import org.eclipse.xtext.psi.PsiElementProvider;
 import org.eclipse.xtext.util.internal.Stopwatches;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
@@ -117,8 +118,11 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
   @Extension
   private final StubURIHelper uriHelper;
   
+  @Extension
+  private final IPsiModelAssociator psiModelAssociator;
+  
   @Inject
-  public PsiClassFactory(final StubURIHelper uriHelper) {
+  public PsiClassFactory(final StubURIHelper uriHelper, final IPsiModelAssociator psiModelAssociator) {
     this.uriHelper = uriHelper;
     HashMap<PsiType, JvmType> _newHashMap = CollectionLiterals.<PsiType, JvmType>newHashMap();
     this.typeProxies = _newHashMap;
@@ -128,6 +132,7 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
     this.annotationProxies = _newHashMap_2;
     HashMap<PsiEnumConstant, JvmEnumerationLiteral> _newHashMap_3 = CollectionLiterals.<PsiEnumConstant, JvmEnumerationLiteral>newHashMap();
     this.enumerationLiteralProxies = _newHashMap_3;
+    this.psiModelAssociator = psiModelAssociator;
   }
   
   public JvmDeclaredType createType(final PsiClass psiClass) {
@@ -145,9 +150,6 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
         }
         final JvmDeclaredType type = this.createType(psiClass, fqn);
         type.setPackageName(packageName);
-        EList<Adapter> _eAdapters = type.eAdapters();
-        PsiModelAssociations.PsiAdapter _psiAdapter = new PsiModelAssociations.PsiAdapter(psiClass);
-        _eAdapters.add(_psiAdapter);
         _xblockexpression = type;
       }
       _xtrycatchfinallyexpression = _xblockexpression;
@@ -230,6 +232,12 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
           }
           PsiClassFactory.this.createSuperTypes(it, psiClass);
           PsiClassFactory.this.createAnnotationValues(it, psiClass);
+          final PsiElementProvider _function_1 = new PsiElementProvider() {
+            public PsiElement get() {
+              return psiClass;
+            }
+          };
+          PsiClassFactory.this.psiModelAssociator.associate(it, _function_1);
         }
       };
       _xblockexpression = ObjectExtensions.<JvmDeclaredType>operator_doubleArrow(_switchResult, _function_1);
@@ -433,6 +441,12 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
           JvmTypeReference _createTypeReference = PsiClassFactory.this.createTypeReference(_type);
           it.setType(_createTypeReference);
           PsiClassFactory.this.createAnnotationValues(it, field);
+          final PsiElementProvider _function = new PsiElementProvider() {
+            public PsiElement get() {
+              return field;
+            }
+          };
+          PsiClassFactory.this.psiModelAssociator.associate(it, _function);
         }
       };
       _xblockexpression = ObjectExtensions.<JvmField>operator_doubleArrow(_switchResult, _function_1);
@@ -1015,6 +1029,12 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
         JvmTypeReference _createTypeReference = PsiClassFactory.this.createTypeReference(_createType);
         it.setReturnType(_createTypeReference);
         it.setDeprecated(false);
+        final PsiElementProvider _function = new PsiElementProvider() {
+          public PsiElement get() {
+            return psiClass;
+          }
+        };
+        PsiClassFactory.this.psiModelAssociator.associate(it, _function);
       }
     };
     return ObjectExtensions.<JvmOperation>operator_doubleArrow(_createJvmOperation, _function);
@@ -1051,6 +1071,12 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
           JvmFormalParameter _doubleArrow = ObjectExtensions.<JvmFormalParameter>operator_doubleArrow(_createJvmFormalParameter, _function);
           PsiClassFactory.this.addUnique(_parameters, _doubleArrow);
           it.setDeprecated(false);
+          final PsiElementProvider _function_1 = new PsiElementProvider() {
+            public PsiElement get() {
+              return psiClass;
+            }
+          };
+          PsiClassFactory.this.psiModelAssociator.associate(it, _function_1);
         }
       };
       _xblockexpression = ObjectExtensions.<JvmOperation>operator_doubleArrow(_createJvmOperation, _function);
@@ -1071,6 +1097,12 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
         it.setSimpleName(_name_1);
         it.setVisibility(JvmVisibility.PUBLIC);
         it.setDeprecated(false);
+        final PsiElementProvider _function = new PsiElementProvider() {
+          public PsiElement get() {
+            return psiClass;
+          }
+        };
+        PsiClassFactory.this.psiModelAssociator.associate(it, _function);
       }
     };
     return ObjectExtensions.<JvmConstructor>operator_doubleArrow(_createJvmConstructor, _function);
@@ -1111,6 +1143,12 @@ public class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> 
           JvmTypeReference _createTypeReference = PsiClassFactory.this.createTypeReference(_returnType);
           it.setReturnType(_createTypeReference);
           PsiClassFactory.this.createAnnotationValues(it, method);
+          final PsiElementProvider _function = new PsiElementProvider() {
+            public PsiElement get() {
+              return method;
+            }
+          };
+          PsiClassFactory.this.psiModelAssociator.associate(it, _function);
         }
       };
       _xblockexpression = ObjectExtensions.<JvmOperation>operator_doubleArrow(_createJvmOperation, _function);

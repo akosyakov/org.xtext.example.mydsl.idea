@@ -1,7 +1,5 @@
 package org.eclipse.xtext.generator.idea
 
-import com.google.inject.TypeLiteral
-import com.google.inject.name.Names
 import com.intellij.compiler.server.BuildProcessParametersProvider
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.lang.ParserDefinition
@@ -10,7 +8,6 @@ import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
-import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.psi.util.PsiModificationTracker
 import java.util.Set
 import javax.inject.Inject
@@ -35,21 +32,14 @@ import org.eclipse.xtext.idea.lang.BaseXtextASTFactory
 import org.eclipse.xtext.idea.lang.IElementTypeProvider
 import org.eclipse.xtext.idea.lang.parser.AbstractXtextParserDefinition
 import org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider
-import org.eclipse.xtext.idea.types.AbstractJvmTypesParserDefinition
 import org.eclipse.xtext.idea.types.JvmTypesShortNamesCache
 import org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory
 import org.eclipse.xtext.idea.types.psi.JvmTypesElementFinder
-import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject
 import org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch
-import org.eclipse.xtext.idea.types.psi.stubs.PsiJvmNamedEObjectStub
-import org.eclipse.xtext.idea.types.psi.stubs.elements.PsiJvmNamedEObjectType
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex
 import org.eclipse.xtext.psi.BaseXtextCodeBlockModificationListener
 import org.eclipse.xtext.psi.PsiNamedEObject
 import org.eclipse.xtext.psi.PsiNamedEObjectStub
-import org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType
 import org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator
 
@@ -102,32 +92,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			outlet_src = newSrcOutlet.name
 		}
 		
-		val stubKeysStatements = newArrayList(
-			'''
-			binder.bind(new «TypeLiteral.canonicalName»<«StubIndexKey.canonicalName»<String, «PsiNamedEObject.canonicalName»>>() {}) 
-				.annotatedWith(«Names.canonicalName».named(«PsiNamedEObjectIndex.canonicalName».EOBJECT_NAME))
-				.toInstance(«StubIndexKey.canonicalName».<String, «PsiNamedEObject.canonicalName»>createIndexKey("«grammar.name»" + «PsiNamedEObjectIndex.canonicalName».EOBJECT_NAME))'''
-		)
-		if (typesIntegrationRequired) {
-			stubKeysStatements += '''
-				binder.bind(new «TypeLiteral.canonicalName»<«StubIndexKey.canonicalName»<String, «PsiJvmNamedEObject.canonicalName»>>() {}) 
-					.annotatedWith(«Names.canonicalName».named(«JvmDeclaredTypeShortNameIndex.canonicalName».CLASS_SHORT_NAMES))
-					.toInstance(«StubIndexKey.canonicalName».<String, «PsiJvmNamedEObject.canonicalName»>createIndexKey("«grammar.name»" + «JvmDeclaredTypeShortNameIndex.canonicalName».CLASS_SHORT_NAMES))'''
-			stubKeysStatements += '''
-				binder.bind(new «TypeLiteral.canonicalName»<«StubIndexKey.canonicalName»<String, «PsiJvmNamedEObject.canonicalName»>>() {}) 
-					.annotatedWith(«Names.canonicalName».named(«JvmDeclaredTypeFullClassNameIndex.canonicalName».CLASS_FQN))
-					.toInstance(«StubIndexKey.canonicalName».<String, «PsiJvmNamedEObject.canonicalName»>createIndexKey("«grammar.name»" + «JvmDeclaredTypeFullClassNameIndex.canonicalName».CLASS_FQN))'''
-		}
-		
 		val bindFactory = new BindFactory();
-		bindFactory.addConfiguredBinding('StubKeys', stubKeysStatements)
-		
-		bindFactory.addTypeToTypeSingleton(PsiNamedEObjectIndex.name, grammar.psiNamedEObjectIndexName)
-		if (typesIntegrationRequired) {
-			bindFactory.addTypeToTypeSingleton(JvmDeclaredTypeShortNameIndex.name, grammar.jvmDeclaredTypeShortNameIndexName)
-			bindFactory.addTypeToTypeSingleton(JvmDeclaredTypeFullClassNameIndex.name, grammar.jvmDeclaredTypeFullClassNameIndexName)
-		}
-		
 		bindFactory.addTypeToType(SyntaxHighlighter.name, grammar.syntaxHighlighterName)
 		bindFactory.addTypeToType(Lexer.name, grammar.lexerName)
 		bindFactory.addTypeToType(TokenTypeProvider.name, grammar.tokenTypeProviderName)
@@ -156,12 +121,8 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		ctx.writeFile(outlet_src_gen, grammar.abstractIdeaModuleName.toJavaPath, grammar.compileGuiceModuleIdeaGenerated(bindings))
 		ctx.writeFile(outlet_src_gen, grammar.extensionFactoryName.toJavaPath, grammar.compileExtensionFactory)
 		ctx.writeFile(outlet_src_gen, grammar.buildProcessParametersProviderName.toXtendPath, grammar.compileBuildProcessParametersProvider)
-		ctx.writeFile(outlet_src_gen, grammar.psiNamedEObjectIndexName.toXtendPath, grammar.compilePsiNamedEObjectIndex)
 		ctx.writeFile(outlet_src_gen, grammar.codeBlockModificationListenerName.toXtendPath, grammar.compileCodeBlockModificationListener)
-		if (typesIntegrationRequired) {
-			ctx.writeFile(outlet_src_gen, grammar.jvmDeclaredTypeShortNameIndexName.toXtendPath, grammar.compilejvmDeclaredTypeShortNameIndex)
-			ctx.writeFile(outlet_src_gen, grammar.jvmDeclaredTypeFullClassNameIndexName.toXtendPath, grammar.compileJvmDeclaredTypeFullClassNameIndex)
-			
+		if (typesIntegrationRequired) {			
 			ctx.writeFile(outlet_src_gen, grammar.jvmTypesElementFinderName.toXtendPath, grammar.compileJvmTypesElementFinder)
 			ctx.writeFile(outlet_src_gen, grammar.jvmTypesShortNamesCacheName.toXtendPath, grammar.compileJvmTypesShortNamesCache)
 		}
@@ -269,21 +230,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		}
 	'''
 	
-	def compilePsiNamedEObjectIndex(Grammar grammar) '''
-		package «grammar.psiNamedEObjectIndexName.toPackageName»
-
-		import «PsiNamedEObjectIndex.name»
-		import «grammar.languageName»
-		
-		class «grammar.psiNamedEObjectIndexName.toSimpleName» extends «PsiNamedEObjectIndex.simpleName» {
-		
-			new() {
-				super(«grammar.languageName.toSimpleName».INSTANCE)
-			}
-		
-		}
-	'''
-	
 	def compileCodeBlockModificationListener(Grammar grammar) '''
 		package «grammar.codeBlockModificationListenerName.toPackageName»
 		
@@ -336,36 +282,6 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		
 			new(«Project.simpleName» project) {
 				super(«grammar.languageName.toSimpleName».INSTANCE, project)
-			}
-		
-		}
-	'''
-	
-	def compileJvmDeclaredTypeFullClassNameIndex(Grammar grammar) '''
-		package «grammar.jvmDeclaredTypeFullClassNameIndexName.toPackageName»
-		
-		import «JvmDeclaredTypeFullClassNameIndex.name»
-		import «grammar.languageName»
-		
-		class «grammar.jvmDeclaredTypeFullClassNameIndexName.toSimpleName» extends «JvmDeclaredTypeFullClassNameIndex.simpleName» {
-		
-			new() {
-				super(«grammar.languageName.toSimpleName».INSTANCE)
-			}
-		
-		}
-	'''
-	
-	def compilejvmDeclaredTypeShortNameIndex(Grammar grammar) '''
-		package «grammar.jvmDeclaredTypeShortNameIndexName.toPackageName»
-		
-		import «JvmDeclaredTypeShortNameIndex.name»
-		import «grammar.languageName»
-		
-		class «grammar.jvmDeclaredTypeShortNameIndexName.toSimpleName» extends «JvmDeclaredTypeShortNameIndex.simpleName» {
-		
-			new() {
-				super(«grammar.languageName.toSimpleName».INSTANCE)
 			}
 		
 		}
@@ -427,12 +343,11 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 				<java.elementFinder implementation="«grammar.jvmTypesElementFinderName»"/>
 				<java.shortNamesCache implementation="«grammar.jvmTypesShortNamesCacheName»"/>
 				«ENDIF»
-				
-				<stubIndex implementation="«grammar.psiNamedEObjectIndexName»"/>
+		
+				<stubIndex implementation="org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex"/>
 				«IF typesIntegrationRequired»
-				<stubIndex implementation="«grammar.jvmDeclaredTypeShortNameIndexName»"/>
-				<stubIndex implementation="«grammar.jvmDeclaredTypeFullClassNameIndexName»"/>
-		      	«ENDIF»
+				<stubIndex implementation="org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex"/>
+				«ENDIF»
 		
 				<psi.treeChangePreprocessor implementation="«grammar.codeBlockModificationListenerName»"/>
 				«IF typesIntegrationRequired»
@@ -683,15 +598,15 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	'''
 	
 	def Class<?> getPsiNamedEObjectType() {
-		if (typesIntegrationRequired) PsiJvmNamedEObjectType else PsiNamedEObjectType
+		PsiNamedEObjectType
 	}
 	
 	def Class<?> getPsiNamedEObjectStub() {
-		if (typesIntegrationRequired) PsiJvmNamedEObjectStub else PsiNamedEObjectStub
+		PsiNamedEObjectStub
 	}
 	
 	def Class<?> getPsiNamedEObject() {
-		if (typesIntegrationRequired) PsiJvmNamedEObject else PsiNamedEObject
+		PsiNamedEObject
 	}
 	
 	def compileTokenTypeProvider(Grammar grammar)'''
@@ -847,11 +762,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	'''
 	
 	def Class<?> getXtextParserDefinition() {
-		if (typesIntegrationRequired) {
-			AbstractJvmTypesParserDefinition
-		} else {
-			AbstractXtextParserDefinition
-		}
+		AbstractXtextParserDefinition
 	}
 	
 }

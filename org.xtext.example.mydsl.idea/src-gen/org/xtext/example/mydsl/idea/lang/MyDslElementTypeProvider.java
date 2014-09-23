@@ -4,17 +4,17 @@ import org.eclipse.xtext.idea.lang.IElementTypeProvider;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType;
+import org.eclipse.xtext.psi.stubs.XtextFileElementType;
+import org.eclipse.xtext.psi.stubs.XtextFileStub;
 import org.xtext.example.mydsl.idea.lang.psi.impl.MyDslFileImpl;
 
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.PsiFileStub;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
-import com.intellij.psi.tree.IStubFileElementType;
 
 public class MyDslElementTypeProvider implements IElementTypeProvider {
 
-	public static final IFileElementType FILE_TYPE = new IStubFileElementType<PsiFileStub<MyDslFileImpl>>(MyDslLanguage.INSTANCE);
+	public static final IFileElementType FILE_TYPE = new XtextFileElementType<XtextFileStub<MyDslFileImpl>>(MyDslLanguage.INSTANCE);
 	
 	public static final IElementType NAME_TYPE = new IElementType("NAME", MyDslLanguage.INSTANCE);
 	

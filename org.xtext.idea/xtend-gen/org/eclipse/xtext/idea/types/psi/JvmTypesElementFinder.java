@@ -8,19 +8,25 @@ import com.intellij.psi.PsiElementFinder;
 import com.intellij.psi.search.GlobalSearchScope;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
-import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject;
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex;
+import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredTypes;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.psi.impl.BaseXtextFile;
+import org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
+import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 
 @SuppressWarnings("all")
 public class JvmTypesElementFinder extends PsiElementFinder {
   @Inject
-  private JvmDeclaredTypeFullClassNameIndex jvmDeclaredTypeFullClassNameIndex;
+  @Extension
+  private PsiJvmDeclaredTypes _psiJvmDeclaredTypes;
+  
+  @Inject
+  private ExportedObjectQualifiedNameIndex exportedObjectQualifiedNameIndex;
   
   private final Project project;
   
@@ -38,10 +44,12 @@ public class JvmTypesElementFinder extends PsiElementFinder {
     ArrayList<PsiJvmDeclaredType> _xblockexpression = null;
     {
       final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
-      Collection<PsiJvmNamedEObject> _get = this.jvmDeclaredTypeFullClassNameIndex.get(qualifiedName, this.project, scope);
-      for (final PsiJvmNamedEObject namedEObject : _get) {
-        List<PsiJvmDeclaredType> _findClasses = namedEObject.findClasses(qualifiedName);
-        Iterables.<PsiJvmDeclaredType>addAll(result, _findClasses);
+      Collection<BaseXtextFile> _get = this.exportedObjectQualifiedNameIndex.get(qualifiedName, this.project, scope);
+      for (final BaseXtextFile xtextFile : _get) {
+        String[] _split = qualifiedName.split("\\.");
+        QualifiedName _create = QualifiedName.create(_split);
+        ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypes = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypes(xtextFile, _create);
+        Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypes);
       }
       _xblockexpression = result;
     }

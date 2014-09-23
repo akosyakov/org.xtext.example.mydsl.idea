@@ -18,6 +18,7 @@ import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.CrossReference;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.idea.lang.CreateElementType.CreateCallback;
+import org.eclipse.xtext.idea.resource.ResourceDescriptionAdapter;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
@@ -26,7 +27,6 @@ import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.psi.PsiModelAssociations;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.resource.CompilerPhases;
-import org.eclipse.xtext.resource.DerivedStateAwareResource;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 
@@ -91,7 +91,6 @@ public class BaseXtextPsiParser implements PsiParser {
 		
 	}
 	
-	
 	public ASTNode parse(IElementType rootType, PsiBuilder psiBuilder) {
 		PsiBuilder.Marker rootMarker = psiBuilder.mark();
 		checkCanceled();
@@ -113,7 +112,7 @@ public class BaseXtextPsiParser implements PsiParser {
 			return psiBuilder.getTreeBuilt();
 		} finally {
 			checkCanceled();
-			installDerivedState(resource);
+			installResourceDescription(resource);
 		}
 	}
 	
@@ -121,16 +120,12 @@ public class BaseXtextPsiParser implements PsiParser {
 		ProgressIndicatorProvider.checkCanceled();
 	}
 
-	protected void installDerivedState(Resource resource) {
-		if (resource instanceof DerivedStateAwareResource) {
-			try {
-				compilerPhases.setIndexing(resource, true);
-				
-				DerivedStateAwareResource derivedStateAwareResource = (DerivedStateAwareResource) resource;
-				derivedStateAwareResource.installDerivedState(true);
-			} finally {
-				compilerPhases.setIndexing(resource, false);
-			}
+	protected void installResourceDescription(Resource resource) {
+		try {
+			compilerPhases.setIndexing(resource, true);
+			ResourceDescriptionAdapter.install(resource);
+		} finally {
+			compilerPhases.setIndexing(resource, false);
 		}
 	}
 

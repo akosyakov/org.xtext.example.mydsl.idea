@@ -16,6 +16,7 @@ import org.eclipse.xtext.common.types.access.impl.AbstractRuntimeJvmTypeProvider
 import org.eclipse.xtext.common.types.access.impl.ITypeFactory
 import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess
 import org.eclipse.xtext.common.types.access.impl.URIHelperConstants
+import org.eclipse.xtext.psi.IPsiModelAssociator
 import org.eclipse.xtext.util.Strings
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
@@ -32,15 +33,15 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	@Accessors(AccessorType.PUBLIC_GETTER)
 	val extension StubURIHelper uriHelper
 	
-	protected new(Project project, ResourceSet resourceSet, IndexedJvmTypeAccess indexedJvmTypeAccess) {
+	protected new(Project project, ResourceSet resourceSet, IndexedJvmTypeAccess indexedJvmTypeAccess, IPsiModelAssociator psiModelAssociator) {
 		super(resourceSet, indexedJvmTypeAccess)
 		this.project = project
 		this.uriHelper = createStubURIHelper
-		this.psiClassFactory = createPsiClassFactory
+		this.psiClassFactory = createPsiClassFactory(psiModelAssociator)
 	}
 	
-	def createPsiClassFactory() {
-		new PsiClassFactory(uriHelper)
+	def createPsiClassFactory(IPsiModelAssociator psiModelAssociator) {
+		new PsiClassFactory(uriHelper, psiModelAssociator)
 	}
 	
 	protected def createStubURIHelper() {

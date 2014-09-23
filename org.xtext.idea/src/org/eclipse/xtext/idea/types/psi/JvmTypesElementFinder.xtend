@@ -4,13 +4,17 @@ import com.google.inject.Inject
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementFinder
 import com.intellij.psi.search.GlobalSearchScope
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex
 import org.eclipse.xtext.idea.lang.IXtextLanguage
+import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex
 
 class JvmTypesElementFinder extends PsiElementFinder {
 	
 	@Inject
-	JvmDeclaredTypeFullClassNameIndex jvmDeclaredTypeFullClassNameIndex
+	extension PsiJvmDeclaredTypes
+	
+	@Inject
+	ExportedObjectQualifiedNameIndex exportedObjectQualifiedNameIndex 
 	
 	val Project project
 	
@@ -24,9 +28,9 @@ class JvmTypesElementFinder extends PsiElementFinder {
 	}
 	
 	override findClasses(String qualifiedName, GlobalSearchScope scope) {
-		val result = newArrayList
-		for (namedEObject : jvmDeclaredTypeFullClassNameIndex.get(qualifiedName, project, scope)) {
-			result += namedEObject.findClasses(qualifiedName) 	
+		val result = newArrayList 
+		for (xtextFile : exportedObjectQualifiedNameIndex.get(qualifiedName, project, scope)) {
+			result += xtextFile.getPsiJvmDeclaredTypes(QualifiedName.create(qualifiedName.split("\\.")))
 		}
 		result
 	}

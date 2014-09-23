@@ -5,6 +5,7 @@ import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.AbstractTypeProviderTest;
 import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess;
 import org.eclipse.xtext.common.types.xtext.ui.idea.lang.RefactoringTestLanguageLanguage;
+import org.eclipse.xtext.psi.IPsiModelAssociator;
 
 import com.google.inject.Inject;
 import com.intellij.openapi.project.Project;
@@ -16,13 +17,16 @@ public class StubJvmTypeProviderTestDelegate extends AbstractTypeProviderTest {
 
 	@Inject
 	protected IndexedJvmTypeAccess indexedJvmTypeAccess;
+	
+	@Inject
+	protected IPsiModelAssociator psiModelAssociator;
 
 	private IJvmTypeProvider typeProvider;
 
 	public void setUp(Project project) throws Exception {
 		super.setUp();
 		RefactoringTestLanguageLanguage.INSTANCE.injectMembers(this);
-		typeProvider = new StubJvmTypeProvider(project, resourceSet, indexedJvmTypeAccess);
+		typeProvider = new StubJvmTypeProvider(project, resourceSet, indexedJvmTypeAccess, psiModelAssociator);
 	}
 
 	public void tearDown() {

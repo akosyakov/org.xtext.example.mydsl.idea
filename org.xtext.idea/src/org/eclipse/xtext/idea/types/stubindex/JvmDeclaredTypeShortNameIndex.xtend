@@ -1,26 +1,15 @@
 package org.eclipse.xtext.idea.types.stubindex
 
-import com.google.inject.Inject
-import com.google.inject.name.Named
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
-import org.eclipse.xtext.idea.lang.IXtextLanguage
-import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject
+import org.eclipse.xtext.psi.impl.BaseXtextFile
 
-class JvmDeclaredTypeShortNameIndex extends StringStubIndexExtension<PsiJvmNamedEObject> {
+class JvmDeclaredTypeShortNameIndex extends StringStubIndexExtension<BaseXtextFile> {
 	
-	public static val CLASS_SHORT_NAMES = "java.class.shortname"
-	
-	@Inject
-	@Named(CLASS_SHORT_NAMES)
-	StubIndexKey<String, PsiJvmNamedEObject> key
-	
-	new(IXtextLanguage language) {
-		language.injectMembers(this)
-	}
+	public static StubIndexKey<String, BaseXtextFile> KEY = StubIndexKey.<String, BaseXtextFile>createIndexKey("JvmDeclaredTypeShortNameIndex");
 	
 	override getKey() {
-		key
+		KEY
 	}
 
 }

@@ -26,6 +26,7 @@ import org.eclipse.xtext.common.types.access.impl.URIHelperConstants;
 import org.eclipse.xtext.idea.types.access.PsiClassFactory;
 import org.eclipse.xtext.idea.types.access.PsiClassMirror;
 import org.eclipse.xtext.idea.types.access.StubURIHelper;
+import org.eclipse.xtext.psi.IPsiModelAssociator;
 import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Extension;
@@ -45,17 +46,17 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
   @Extension
   private final StubURIHelper uriHelper;
   
-  protected StubJvmTypeProvider(final Project project, final ResourceSet resourceSet, final IndexedJvmTypeAccess indexedJvmTypeAccess) {
+  protected StubJvmTypeProvider(final Project project, final ResourceSet resourceSet, final IndexedJvmTypeAccess indexedJvmTypeAccess, final IPsiModelAssociator psiModelAssociator) {
     super(resourceSet, indexedJvmTypeAccess);
     this.project = project;
     StubURIHelper _createStubURIHelper = this.createStubURIHelper();
     this.uriHelper = _createStubURIHelper;
-    PsiClassFactory _createPsiClassFactory = this.createPsiClassFactory();
+    PsiClassFactory _createPsiClassFactory = this.createPsiClassFactory(psiModelAssociator);
     this.psiClassFactory = _createPsiClassFactory;
   }
   
-  public PsiClassFactory createPsiClassFactory() {
-    return new PsiClassFactory(this.uriHelper);
+  public PsiClassFactory createPsiClassFactory(final IPsiModelAssociator psiModelAssociator) {
+    return new PsiClassFactory(this.uriHelper, psiModelAssociator);
   }
   
   protected StubURIHelper createStubURIHelper() {

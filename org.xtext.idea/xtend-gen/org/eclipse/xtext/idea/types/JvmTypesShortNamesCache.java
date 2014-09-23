@@ -14,19 +14,24 @@ import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
-import org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject;
+import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredTypes;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
+import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Conversions;
+import org.eclipse.xtext.xbase.lib.Extension;
 
 @SuppressWarnings("all")
 public class JvmTypesShortNamesCache extends PsiShortNamesCache {
   private final static PsiMethod[] NO_METHODS = {};
   
   private final static PsiField[] NO_FIELDS = {};
+  
+  @Inject
+  @Extension
+  private PsiJvmDeclaredTypes _psiJvmDeclaredTypes;
   
   @Inject
   private JvmDeclaredTypeShortNameIndex jvmDeclaredTypeShortNameIndex;
@@ -65,10 +70,10 @@ public class JvmTypesShortNamesCache extends PsiShortNamesCache {
     ArrayList<PsiJvmDeclaredType> _xblockexpression = null;
     {
       final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
-      final Collection<PsiJvmNamedEObject> namedEObjects = this.jvmDeclaredTypeShortNameIndex.get(name, this.project, scope);
-      for (final PsiJvmNamedEObject namedEObject : namedEObjects) {
-        List<PsiJvmDeclaredType> _findClassesByName = namedEObject.findClassesByName(name);
-        Iterables.<PsiJvmDeclaredType>addAll(result, _findClassesByName);
+      final Collection<BaseXtextFile> xtextFiles = this.jvmDeclaredTypeShortNameIndex.get(name, this.project, scope);
+      for (final BaseXtextFile xtextFile : xtextFiles) {
+        ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypesByName = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypesByName(xtextFile, name);
+        Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypesByName);
       }
       _xblockexpression = result;
     }

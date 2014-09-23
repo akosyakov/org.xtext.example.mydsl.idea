@@ -1,8 +1,11 @@
 package org.eclipse.xtext.idea.jvmmodel
 
 import com.google.inject.Inject
+import com.intellij.psi.PsiClass
+import com.intellij.psi.impl.light.LightMethod
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.xtext.common.types.JvmDeclaredType
+import org.eclipse.xtext.common.types.JvmOperation
 import org.eclipse.xtext.idea.types.psi.impl.PsiJvmDeclaredTypeImpl
 import org.eclipse.xtext.psi.IPsiModelAssociations
 import org.eclipse.xtext.psi.IPsiModelAssociator
@@ -19,11 +22,23 @@ class PsiJvmModelAssociator extends JvmModelAssociator {
 
 	override associate(EObject sourceElement, EObject jvmElement) {
 		super.associate(sourceElement, jvmElement)
-		if (jvmElement instanceof JvmDeclaredType) {
-			val psiElement = sourceElement.psiElement
-			if (psiElement instanceof PsiNamedEObject) {
+		switch jvmElement {
+			JvmDeclaredType: {
+				val psiElement = sourceElement.psiElement
+				if (psiElement instanceof PsiNamedEObject) {
+					jvmElement.associate [
+						new PsiJvmDeclaredTypeImpl(jvmElement, psiElement)
+					]
+				}
+			}
+			JvmOperation: {
+				val psiElement = sourceElement.psiElement
 				jvmElement.associate [
-					new PsiJvmDeclaredTypeImpl(jvmElement, psiElement)
+					val containingClass = jvmElement.declaringType.psiElement as PsiClass
+					val method = containingClass.methods.findFirst[name == jvmElement.simpleName]
+					new LightMethod(method.manager, method, containingClass) => [
+						navigationElement = psiElement
+					]
 				]
 			}
 		}

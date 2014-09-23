@@ -15,13 +15,12 @@
 		<java.elementFinder implementation="org.xtext.example.domainmodel.idea.lang.types.psi.DomainmodelJvmTypesElementFinder"/>
 		<java.shortNamesCache implementation="org.xtext.example.domainmodel.idea.lang.types.DomainmodelJvmTypesShortNamesCache"/>
 		
-		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.psi.stubindex.DomainmodelPsiNamedEObjectIndex"/>
-		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeShortNameIndex"/>
-		<stubIndex implementation="org.xtext.example.domainmodel.idea.lang.types.stubindex.DomainmodelJvmDeclaredTypeFullClassNameIndex"/>
+		<stubIndex implementation="org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex"/>
+		<stubIndex implementation="org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex"/>
 
 		<psi.treeChangePreprocessor implementation="org.xtext.example.domainmodel.idea.lang.psi.DomainmodelCodeBlockModificationListener"/>
 
-		<referencesSearch implementation="org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch"/>
+		<referencesSearch implementation="org.xtext.example.domainmodel.idea.lang.types.psi.search.DomainmodelJvmTypesReferencesSearch"/>
 		<targetElementEvaluator language="org.xtext.example.domainmodel.Domainmodel"
 								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
 								implementationClass="org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator"/>

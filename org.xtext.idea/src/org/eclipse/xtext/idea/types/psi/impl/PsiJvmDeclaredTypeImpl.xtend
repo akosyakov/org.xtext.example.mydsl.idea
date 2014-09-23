@@ -12,8 +12,8 @@ import java.util.List
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.common.types.JvmDeclaredType
+import org.eclipse.xtext.common.types.JvmOperation
 import org.eclipse.xtext.common.types.descriptions.IStubGenerator
-import org.eclipse.xtext.generator.InMemoryFileSystemAccess
 import org.eclipse.xtext.idea.lang.IXtextLanguage
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType
 import org.eclipse.xtext.naming.IQualifiedNameConverter
@@ -39,14 +39,13 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 	val String qualifiedName
 	
 	val PsiNamedEObject psiNamedEObject
+	
+	val JvmDeclaredType declaredType
 
 	new(JvmDeclaredType declaredType, PsiNamedEObject psiNamedEObject) {
-		this(declaredType.qualifiedName, declaredType.eClass, psiNamedEObject)
-	}
-
-	new(String qualifiedName, EClass type, PsiNamedEObject psiNamedEObject) {
 		super(psiNamedEObject.manager, psiNamedEObject.language)
 		this.type = type
+		this.declaredType = declaredType
 		this.qualifiedName = qualifiedName
 		this.psiNamedEObject = psiNamedEObject
 		val language = language
@@ -56,15 +55,23 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 	}
 
 	override copy() {
-		new PsiJvmDeclaredTypeImpl(qualifiedName, type, psiNamedEObject)
+		new PsiJvmDeclaredTypeImpl(declaredType, psiNamedEObject)
 	}
 
 	override getDelegate() {
 		if (delegate == null) {
-			val fsa = new InMemoryFileSystemAccess
-			stubGenerator.doGenerateStubs(fsa,
-				new JvmDeclaredTypeResourceDescription(qualifiedNameConverter.toQualifiedName(qualifiedName), type))
-			val text = fsa.textFiles.entrySet.head.value
+			val text = '''
+				package «declaredType.packageName»;
+				
+				class «declaredType.simpleName» {
+				
+					«FOR method:declaredType.members.filter(JvmOperation)»
+					public void «method.simpleName»(r) {
+					}
+					«ENDFOR»
+				
+				}
+			''' 
 
 			switch psiFile : PsiFileFactory.getInstance(project).createFileFromText("_Dummy_.java", JavaFileType.INSTANCE,text) {
 				PsiJavaFile: delegate = psiFile.classes.head

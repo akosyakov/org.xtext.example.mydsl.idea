@@ -10,13 +10,17 @@ import com.intellij.util.ArrayUtil
 import com.intellij.util.Processor
 import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.containers.HashSet
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex
 import org.eclipse.xtext.idea.lang.IXtextLanguage
+import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredTypes
+import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex
 
 class JvmTypesShortNamesCache extends PsiShortNamesCache {
 	
 	static final val PsiMethod[] NO_METHODS = #[]
     static final val PsiField[] NO_FIELDS = #[]
+    
+    @Inject
+    extension PsiJvmDeclaredTypes
     
     @Inject
     JvmDeclaredTypeShortNameIndex jvmDeclaredTypeShortNameIndex
@@ -53,9 +57,9 @@ class JvmTypesShortNamesCache extends PsiShortNamesCache {
 	
 	override getClassesByName(String name, GlobalSearchScope scope) {
 		val result = newArrayList
-		val namedEObjects = jvmDeclaredTypeShortNameIndex.get(name, project, scope)
-		for (namedEObject : namedEObjects) {
-			result += namedEObject.findClassesByName(name)
+		val xtextFiles = jvmDeclaredTypeShortNameIndex.get(name, project, scope)
+		for (xtextFile : xtextFiles) {
+			result += xtextFile.getPsiJvmDeclaredTypesByName(name)
 		}
 		result
 	}

@@ -60,7 +60,7 @@ import org.eclipse.xtext.common.types.JvmVisibility
 import org.eclipse.xtext.common.types.TypesFactory
 import org.eclipse.xtext.common.types.access.impl.ITypeFactory
 import org.eclipse.xtext.common.types.impl.JvmTypeConstraintImplCustom
-import org.eclipse.xtext.psi.PsiModelAssociations.PsiAdapter
+import org.eclipse.xtext.psi.IPsiModelAssociator
 import org.eclipse.xtext.util.internal.Stopwatches
 
 class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
@@ -78,14 +78,17 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 	val extension TypesFactory = TypesFactory.eINSTANCE
 
 	val extension StubURIHelper uriHelper
+	
+	val extension IPsiModelAssociator psiModelAssociator
 
 	@Inject
-	new(StubURIHelper uriHelper) {
+	new(StubURIHelper uriHelper, IPsiModelAssociator psiModelAssociator) {
 		this.uriHelper = uriHelper
 		this.typeProxies = newHashMap
 		this.operationProxies = newHashMap
 		this.annotationProxies = newHashMap
 		this.enumerationLiteralProxies = newHashMap
+		this.psiModelAssociator = psiModelAssociator
 	}
 
 	override createType(PsiClass psiClass) {
@@ -98,7 +101,6 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 			}
 			val type = psiClass.createType(fqn)
 			type.packageName = packageName
-			type.eAdapters.add(new PsiAdapter(psiClass))
 			type
 		} finally {
 			createTypeTask.stop
@@ -139,6 +141,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 			}
 			createSuperTypes(psiClass)
 			createAnnotationValues(psiClass)
+			associate[|psiClass]
 		]
 	}
 
@@ -236,6 +239,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 			setVisibility(field)
 			type = field.type.createTypeReference
 			createAnnotationValues(field)
+			associate[|field]
 		]
 	}
 
@@ -449,6 +453,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 			static = true
 			returnType = psiClass.project.psiElementFactory.createType(psiClass).createTypeReference
 			deprecated = false
+			associate[|psiClass]
 		]
 	}
 
@@ -466,6 +471,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 					parameterType = psiElementFactory.createTypeByFQClassName(String.name).createTypeReference
 				])
 			deprecated = false
+			associate[|psiClass]
 		]
 	}
 
@@ -475,6 +481,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 			simpleName = psiClass.name
 			visibility = JvmVisibility.PUBLIC
 			deprecated = false
+			associate[|psiClass]
 		]
 	}
 
@@ -497,6 +504,7 @@ class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 			native = method.hasModifierProperty(PsiModifier.NATIVE)
 			returnType = method.returnType.createTypeReference
 			createAnnotationValues(method)
+			associate[|method]
 		]
 	}
 

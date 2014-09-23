@@ -1,33 +1,18 @@
 package org.eclipse.xtext.common.types.xtext.ui.idea;
 
+import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
+import org.eclipse.xtext.xbase.typesystem.internal.IFeatureScopeTracker;
+import org.eclipse.xtext.xbase.typesystem.internal.OptimizingFeatureScopeTrackerProvider;
+
 public class AbstractRefactoringTestLanguageIdeaModule extends org.eclipse.xtext.idea.DefaultIdeaModule {
 	
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
-	public void configureStubKeys(com.google.inject.Binder binder) {
-		binder.bind(new com.google.inject.TypeLiteral<com.intellij.psi.stubs.StubIndexKey<String, org.eclipse.xtext.psi.PsiNamedEObject>>() {}) 
-			.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex.EOBJECT_NAME))
-			.toInstance(com.intellij.psi.stubs.StubIndexKey.<String, org.eclipse.xtext.psi.PsiNamedEObject>createIndexKey("org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage" + org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex.EOBJECT_NAME));
-		binder.bind(new com.google.inject.TypeLiteral<com.intellij.psi.stubs.StubIndexKey<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>>() {}) 
-			.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex.CLASS_SHORT_NAMES))
-			.toInstance(com.intellij.psi.stubs.StubIndexKey.<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>createIndexKey("org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage" + org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex.CLASS_SHORT_NAMES));
-		binder.bind(new com.google.inject.TypeLiteral<com.intellij.psi.stubs.StubIndexKey<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>>() {}) 
-			.annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex.CLASS_FQN))
-			.toInstance(com.intellij.psi.stubs.StubIndexKey.<String, org.eclipse.xtext.idea.types.psi.PsiJvmNamedEObject>createIndexKey("org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage" + org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex.CLASS_FQN));
-	}
-	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
-	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends org.eclipse.xtext.psi.stubs.PsiNamedEObjectIndex> bindPsiNamedEObjectIndex() {
-		return org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.stubindex.RefactoringTestLanguagePsiNamedEObjectIndex.class;
-	}
-	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	@org.eclipse.xtext.service.SingletonBinding
 	public Class<? extends org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex> bindJvmDeclaredTypeShortNameIndex() {
-		return org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.stubindex.RefactoringTestLanguageJvmDeclaredTypeShortNameIndex.class;
+		return JvmDeclaredTypeShortNameIndex.class;
 	}
-	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
-	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeFullClassNameIndex> bindJvmDeclaredTypeFullClassNameIndex() {
-		return org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.stubindex.RefactoringTestLanguageJvmDeclaredTypeFullClassNameIndex.class;
+	public Class<? extends IFeatureScopeTracker.Provider> bindIFeatureScopeTracker$Provider() {
+		return OptimizingFeatureScopeTrackerProvider.class;
 	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	public Class<? extends com.intellij.openapi.fileTypes.SyntaxHighlighter> bindSyntaxHighlighter() {

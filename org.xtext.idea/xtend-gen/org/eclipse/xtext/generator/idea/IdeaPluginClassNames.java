@@ -119,15 +119,6 @@ public class IdeaPluginClassNames {
     return (_plus_1 + "JvmTypesShortNamesCache");
   }
   
-  public String getPsiNamedEObjectIndexName(final Grammar it) {
-    String _basePackageName = this.getBasePackageName(it);
-    String _plus = (_basePackageName + ".lang.psi.stubindex.");
-    String _name = it.getName();
-    String _simpleName = this.toSimpleName(_name);
-    String _plus_1 = (_plus + _simpleName);
-    return (_plus_1 + "PsiNamedEObjectIndex");
-  }
-  
   public String getCodeBlockModificationListenerName(final Grammar it) {
     String _basePackageName = this.getBasePackageName(it);
     String _plus = (_basePackageName + ".lang.psi.");
@@ -135,24 +126,6 @@ public class IdeaPluginClassNames {
     String _simpleName = this.toSimpleName(_name);
     String _plus_1 = (_plus + _simpleName);
     return (_plus_1 + "CodeBlockModificationListener");
-  }
-  
-  public String getJvmDeclaredTypeShortNameIndexName(final Grammar it) {
-    String _basePackageName = this.getBasePackageName(it);
-    String _plus = (_basePackageName + ".lang.types.stubindex.");
-    String _name = it.getName();
-    String _simpleName = this.toSimpleName(_name);
-    String _plus_1 = (_plus + _simpleName);
-    return (_plus_1 + "JvmDeclaredTypeShortNameIndex");
-  }
-  
-  public String getJvmDeclaredTypeFullClassNameIndexName(final Grammar it) {
-    String _basePackageName = this.getBasePackageName(it);
-    String _plus = (_basePackageName + ".lang.types.stubindex.");
-    String _name = it.getName();
-    String _simpleName = this.toSimpleName(_name);
-    String _plus_1 = (_plus + _simpleName);
-    return (_plus_1 + "JvmDeclaredTypeFullClassNameIndex");
   }
   
   public String getSyntaxHighlighterName(final Grammar it) {
