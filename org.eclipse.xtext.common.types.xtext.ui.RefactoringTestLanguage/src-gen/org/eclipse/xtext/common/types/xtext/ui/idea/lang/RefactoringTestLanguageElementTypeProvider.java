@@ -1,12 +1,12 @@
 package org.eclipse.xtext.common.types.xtext.ui.idea.lang;
 
-import org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.impl.RefactoringTestLanguageFileImpl;
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.psi.PsiNamedEObjectStub;
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType;
 import org.eclipse.xtext.psi.stubs.XtextFileElementType;
 import org.eclipse.xtext.psi.stubs.XtextFileStub;
+import org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.impl.RefactoringTestLanguageFileImpl;
 
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;

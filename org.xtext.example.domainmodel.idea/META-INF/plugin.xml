@@ -14,7 +14,7 @@
 		
 		<java.elementFinder implementation="org.xtext.example.domainmodel.idea.lang.types.psi.DomainmodelJvmTypesElementFinder"/>
 		<java.shortNamesCache implementation="org.xtext.example.domainmodel.idea.lang.types.DomainmodelJvmTypesShortNamesCache"/>
-		
+
 		<stubIndex implementation="org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex"/>
 		<stubIndex implementation="org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex"/>
 

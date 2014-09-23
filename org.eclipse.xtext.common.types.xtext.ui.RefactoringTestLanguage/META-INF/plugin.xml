@@ -14,7 +14,7 @@
 		
 		<java.elementFinder implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.psi.RefactoringTestLanguageJvmTypesElementFinder"/>
 		<java.shortNamesCache implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.RefactoringTestLanguageJvmTypesShortNamesCache"/>
-		
+
 		<stubIndex implementation="org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex"/>
 		<stubIndex implementation="org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex"/>
 

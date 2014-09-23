@@ -8,6 +8,9 @@ import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.PsiTreeChangeEventImpl
+import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.util.PsiModificationTracker
 import java.util.Set
 import javax.inject.Inject
@@ -37,11 +40,16 @@ import org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory
 import org.eclipse.xtext.idea.types.psi.JvmTypesElementFinder
 import org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch
+import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex
 import org.eclipse.xtext.psi.BaseXtextCodeBlockModificationListener
 import org.eclipse.xtext.psi.PsiNamedEObject
 import org.eclipse.xtext.psi.PsiNamedEObjectStub
 import org.eclipse.xtext.psi.stubs.PsiNamedEObjectType
+import org.eclipse.xtext.psi.stubs.XtextFileElementType
+import org.eclipse.xtext.psi.stubs.XtextFileStub
 import org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator
+import org.eclipse.xtext.xbase.typesystem.internal.IFeatureScopeTracker
+import org.eclipse.xtext.xbase.typesystem.internal.OptimizingFeatureScopeTrackerProvider
 
 class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	
@@ -103,6 +111,8 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 			bindFactory.addTypeToType(IJvmTypeProvider.Factory.name, StubTypeProviderFactory.name)
 			bindFactory.addTypeToType(AbstractTypeScopeProvider.name, StubBasedTypeScopeProvider.name)
 			bindFactory.addTypeToType(JvmModelAssociator.name, PsiJvmModelAssociator.name)
+			bindFactory.addTypeToTypeSingleton(JvmDeclaredTypeShortNameIndex.name, JvmDeclaredTypeShortNameIndex.name)
+			bindFactory.addTypeToType(IFeatureScopeTracker.Provider.name, OptimizingFeatureScopeTrackerProvider.name)
 		}
 		val bindings = bindFactory.bindings
 		
@@ -125,6 +135,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		if (typesIntegrationRequired) {			
 			ctx.writeFile(outlet_src_gen, grammar.jvmTypesElementFinderName.toXtendPath, grammar.compileJvmTypesElementFinder)
 			ctx.writeFile(outlet_src_gen, grammar.jvmTypesShortNamesCacheName.toXtendPath, grammar.compileJvmTypesShortNamesCache)
+			ctx.writeFile(outlet_src_gen, grammar.jvmTypesReferencesSearch.toXtendPath, grammar.compileJvmTypesReferencesSearch)
 		}
 		
 		if (pathIdeaPluginProject != null) {
@@ -271,6 +282,21 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		}
 	'''
 	
+	def compileJvmTypesReferencesSearch(Grammar grammar) '''
+		package «grammar.jvmTypesReferencesSearch.toPackageName»
+
+		import «JvmTypesReferencesSearch.name»
+		import «grammar.languageName»
+		
+		class «grammar.jvmTypesReferencesSearch.toSimpleName» extends «JvmTypesReferencesSearch.simpleName» {
+		
+			new() {
+				super(«grammar.languageName.toSimpleName».INSTANCE)
+			}
+		
+		}
+	'''
+	
 	def compileJvmTypesElementFinder(Grammar grammar) '''
 		package «grammar.jvmTypesElementFinderName.toPackageName»
 		
@@ -352,7 +378,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 				<psi.treeChangePreprocessor implementation="«grammar.codeBlockModificationListenerName»"/>
 				«IF typesIntegrationRequired»
 
-				<referencesSearch implementation="«JvmTypesReferencesSearch.name»"/>
+				<referencesSearch implementation="«grammar.jvmTypesReferencesSearch»"/>
 				«grammar.compileExtension('targetElementEvaluator', PsiJvmTargetElementEvaluator.name)»
 				«ENDIF»
 		
@@ -550,21 +576,21 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 	def compileElementTypeProvider(Grammar grammar) '''
 		package «grammar.elementTypeProviderName.toPackageName»;
 
-		import org.eclipse.xtext.idea.lang.IElementTypeProvider;
+		import «IElementTypeProvider.name»;
 		import «psiNamedEObject.name»;
 		import «psiNamedEObjectStub.name»;
 		import «psiNamedEObjectType.name»;
+		import «XtextFileElementType.name»;
+		import «XtextFileStub.name»;
 		import «grammar.fileImplName»;
 		
-		import com.intellij.psi.stubs.IStubElementType;
-		import com.intellij.psi.stubs.PsiFileStub;
-		import com.intellij.psi.tree.IElementType;
-		import com.intellij.psi.tree.IFileElementType;
-		import com.intellij.psi.tree.IStubFileElementType;
+		import «IStubElementType.name»;
+		import «IElementType.name»;
+		import «IFileElementType.name»;
 		
 		public class «grammar.elementTypeProviderName.toSimpleName» implements IElementTypeProvider {
 		
-			public static final IFileElementType FILE_TYPE = new IStubFileElementType<PsiFileStub<«grammar.fileImplName.toSimpleName»>>(«grammar.languageName.toSimpleName».INSTANCE);
+			public static final IFileElementType FILE_TYPE = new «XtextFileElementType.simpleName»<«XtextFileStub.simpleName»<«grammar.fileImplName.toSimpleName»>>(«grammar.languageName.toSimpleName».INSTANCE);
 			
 			public static final IElementType NAME_TYPE = new IElementType("NAME", «grammar.languageName.toSimpleName».INSTANCE);
 			

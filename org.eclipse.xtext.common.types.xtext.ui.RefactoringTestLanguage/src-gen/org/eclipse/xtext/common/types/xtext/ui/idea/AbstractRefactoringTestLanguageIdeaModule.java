@@ -1,19 +1,7 @@
 package org.eclipse.xtext.common.types.xtext.ui.idea;
 
-import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
-import org.eclipse.xtext.xbase.typesystem.internal.IFeatureScopeTracker;
-import org.eclipse.xtext.xbase.typesystem.internal.OptimizingFeatureScopeTrackerProvider;
-
 public class AbstractRefactoringTestLanguageIdeaModule extends org.eclipse.xtext.idea.DefaultIdeaModule {
 	
-	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
-	@org.eclipse.xtext.service.SingletonBinding
-	public Class<? extends org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex> bindJvmDeclaredTypeShortNameIndex() {
-		return JvmDeclaredTypeShortNameIndex.class;
-	}
-	public Class<? extends IFeatureScopeTracker.Provider> bindIFeatureScopeTracker$Provider() {
-		return OptimizingFeatureScopeTrackerProvider.class;
-	}
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	public Class<? extends com.intellij.openapi.fileTypes.SyntaxHighlighter> bindSyntaxHighlighter() {
 		return org.eclipse.xtext.common.types.xtext.ui.idea.lang.RefactoringTestLanguageSyntaxHighlighter.class;
@@ -46,6 +34,15 @@ public class AbstractRefactoringTestLanguageIdeaModule extends org.eclipse.xtext
 	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
 	public Class<? extends org.eclipse.xtext.xbase.jvmmodel.JvmModelAssociator> bindJvmModelAssociator() {
 		return org.eclipse.xtext.idea.jvmmodel.PsiJvmModelAssociator.class;
+	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	@org.eclipse.xtext.service.SingletonBinding
+	public Class<? extends org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex> bindJvmDeclaredTypeShortNameIndex() {
+		return org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex.class;
+	}
+	// contributed by org.eclipse.xtext.generator.idea.IdeaPluginGenerator
+	public Class<? extends org.eclipse.xtext.xbase.typesystem.internal.IFeatureScopeTracker.Provider> bindIFeatureScopeTracker$Provider() {
+		return org.eclipse.xtext.xbase.typesystem.internal.OptimizingFeatureScopeTrackerProvider.class;
 	}
 	
 	

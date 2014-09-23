@@ -11,7 +11,7 @@
 
 	<extensions defaultExtensionNs="com.intellij">
 		<buildProcess.parametersProvider implementation="org.xtext.example.mydsl.idea.server.MyDslBuildProcessParametersProvider"/>
-		
+
 		<stubIndex implementation="org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex"/>
 
 		<psi.treeChangePreprocessor implementation="org.xtext.example.mydsl.idea.lang.psi.MyDslCodeBlockModificationListener"/>

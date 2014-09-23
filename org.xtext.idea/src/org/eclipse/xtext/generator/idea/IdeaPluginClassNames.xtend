@@ -65,6 +65,10 @@ class IdeaPluginClassNames {
 		basePackageName+'.lang.types.'+it.name.toSimpleName+'JvmTypesShortNamesCache'
 	}
 	
+	def String getJvmTypesReferencesSearch(Grammar it) {
+		basePackageName+'.lang.types.psi.search.'+it.name.toSimpleName+'JvmTypesReferencesSearch'
+	}
+	
 	def String getCodeBlockModificationListenerName(Grammar it) {
 		basePackageName+'.lang.psi.'+it.name.toSimpleName+'CodeBlockModificationListener'
 	}

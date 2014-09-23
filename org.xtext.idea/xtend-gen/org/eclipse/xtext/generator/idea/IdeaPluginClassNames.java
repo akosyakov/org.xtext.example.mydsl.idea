@@ -119,6 +119,15 @@ public class IdeaPluginClassNames {
     return (_plus_1 + "JvmTypesShortNamesCache");
   }
   
+  public String getJvmTypesReferencesSearch(final Grammar it) {
+    String _basePackageName = this.getBasePackageName(it);
+    String _plus = (_basePackageName + ".lang.types.psi.search.");
+    String _name = it.getName();
+    String _simpleName = this.toSimpleName(_name);
+    String _plus_1 = (_plus + _simpleName);
+    return (_plus_1 + "JvmTypesReferencesSearch");
+  }
+  
   public String getCodeBlockModificationListenerName(final Grammar it) {
     String _basePackageName = this.getBasePackageName(it);
     String _plus = (_basePackageName + ".lang.psi.");
