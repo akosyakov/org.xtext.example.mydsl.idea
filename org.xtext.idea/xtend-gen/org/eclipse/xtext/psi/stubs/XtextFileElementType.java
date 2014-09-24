@@ -14,6 +14,7 @@ import com.intellij.psi.tree.IStubFileElementType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
@@ -21,6 +22,7 @@ import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.common.types.TypesPackage;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex;
 import org.eclipse.xtext.psi.stubs.ExportedObject;
@@ -66,13 +68,26 @@ public class XtextFileElementType<T extends XtextFileStub<?>> extends IStubFileE
     it.writeInt(_size);
     for (final ExportedObject exportedObject : exportedObjects) {
       {
-        String _name = exportedObject.getName();
-        it.writeUTF(_name);
-        String _qualifiedName = exportedObject.getQualifiedName();
-        it.writeUTF(_qualifiedName);
-        EClass _type = exportedObject.getType();
-        this.writeEClass(it, _type);
+        QualifiedName _qualifiedName = exportedObject.getQualifiedName();
+        this.writeQualifiedName(it, _qualifiedName);
+        EClass _eClass = exportedObject.getEClass();
+        this.writeEClass(it, _eClass);
+        URI _eObjectURI = exportedObject.getEObjectURI();
+        this.writeURI(it, _eObjectURI);
       }
+    }
+  }
+  
+  protected void writeQualifiedName(final StubOutputStream it, final QualifiedName qualifiedName) {
+    try {
+      int _segmentCount = qualifiedName.getSegmentCount();
+      it.writeInt(_segmentCount);
+      List<String> _segments = qualifiedName.getSegments();
+      for (final String segment : _segments) {
+        it.writeUTF(segment);
+      }
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
     }
   }
   
@@ -83,6 +98,15 @@ public class XtextFileElementType<T extends XtextFileStub<?>> extends IStubFileE
       it.writeUTF(_nsURI);
       String _name = type.getName();
       it.writeUTF(_name);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  protected void writeURI(final StubOutputStream it, final URI uri) {
+    try {
+      String _string = uri.toString();
+      it.writeUTF(_string);
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -106,16 +130,34 @@ public class XtextFileElementType<T extends XtextFileStub<?>> extends IStubFileE
       final int count = it.readInt();
       for (int i = 0; (i < count); i++) {
         {
-          final String name = it.readUTF();
-          final String qualifiedName = it.readUTF();
-          final EClass type = this.readEClass(it);
-          ExportedObject _exportedObject = new ExportedObject(name, qualifiedName, type);
+          final QualifiedName qualifiedName = this.readQualifiedName(it);
+          final EClass EClass = this.readEClass(it);
+          final URI EObjectURI = this.readURI(it);
+          ExportedObject _exportedObject = new ExportedObject(qualifiedName, EClass, EObjectURI);
           exportedObjects.add(_exportedObject);
         }
       }
       _xblockexpression = exportedObjects;
     }
     return _xblockexpression;
+  }
+  
+  protected QualifiedName readQualifiedName(final StubInputStream it) {
+    try {
+      QualifiedName _xblockexpression = null;
+      {
+        final int segmentCount = it.readInt();
+        final ArrayList<String> segments = CollectionLiterals.<String>newArrayList();
+        for (int i = 0; (i < segmentCount); i++) {
+          String _readUTF = it.readUTF();
+          segments.add(_readUTF);
+        }
+        _xblockexpression = QualifiedName.create(segments);
+      }
+      return _xblockexpression;
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
   }
   
   protected EClass readEClass(final StubInputStream it) {
@@ -134,20 +176,31 @@ public class XtextFileElementType<T extends XtextFileStub<?>> extends IStubFileE
     }
   }
   
+  protected URI readURI(final StubInputStream it) {
+    try {
+      String _readUTF = it.readUTF();
+      return URI.createURI(_readUTF);
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
   public void indexStub(final PsiFileStub stub, @Extension final IndexSink sink) {
     if ((stub instanceof XtextFileStub<?>)) {
       List<ExportedObject> _exportedObjects = ((XtextFileStub<?>)stub).getExportedObjects();
       for (final ExportedObject exportedObject : _exportedObjects) {
         {
           StubIndexKey<String, BaseXtextFile> _key = this.exportedObjectQualifiedNameIndex.getKey();
-          String _qualifiedName = exportedObject.getQualifiedName();
-          sink.<BaseXtextFile, String>occurrence(_key, _qualifiedName);
-          EClass _type = exportedObject.getType();
-          boolean _isAssignableFrom = EcoreUtil2.isAssignableFrom(TypesPackage.Literals.JVM_DECLARED_TYPE, _type);
+          QualifiedName _qualifiedName = exportedObject.getQualifiedName();
+          String _string = _qualifiedName.toString();
+          sink.<BaseXtextFile, String>occurrence(_key, _string);
+          EClass _eClass = exportedObject.getEClass();
+          boolean _isAssignableFrom = EcoreUtil2.isAssignableFrom(TypesPackage.Literals.JVM_DECLARED_TYPE, _eClass);
           if (_isAssignableFrom) {
             StubIndexKey<String, BaseXtextFile> _key_1 = this.jvmDeclaredTypeShortNameIndex.getKey();
-            String _name = exportedObject.getName();
-            sink.<BaseXtextFile, String>occurrence(_key_1, _name);
+            QualifiedName _qualifiedName_1 = exportedObject.getQualifiedName();
+            String _lastSegment = _qualifiedName_1.getLastSegment();
+            sink.<BaseXtextFile, String>occurrence(_key_1, _lastSegment);
           }
         }
       }

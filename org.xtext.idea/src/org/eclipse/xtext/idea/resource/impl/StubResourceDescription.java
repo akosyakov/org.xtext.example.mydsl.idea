@@ -3,14 +3,12 @@ package org.eclipse.xtext.idea.resource.impl;
 import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
@@ -19,7 +17,6 @@ import org.eclipse.xtext.resource.CompilerPhases;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IReferenceDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
-import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.impl.AbstractResourceDescription;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 
@@ -70,27 +67,17 @@ public class StubResourceDescription extends AbstractResourceDescription impleme
 			final List<IEObjectDescription> allDescriptions = new ArrayList<IEObjectDescription>();
 			if (!isIndexing()) {
 				final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(project);
-				final Set<Resource> resources = new HashSet<Resource>();
+				final Set<BaseXtextFile> files = new HashSet<BaseXtextFile>();
 				exportedObjectQualifiedNameIndex.processAllKeys(project, new Processor<String>() {
 					
 					public boolean process(String key) {
-						Collection<BaseXtextFile> xtextFiles = exportedObjectQualifiedNameIndex.get(key, project, projectScope);
-						for (BaseXtextFile xtextFile : xtextFiles) {
-							Resource resource = xtextFile.getResource();
-							if (resource != null) {
-								resources.add(resource);
-							}
-						}
+						files.addAll(exportedObjectQualifiedNameIndex.get(key, project, projectScope));
 						return true;
 					}
 		
 				});
-				for (Resource resource : resources) {
-					if (resource instanceof XtextResource) {
-						XtextResource xtextResource = (XtextResource) resource;
-						Manager resourceDescriptionManager = xtextResource.getResourceServiceProvider().getResourceDescriptionManager();
-						allDescriptions.addAll(IterableExtensions.toList(resourceDescriptionManager.getResourceDescription(resource).getExportedObjects()));
-					}
+				for (BaseXtextFile file : files) {
+					allDescriptions.addAll(IterableExtensions.toList(file.getExportedObjects()));
 				}
 			}
 			return allDescriptions;

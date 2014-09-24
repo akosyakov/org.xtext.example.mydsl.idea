@@ -8,6 +8,7 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IFileElementType;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.xtext.idea.lang.IElementTypeProvider;
 import org.eclipse.xtext.naming.QualifiedName;
@@ -18,6 +19,8 @@ import org.eclipse.xtext.psi.stubs.XtextFileStub;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 
 @SuppressWarnings("all")
 public class XtextStubBuilder extends DefaultStubBuilder {
@@ -50,16 +53,18 @@ public class XtextStubBuilder extends DefaultStubBuilder {
       boolean _notEquals = (!Objects.equal(resourceDescription, null));
       if (_notEquals) {
         Iterable<IEObjectDescription> _exportedObjects = resourceDescription.getExportedObjects();
-        for (final IEObjectDescription exportedObject : _exportedObjects) {
-          {
-            final QualifiedName qualifiedName = exportedObject.getQualifiedName();
-            List<ExportedObject> _exportedObjects_1 = stub.getExportedObjects();
-            String _lastSegment = qualifiedName.getLastSegment();
-            String _string = qualifiedName.toString();
-            EClass _eClass = exportedObject.getEClass();
-            ExportedObject _exportedObject = new ExportedObject(_lastSegment, _string, _eClass);
-            _exportedObjects_1.add(_exportedObject);
+        final Function1<IEObjectDescription, ExportedObject> _function = new Function1<IEObjectDescription, ExportedObject>() {
+          public ExportedObject apply(final IEObjectDescription it) {
+            QualifiedName _qualifiedName = it.getQualifiedName();
+            EClass _eClass = it.getEClass();
+            URI _eObjectURI = it.getEObjectURI();
+            return new ExportedObject(_qualifiedName, _eClass, _eObjectURI);
           }
+        };
+        Iterable<ExportedObject> _map = IterableExtensions.<IEObjectDescription, ExportedObject>map(_exportedObjects, _function);
+        for (final ExportedObject exportedObject : _map) {
+          List<ExportedObject> _exportedObjects_1 = stub.getExportedObjects();
+          _exportedObjects_1.add(exportedObject);
         }
       }
       _xblockexpression = stub;

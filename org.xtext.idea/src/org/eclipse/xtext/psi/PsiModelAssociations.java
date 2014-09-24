@@ -4,12 +4,22 @@ import java.util.Iterator;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
 import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
+import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.inject.Singleton;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.tree.CompositeElement;
 
 @Singleton
@@ -98,8 +108,35 @@ public class PsiModelAssociations implements IPsiModelAssociations, IPsiModelAss
     }
 
     public PsiElement getPsiElement(EObject object) {
-        return PsiAdapter.getPsi(object);
+    	PsiElement psi = PsiAdapter.getPsi(object);
+    	if (psi != null) {
+    		return psi;
+    	}
+    	
+    	URI uri = EcoreUtil.getURI(object);
+    	BaseXtextFile xtextFile = getBaseXtextFile(object.eResource().getResourceSet(), uri);
+    	if (xtextFile == null) {
+    		return null;
+    	}
+    	EObject resolvedObject = xtextFile.getEObject(uri);
+		return PsiAdapter.getPsi(resolvedObject);
     }
+
+	protected BaseXtextFile getBaseXtextFile(ResourceSet resourceSet, URI uri) {
+    	Project project = StubBasedResourceDescriptions.ProjectAdapter.getProject(resourceSet);
+    	if (project == null) {
+    		return null;
+    	}
+		VirtualFile file = VirtualFileManager.getInstance().findFileByUrl(uri.trimFragment().toString());
+    	if (file == null) {
+    		return null;
+    	}
+    	PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+    	if (psiFile == null || !(psiFile instanceof BaseXtextFile)) {
+    		return null;
+    	}
+    	return (BaseXtextFile) psiFile;
+	}
     
 	public PsiElement getPsiElement(IEObjectDescription objectDescription, EObject context) {
 		if (objectDescription == null) {
