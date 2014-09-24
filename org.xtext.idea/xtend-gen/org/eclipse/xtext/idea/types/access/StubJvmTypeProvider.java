@@ -22,6 +22,7 @@ import org.eclipse.xtext.common.types.access.impl.AbstractJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.AbstractRuntimeJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.ITypeFactory;
 import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess;
+import org.eclipse.xtext.common.types.access.impl.TypeResourceServices;
 import org.eclipse.xtext.common.types.access.impl.URIHelperConstants;
 import org.eclipse.xtext.idea.types.access.PsiClassFactory;
 import org.eclipse.xtext.idea.types.access.PsiClassMirror;
@@ -46,8 +47,8 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
   @Extension
   private final StubURIHelper uriHelper;
   
-  protected StubJvmTypeProvider(final Project project, final ResourceSet resourceSet, final IndexedJvmTypeAccess indexedJvmTypeAccess, final IPsiModelAssociator psiModelAssociator) {
-    super(resourceSet, indexedJvmTypeAccess);
+  protected StubJvmTypeProvider(final Project project, final ResourceSet resourceSet, final IndexedJvmTypeAccess indexedJvmTypeAccess, final TypeResourceServices services, final IPsiModelAssociator psiModelAssociator) {
+    super(resourceSet, indexedJvmTypeAccess, services);
     this.project = project;
     StubURIHelper _createStubURIHelper = this.createStubURIHelper();
     this.uriHelper = _createStubURIHelper;

@@ -17,7 +17,7 @@ class StubTypeProviderFactory extends AbstractTypeProviderFactory {
 		val project = ProjectAdapter.getProject(resourceSet)
 		if (project == null)
 			throw new IllegalArgumentException("project may not be null.")
-		new StubJvmTypeProvider(project, resourceSet, indexedJvmTypeAccess, psiModelAssociator)
+		new StubJvmTypeProvider(project, resourceSet, indexedJvmTypeAccess, services, psiModelAssociator)
 	}
 	
 }

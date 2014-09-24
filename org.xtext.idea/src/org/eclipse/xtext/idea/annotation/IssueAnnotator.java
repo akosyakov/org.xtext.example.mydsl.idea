@@ -7,6 +7,7 @@ import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.psi.PsiEObject;
+import org.eclipse.xtext.service.OperationCanceledError;
 import org.eclipse.xtext.util.CancelIndicator;
 import org.eclipse.xtext.validation.CheckMode;
 import org.eclipse.xtext.validation.IResourceValidator;
@@ -40,16 +41,20 @@ public class IssueAnnotator implements Annotator {
 		}
 		IXtextLanguage xtextLanguage = (IXtextLanguage) language;
 		IResourceValidator resourceValidator = xtextLanguage.getInstance(IResourceValidator.class);
-		for (Issue issue : getIssues(resource, resourceValidator)) {
-			if (issue.isSyntaxError()) {
-				continue;
+		try {
+			for (Issue issue : getIssues(resource, resourceValidator)) {
+				if (issue.isSyntaxError()) {
+					continue;
+				}
+				HighlightSeverity highlightSeverity = getHighlightSeverity(issue.getSeverity());
+				if (highlightSeverity == null) {
+					continue;
+				}
+				int endOffset = issue.getOffset() + issue.getLength();
+				holder.createAnnotation(highlightSeverity, new TextRange(issue.getOffset(), endOffset), issue.getMessage());
 			}
-			HighlightSeverity highlightSeverity = getHighlightSeverity(issue.getSeverity());
-			if (highlightSeverity == null) {
-				continue;
-			}
-			int endOffset = issue.getOffset() + issue.getLength();
-			holder.createAnnotation(highlightSeverity, new TextRange(issue.getOffset(), endOffset), issue.getMessage());
+		} catch (OperationCanceledError e) {
+			throw e.getWrapped();
 		}
 	}
 

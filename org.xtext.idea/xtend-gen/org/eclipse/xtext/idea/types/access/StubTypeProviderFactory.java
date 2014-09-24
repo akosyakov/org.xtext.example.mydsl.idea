@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.common.types.access.AbstractTypeProviderFactory;
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess;
+import org.eclipse.xtext.common.types.access.impl.TypeResourceServices;
 import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
 import org.eclipse.xtext.idea.types.access.StubJvmTypeProvider;
 import org.eclipse.xtext.psi.IPsiModelAssociator;
@@ -29,7 +30,8 @@ public class StubTypeProviderFactory extends AbstractTypeProviderFactory {
         throw new IllegalArgumentException("project may not be null.");
       }
       IndexedJvmTypeAccess _indexedJvmTypeAccess = this.getIndexedJvmTypeAccess();
-      _xblockexpression = new StubJvmTypeProvider(project, resourceSet, _indexedJvmTypeAccess, this.psiModelAssociator);
+      TypeResourceServices _services = this.getServices();
+      _xblockexpression = new StubJvmTypeProvider(project, resourceSet, _indexedJvmTypeAccess, _services, this.psiModelAssociator);
     }
     return _xblockexpression;
   }
