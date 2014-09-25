@@ -16,7 +16,7 @@ import org.eclipse.xtext.resource.DerivedStateAwareResource
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
 import org.eclipse.xtext.service.OperationCanceledError
 
-class JvmTypesReferencesSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> {
+class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> {
 
 	@Inject
 	extension IPsiModelAssociations

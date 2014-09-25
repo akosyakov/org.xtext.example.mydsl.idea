@@ -51,7 +51,7 @@ import org.eclipse.xtext.idea.types.JvmTypesShortNamesCache;
 import org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider;
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory;
 import org.eclipse.xtext.idea.types.psi.JvmTypesElementFinder;
-import org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch;
+import org.eclipse.xtext.idea.types.psi.search.JvmElementsReferencesSearch;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
 import org.eclipse.xtext.psi.BaseXtextCodeBlockModificationListener;
 import org.eclipse.xtext.psi.PsiNamedEObject;
@@ -237,10 +237,10 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
       String _xtendPath_3 = this._ideaPluginClassNames.toXtendPath(_jvmTypesShortNamesCacheName);
       CharSequence _compileJvmTypesShortNamesCache = this.compileJvmTypesShortNamesCache(grammar);
       ctx.writeFile(outlet_src_gen, _xtendPath_3, _compileJvmTypesShortNamesCache);
-      String _jvmTypesReferencesSearch = this._ideaPluginClassNames.getJvmTypesReferencesSearch(grammar);
-      String _xtendPath_4 = this._ideaPluginClassNames.toXtendPath(_jvmTypesReferencesSearch);
-      CharSequence _compileJvmTypesReferencesSearch = this.compileJvmTypesReferencesSearch(grammar);
-      ctx.writeFile(outlet_src_gen, _xtendPath_4, _compileJvmTypesReferencesSearch);
+      String _jvmElementsReferencesSearch = this._ideaPluginClassNames.getJvmElementsReferencesSearch(grammar);
+      String _xtendPath_4 = this._ideaPluginClassNames.toXtendPath(_jvmElementsReferencesSearch);
+      CharSequence _compileJvmElementsReferencesSearch = this.compileJvmElementsReferencesSearch(grammar);
+      ctx.writeFile(outlet_src_gen, _xtendPath_4, _compileJvmElementsReferencesSearch);
     }
     boolean _notEquals_1 = (!Objects.equal(this.pathIdeaPluginProject, null));
     if (_notEquals_1) {
@@ -809,16 +809,16 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     return _builder;
   }
   
-  public CharSequence compileJvmTypesReferencesSearch(final Grammar grammar) {
+  public CharSequence compileJvmElementsReferencesSearch(final Grammar grammar) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("package ");
-    String _jvmTypesReferencesSearch = this._ideaPluginClassNames.getJvmTypesReferencesSearch(grammar);
-    String _packageName = this._ideaPluginClassNames.toPackageName(_jvmTypesReferencesSearch);
+    String _jvmElementsReferencesSearch = this._ideaPluginClassNames.getJvmElementsReferencesSearch(grammar);
+    String _packageName = this._ideaPluginClassNames.toPackageName(_jvmElementsReferencesSearch);
     _builder.append(_packageName, "");
     _builder.newLineIfNotEmpty();
     _builder.newLine();
     _builder.append("import ");
-    String _name = JvmTypesReferencesSearch.class.getName();
+    String _name = JvmElementsReferencesSearch.class.getName();
     _builder.append(_name, "");
     _builder.newLineIfNotEmpty();
     _builder.append("import ");
@@ -827,11 +827,11 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
     _builder.newLineIfNotEmpty();
     _builder.newLine();
     _builder.append("class ");
-    String _jvmTypesReferencesSearch_1 = this._ideaPluginClassNames.getJvmTypesReferencesSearch(grammar);
-    String _simpleName = this._ideaPluginClassNames.toSimpleName(_jvmTypesReferencesSearch_1);
+    String _jvmElementsReferencesSearch_1 = this._ideaPluginClassNames.getJvmElementsReferencesSearch(grammar);
+    String _simpleName = this._ideaPluginClassNames.toSimpleName(_jvmElementsReferencesSearch_1);
     _builder.append(_simpleName, "");
     _builder.append(" extends ");
-    String _simpleName_1 = JvmTypesReferencesSearch.class.getSimpleName();
+    String _simpleName_1 = JvmElementsReferencesSearch.class.getSimpleName();
     _builder.append(_simpleName_1, "");
     _builder.append(" {");
     _builder.newLineIfNotEmpty();
@@ -1043,8 +1043,8 @@ public class IdeaPluginGenerator extends Xtend2GeneratorFragment {
         _builder.newLine();
         _builder.append("\t\t");
         _builder.append("<referencesSearch implementation=\"");
-        String _jvmTypesReferencesSearch = this._ideaPluginClassNames.getJvmTypesReferencesSearch(grammar);
-        _builder.append(_jvmTypesReferencesSearch, "\t\t");
+        String _jvmElementsReferencesSearch = this._ideaPluginClassNames.getJvmElementsReferencesSearch(grammar);
+        _builder.append(_jvmElementsReferencesSearch, "\t\t");
         _builder.append("\"/>");
         _builder.newLineIfNotEmpty();
         _builder.append("\t\t");

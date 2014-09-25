@@ -20,7 +20,7 @@
 
 		<psi.treeChangePreprocessor implementation="org.xtext.example.domainmodel.idea.lang.psi.DomainmodelCodeBlockModificationListener"/>
 
-		<referencesSearch implementation="org.xtext.example.domainmodel.idea.lang.types.psi.search.DomainmodelJvmTypesReferencesSearch"/>
+		<referencesSearch implementation="org.xtext.example.domainmodel.idea.lang.types.psi.search.DomainmodelJvmElementsReferencesSearch"/>
 		<targetElementEvaluator language="org.xtext.example.domainmodel.Domainmodel"
 								factoryClass="org.xtext.example.domainmodel.idea.DomainmodelExtensionFactory"
 								implementationClass="org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator"/>

@@ -20,7 +20,7 @@
 
 		<psi.treeChangePreprocessor implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.psi.RefactoringTestLanguageCodeBlockModificationListener"/>
 
-		<referencesSearch implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.psi.search.RefactoringTestLanguageJvmTypesReferencesSearch"/>
+		<referencesSearch implementation="org.eclipse.xtext.common.types.xtext.ui.idea.lang.types.psi.search.RefactoringTestLanguageJvmElementsReferencesSearch"/>
 		<targetElementEvaluator language="org.eclipse.xtext.common.types.xtext.ui.RefactoringTestLanguage"
 								factoryClass="org.eclipse.xtext.common.types.xtext.ui.idea.RefactoringTestLanguageExtensionFactory"
 								implementationClass="org.eclipse.xtext.idea.jvmmodel.codeInsight.PsiJvmTargetElementEvaluator"/>

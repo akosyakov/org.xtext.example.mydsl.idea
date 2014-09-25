@@ -39,7 +39,7 @@ import org.eclipse.xtext.idea.types.JvmTypesShortNamesCache
 import org.eclipse.xtext.idea.types.StubBasedTypeScopeProvider
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory
 import org.eclipse.xtext.idea.types.psi.JvmTypesElementFinder
-import org.eclipse.xtext.idea.types.psi.search.JvmTypesReferencesSearch
+import org.eclipse.xtext.idea.types.psi.search.JvmElementsReferencesSearch
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex
 import org.eclipse.xtext.psi.BaseXtextCodeBlockModificationListener
 import org.eclipse.xtext.psi.PsiNamedEObject
@@ -135,7 +135,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		if (typesIntegrationRequired) {			
 			ctx.writeFile(outlet_src_gen, grammar.jvmTypesElementFinderName.toXtendPath, grammar.compileJvmTypesElementFinder)
 			ctx.writeFile(outlet_src_gen, grammar.jvmTypesShortNamesCacheName.toXtendPath, grammar.compileJvmTypesShortNamesCache)
-			ctx.writeFile(outlet_src_gen, grammar.jvmTypesReferencesSearch.toXtendPath, grammar.compileJvmTypesReferencesSearch)
+			ctx.writeFile(outlet_src_gen, grammar.jvmElementsReferencesSearch.toXtendPath, grammar.compileJvmElementsReferencesSearch)
 		}
 		
 		if (pathIdeaPluginProject != null) {
@@ -282,13 +282,13 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 		}
 	'''
 	
-	def compileJvmTypesReferencesSearch(Grammar grammar) '''
-		package «grammar.jvmTypesReferencesSearch.toPackageName»
+	def compileJvmElementsReferencesSearch(Grammar grammar) '''
+		package «grammar.jvmElementsReferencesSearch.toPackageName»
 
-		import «JvmTypesReferencesSearch.name»
+		import «JvmElementsReferencesSearch.name»
 		import «grammar.languageName»
 		
-		class «grammar.jvmTypesReferencesSearch.toSimpleName» extends «JvmTypesReferencesSearch.simpleName» {
+		class «grammar.jvmElementsReferencesSearch.toSimpleName» extends «JvmElementsReferencesSearch.simpleName» {
 		
 			new() {
 				super(«grammar.languageName.toSimpleName».INSTANCE)
@@ -378,7 +378,7 @@ class IdeaPluginGenerator extends Xtend2GeneratorFragment {
 				<psi.treeChangePreprocessor implementation="«grammar.codeBlockModificationListenerName»"/>
 				«IF typesIntegrationRequired»
 
-				<referencesSearch implementation="«grammar.jvmTypesReferencesSearch»"/>
+				<referencesSearch implementation="«grammar.jvmElementsReferencesSearch»"/>
 				«grammar.compileExtension('targetElementEvaluator', PsiJvmTargetElementEvaluator.name)»
 				«ENDIF»
 		

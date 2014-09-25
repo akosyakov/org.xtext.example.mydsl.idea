@@ -29,7 +29,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 
 @SuppressWarnings("all")
-public class JvmTypesReferencesSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> {
+public class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> {
   @Inject
   @Extension
   private IPsiModelAssociations _iPsiModelAssociations;
@@ -40,7 +40,7 @@ public class JvmTypesReferencesSearch extends QueryExecutorBase<PsiReference, Re
   
   private final IXtextLanguage language;
   
-  public JvmTypesReferencesSearch(final IXtextLanguage language) {
+  public JvmElementsReferencesSearch(final IXtextLanguage language) {
     this.language = language;
     this.language.injectMembers(this);
   }
@@ -68,7 +68,7 @@ public class JvmTypesReferencesSearch extends QueryExecutorBase<PsiReference, Re
         Set<EObject> _jvmElements = this._iJvmModelAssociations.getJvmElements(_eObject);
         final Function1<EObject, PsiElement> _function = new Function1<EObject, PsiElement>() {
           public PsiElement apply(final EObject it) {
-            return JvmTypesReferencesSearch.this._iPsiModelAssociations.getPsiElement(it);
+            return JvmElementsReferencesSearch.this._iPsiModelAssociations.getPsiElement(it);
           }
         };
         Iterable<PsiElement> _map = IterableExtensions.<EObject, PsiElement>map(_jvmElements, _function);

@@ -1,6 +1,7 @@
 package org.eclipse.xtext.generator.idea;
 
 import org.eclipse.xtext.Grammar;
+import org.eclipse.xtext.idea.types.psi.search.JvmElementsReferencesSearch;
 import org.eclipse.xtext.util.Strings;
 
 @SuppressWarnings("all")
@@ -119,13 +120,14 @@ public class IdeaPluginClassNames {
     return (_plus_1 + "JvmTypesShortNamesCache");
   }
   
-  public String getJvmTypesReferencesSearch(final Grammar it) {
+  public String getJvmElementsReferencesSearch(final Grammar it) {
     String _basePackageName = this.getBasePackageName(it);
     String _plus = (_basePackageName + ".lang.types.psi.search.");
     String _name = it.getName();
     String _simpleName = this.toSimpleName(_name);
     String _plus_1 = (_plus + _simpleName);
-    return (_plus_1 + "JvmTypesReferencesSearch");
+    String _simpleName_1 = JvmElementsReferencesSearch.class.getSimpleName();
+    return (_plus_1 + _simpleName_1);
   }
   
   public String getCodeBlockModificationListenerName(final Grammar it) {
