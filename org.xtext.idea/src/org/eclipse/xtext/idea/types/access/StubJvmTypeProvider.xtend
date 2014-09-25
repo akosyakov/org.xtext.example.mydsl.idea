@@ -6,6 +6,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.impl.JavaPsiFacadeEx
 import com.intellij.psi.impl.compiled.SignatureParsing
 import java.text.StringCharacterIterator
+import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtend.lib.annotations.AccessorType
@@ -18,10 +19,10 @@ import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess
 import org.eclipse.xtext.common.types.access.impl.TypeResourceServices
 import org.eclipse.xtext.common.types.access.impl.URIHelperConstants
 import org.eclipse.xtext.psi.IPsiModelAssociator
+import org.eclipse.xtext.resource.ISynchronizable
 import org.eclipse.xtext.util.Strings
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
-
 
 class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	
@@ -70,18 +71,16 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	def doFindTypeByName(String name, boolean traverseNestedTypes) {
 		ProgressIndicatorProvider.checkCanceled
 		val normalizedName = name.normalize
-		val indexedJvmTypeAccess = indexedJvmTypeAccess
 		val resourceURI = normalizedName.createResourceURI
-		if (indexedJvmTypeAccess != null) {
-			val proxyURI = resourceURI.appendFragment(normalizedName.fragment)
-			val candidate = indexedJvmTypeAccess.getIndexedJvmType(proxyURI, resourceSet)
-			if (candidate instanceof JvmType) {
-				return candidate
-			}
+		val fragment = normalizedName.fragment
+		switch resourceSet : resourceSet {
+			ISynchronizable<ResourceSet>:
+				resourceSet.execute [
+					findType(resourceURI, fragment, traverseNestedTypes)
+				]
+			default:
+				findType(resourceURI, fragment, traverseNestedTypes)
 		}
-		ProgressIndicatorProvider.checkCanceled
-		val result = resourceSet.getResource(resourceURI, true)
-		normalizedName.findTypeByClass(result, traverseNestedTypes)
 	}
 	
 	protected def normalize(String name) {
@@ -92,8 +91,21 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 		}
 	}
 	
-	protected def findTypeByClass(String name, Resource resource, boolean traverseNestedTypes) {
-		val fragment = name.fragment
+	def findType(URI resourceURI, String fragment, boolean traverseNestedTypes) {
+		val indexedJvmTypeAccess = indexedJvmTypeAccess
+		if (indexedJvmTypeAccess != null) {
+			val proxyURI = resourceURI.appendFragment(fragment)
+			val candidate = indexedJvmTypeAccess.getIndexedJvmType(proxyURI, resourceSet)
+			if (candidate instanceof JvmType) {
+				return candidate
+			}
+		}
+		ProgressIndicatorProvider.checkCanceled
+		val resource = resourceSet.getResource(resourceURI, true)
+		resource.findType(fragment, traverseNestedTypes)
+	}
+	
+	protected def findType(Resource resource, String fragment, boolean traverseNestedTypes) {
 		val result = resource.getEObject(fragment) as JvmType
 		if (result != null || !traverseNestedTypes) {
 			return result

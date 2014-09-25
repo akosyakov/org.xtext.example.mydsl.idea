@@ -28,7 +28,9 @@ import org.eclipse.xtext.idea.types.access.PsiClassFactory;
 import org.eclipse.xtext.idea.types.access.PsiClassMirror;
 import org.eclipse.xtext.idea.types.access.StubURIHelper;
 import org.eclipse.xtext.psi.IPsiModelAssociator;
+import org.eclipse.xtext.resource.ISynchronizable;
 import org.eclipse.xtext.util.Strings;
+import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
@@ -97,28 +99,37 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
   }
   
   public JvmType doFindTypeByName(final String name, final boolean traverseNestedTypes) {
-    JvmType _xblockexpression = null;
-    {
-      ProgressIndicatorProvider.checkCanceled();
-      final String normalizedName = this.normalize(name);
-      final IndexedJvmTypeAccess indexedJvmTypeAccess = this.getIndexedJvmTypeAccess();
-      final URI resourceURI = this.uriHelper.createResourceURI(normalizedName);
-      boolean _notEquals = (!Objects.equal(indexedJvmTypeAccess, null));
-      if (_notEquals) {
-        String _fragment = this.uriHelper.getFragment(normalizedName);
-        final URI proxyURI = resourceURI.appendFragment(_fragment);
+    try {
+      JvmType _xblockexpression = null;
+      {
+        ProgressIndicatorProvider.checkCanceled();
+        final String normalizedName = this.normalize(name);
+        final URI resourceURI = this.uriHelper.createResourceURI(normalizedName);
+        final String fragment = this.uriHelper.getFragment(normalizedName);
+        JvmType _switchResult = null;
         ResourceSet _resourceSet = this.getResourceSet();
-        final EObject candidate = indexedJvmTypeAccess.getIndexedJvmType(proxyURI, _resourceSet);
-        if ((candidate instanceof JvmType)) {
-          return ((JvmType)candidate);
+        final ResourceSet resourceSet = _resourceSet;
+        boolean _matched = false;
+        if (!_matched) {
+          if (resourceSet instanceof ISynchronizable) {
+            _matched=true;
+            final IUnitOfWork<JvmType, ResourceSet> _function = new IUnitOfWork<JvmType, ResourceSet>() {
+              public JvmType exec(final ResourceSet it) throws Exception {
+                return StubJvmTypeProvider.this.findType(resourceURI, fragment, traverseNestedTypes);
+              }
+            };
+            _switchResult = ((ISynchronizable<ResourceSet>)resourceSet).<JvmType>execute(_function);
+          }
         }
+        if (!_matched) {
+          _switchResult = this.findType(resourceURI, fragment, traverseNestedTypes);
+        }
+        _xblockexpression = _switchResult;
       }
-      ProgressIndicatorProvider.checkCanceled();
-      ResourceSet _resourceSet_1 = this.getResourceSet();
-      final Resource result = _resourceSet_1.getResource(resourceURI, true);
-      _xblockexpression = this.findTypeByClass(normalizedName, result, traverseNestedTypes);
+      return _xblockexpression;
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
     }
-    return _xblockexpression;
   }
   
   protected String normalize(final String name) {
@@ -137,8 +148,28 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
     }
   }
   
-  protected JvmType findTypeByClass(final String name, final Resource resource, final boolean traverseNestedTypes) {
-    final String fragment = this.uriHelper.getFragment(name);
+  public JvmType findType(final URI resourceURI, final String fragment, final boolean traverseNestedTypes) {
+    JvmType _xblockexpression = null;
+    {
+      final IndexedJvmTypeAccess indexedJvmTypeAccess = this.getIndexedJvmTypeAccess();
+      boolean _notEquals = (!Objects.equal(indexedJvmTypeAccess, null));
+      if (_notEquals) {
+        final URI proxyURI = resourceURI.appendFragment(fragment);
+        ResourceSet _resourceSet = this.getResourceSet();
+        final EObject candidate = indexedJvmTypeAccess.getIndexedJvmType(proxyURI, _resourceSet);
+        if ((candidate instanceof JvmType)) {
+          return ((JvmType)candidate);
+        }
+      }
+      ProgressIndicatorProvider.checkCanceled();
+      ResourceSet _resourceSet_1 = this.getResourceSet();
+      final Resource resource = _resourceSet_1.getResource(resourceURI, true);
+      _xblockexpression = this.findType(resource, fragment, traverseNestedTypes);
+    }
+    return _xblockexpression;
+  }
+  
+  protected JvmType findType(final Resource resource, final String fragment, final boolean traverseNestedTypes) {
     EObject _eObject = resource.getEObject(fragment);
     final JvmType result = ((JvmType) _eObject);
     boolean _or = false;
