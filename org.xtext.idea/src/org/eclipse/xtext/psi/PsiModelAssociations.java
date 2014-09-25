@@ -6,6 +6,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
@@ -108,13 +109,20 @@ public class PsiModelAssociations implements IPsiModelAssociations, IPsiModelAss
     }
 
     public PsiElement getPsiElement(EObject object) {
+    	if (object == null) {
+    		return null;
+    	}
     	PsiElement psi = PsiAdapter.getPsi(object);
     	if (psi != null) {
     		return psi;
     	}
     	
     	URI uri = EcoreUtil.getURI(object);
-    	BaseXtextFile xtextFile = getBaseXtextFile(object.eResource().getResourceSet(), uri);
+    	Resource eResource = object.eResource();
+    	if (eResource == null) {
+    		return null;
+    	}
+		BaseXtextFile xtextFile = getBaseXtextFile(eResource.getResourceSet(), uri);
     	if (xtextFile == null) {
     		return null;
     	}
