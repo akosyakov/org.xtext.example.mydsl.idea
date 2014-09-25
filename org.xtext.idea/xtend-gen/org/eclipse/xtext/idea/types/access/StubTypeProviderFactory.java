@@ -8,7 +8,7 @@ import org.eclipse.xtext.common.types.access.AbstractTypeProviderFactory;
 import org.eclipse.xtext.common.types.access.IJvmTypeProvider;
 import org.eclipse.xtext.common.types.access.impl.IndexedJvmTypeAccess;
 import org.eclipse.xtext.common.types.access.impl.TypeResourceServices;
-import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
+import org.eclipse.xtext.idea.resource.ProjectAdapter;
 import org.eclipse.xtext.idea.types.access.StubJvmTypeProvider;
 import org.eclipse.xtext.psi.IPsiModelAssociator;
 
@@ -24,7 +24,7 @@ public class StubTypeProviderFactory extends AbstractTypeProviderFactory {
       if (_equals) {
         throw new IllegalArgumentException("resourceSet may not be null.");
       }
-      final Project project = StubBasedResourceDescriptions.ProjectAdapter.getProject(resourceSet);
+      final Project project = ProjectAdapter.getProject(resourceSet);
       boolean _equals_1 = Objects.equal(project, null);
       if (_equals_1) {
         throw new IllegalArgumentException("project may not be null.");

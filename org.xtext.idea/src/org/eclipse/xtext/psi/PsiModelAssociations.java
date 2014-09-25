@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
+import org.eclipse.xtext.idea.resource.ProjectAdapter;
 import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.resource.IEObjectDescription;
@@ -136,7 +136,7 @@ public class PsiModelAssociations implements IPsiModelAssociations, IPsiModelAss
     }
 
 	protected BaseXtextFile getBaseXtextFile(ResourceSet resourceSet, URI uri) {
-    	Project project = StubBasedResourceDescriptions.ProjectAdapter.getProject(resourceSet);
+    	Project project = ProjectAdapter.getProject(resourceSet);
     	if (project == null) {
     		return null;
     	}

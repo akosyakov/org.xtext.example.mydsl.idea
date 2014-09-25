@@ -3,7 +3,7 @@ package org.eclipse.xtext.idea.types.access
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.xtext.common.types.access.AbstractTypeProviderFactory
-import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions.ProjectAdapter
+import org.eclipse.xtext.idea.resource.ProjectAdapter
 import org.eclipse.xtext.psi.IPsiModelAssociator
 
 class StubTypeProviderFactory extends AbstractTypeProviderFactory {

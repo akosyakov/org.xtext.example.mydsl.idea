@@ -1,25 +1,25 @@
 package org.eclipse.xtext.idea
 
 import com.google.inject.Binder
-import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions
-import org.eclipse.xtext.idea.resource.impl.StubContainerManager
 import org.eclipse.xtext.psi.IPsiModelAssociations
 import org.eclipse.xtext.psi.IPsiModelAssociator
 import org.eclipse.xtext.psi.PsiModelAssociations
 import org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex
 import org.eclipse.xtext.resource.IContainer
 import org.eclipse.xtext.resource.IResourceDescriptions
+import org.eclipse.xtext.resource.impl.SimpleResourceDescriptionsBasedContainerManager
 import org.eclipse.xtext.service.AbstractGenericModule
 import org.eclipse.xtext.service.SingletonBinding
+import org.eclipse.xtext.idea.resource.impl.PsiFilesBasedResourceDescriptions
 
 class DefaultIdeaModule extends AbstractGenericModule {
 
 	def void configureIResourceDescriptions(Binder binder) {
-		binder.bind(IResourceDescriptions).to(StubBasedResourceDescriptions)
+		binder.bind(IResourceDescriptions).to(PsiFilesBasedResourceDescriptions)
 	}
 
 	def Class<? extends IContainer.Manager> bindIContainer$Manager() {
-		StubContainerManager
+		SimpleResourceDescriptionsBasedContainerManager
 	}
 
 	def Class<? extends IPsiModelAssociations> bindIPsiModelAssociations() {

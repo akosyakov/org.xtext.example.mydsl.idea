@@ -47,6 +47,8 @@ public class XtextStubBuilder extends DefaultStubBuilder {
     {
       IFileElementType _fileType = this.elementTypeProvider.getFileType();
       final XtextFileStub<BaseXtextFile> stub = new XtextFileStub<BaseXtextFile>(file, ((XtextFileElementType<?>) _fileType));
+      URI _uRI = file.getURI();
+      stub.setUri(_uRI);
       ArrayList<ExportedObject> _newArrayList = CollectionLiterals.<ExportedObject>newArrayList();
       stub.setExportedObjects(_newArrayList);
       final IResourceDescription resourceDescription = file.getResourceDescription();

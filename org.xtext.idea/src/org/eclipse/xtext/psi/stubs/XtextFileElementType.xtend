@@ -48,6 +48,7 @@ class XtextFileElementType<T extends XtextFileStub<?>> extends IStubFileElementT
 	}
 
 	override serialize(T stub, StubOutputStream it) throws IOException {
+		writeURI(stub.uri)
 		writeExportedObjects(stub.exportedObjects)
 	}
 
@@ -78,6 +79,7 @@ class XtextFileElementType<T extends XtextFileStub<?>> extends IStubFileElementT
 
 	override deserialize(StubInputStream it, StubElement parentStub) throws IOException {
 		val stub = new XtextFileStub(null, this)
+		stub.uri = readURI
 		stub.exportedObjects = readExportedObjects
 		stub as T
 	}

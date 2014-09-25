@@ -20,6 +20,7 @@ class XtextStubBuilder extends DefaultStubBuilder {
 	
 	protected def createStubForFile(BaseXtextFile file) {
 		val stub = new XtextFileStub(file, elementTypeProvider.fileType as XtextFileElementType<?>)
+		stub.uri = file.URI
 		stub.exportedObjects = newArrayList
 		val resourceDescription = file.resourceDescription
 		if (resourceDescription != null) {

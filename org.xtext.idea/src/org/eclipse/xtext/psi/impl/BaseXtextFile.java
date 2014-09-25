@@ -12,18 +12,18 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
+import org.eclipse.xtext.idea.resource.IResourceSetProvider;
 import org.eclipse.xtext.idea.resource.ResourceDescriptionAdapter;
-import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
 import org.eclipse.xtext.psi.PsiEObject;
 import org.eclipse.xtext.psi.stubs.ExportedObject;
 import org.eclipse.xtext.psi.stubs.XtextFileStub;
 import org.eclipse.xtext.resource.EObjectDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -36,7 +36,7 @@ import com.intellij.util.indexing.IndexingDataKeys;
 public abstract class BaseXtextFile extends PsiFileBase {
 
     @Inject
-    private Provider<ResourceSet> resourceSetProvider;
+    private IResourceSetProvider resourceSetProvider;
     
 	protected BaseXtextFile(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
         super(viewProvider, language);
@@ -47,16 +47,13 @@ public abstract class BaseXtextFile extends PsiFileBase {
         }
     }
 
-    public Resource createResource() {    	
+	public Resource createResource() {    	
     	VirtualFile virtualFile = getViewProvider().getVirtualFile();
         if (virtualFile == null) {
             return null;
         }
-        ResourceSet resourceSet = resourceSetProvider.get();
-        resourceSet.eAdapters().add(new StubBasedResourceDescriptions.ProjectAdapter(getProject()));
-        
-        URI uri = getUri();
-        Resource resource = resourceSet.createResource(uri);
+        ResourceSet resourceSet = resourceSetProvider.get(getProject());
+        Resource resource = resourceSet.createResource(getURI());
         try {
             resource.load(virtualFile.getInputStream(), null);
         } catch (IOException e) {
@@ -71,20 +68,6 @@ public abstract class BaseXtextFile extends PsiFileBase {
     		return null;
     	}
     	return resource.getEObject(uri.fragment());
-	}
-
-	protected URI getUri() {
-		PsiFile originalFile = getOriginalFile();
-		if (originalFile != this && originalFile instanceof BaseXtextFile) {
-			BaseXtextFile originalXtextFile = (BaseXtextFile) originalFile;
-			return originalXtextFile.getUri();
-		}
-    	VirtualFile virtualFile = getUserData(IndexingDataKeys.VIRTUAL_FILE);
-		if (virtualFile == null) {
-    		virtualFile = getViewProvider().getVirtualFile();
-    	}
-		String url = virtualFile.getUrl();
-        return URI.createURI(url);
 	}
     
     public IResourceDescription getResourceDescription() {
@@ -107,8 +90,27 @@ public abstract class BaseXtextFile extends PsiFileBase {
     	}
     	return null;
     }
+    
+    public URI getURI() {
+    	StubElement<?> stub = getStub();
+		if (stub instanceof XtextFileStub<?>) {
+			XtextFileStub<?> xtextFileStub = (XtextFileStub<?>) stub;
+			return xtextFileStub.getUri();
+		}
+		PsiFile originalFile = getOriginalFile();
+		if (originalFile != this && originalFile instanceof BaseXtextFile) {
+			BaseXtextFile originalXtextFile = (BaseXtextFile) originalFile;
+			return originalXtextFile.getURI();
+		}
+    	VirtualFile virtualFile = getUserData(IndexingDataKeys.VIRTUAL_FILE);
+		if (virtualFile == null) {
+    		virtualFile = getViewProvider().getVirtualFile();
+    	}
+		String url = virtualFile.getUrl();
+        return URI.createURI(url);
+	}
 
-	public Iterable<IEObjectDescription> getExportedObjects() {
+	public List<IEObjectDescription> getExportedObjects() {
 		StubElement<?> stub = getStub();
 		if (stub instanceof XtextFileStub<?>) {
 			XtextFileStub<?> xtextFileStub = (XtextFileStub<?>) stub;
@@ -123,7 +125,7 @@ public abstract class BaseXtextFile extends PsiFileBase {
 		}
 		IResourceDescription resourceDescription = getResourceDescription();
 		if (resourceDescription != null) {
-			return resourceDescription.getExportedObjects();
+			return IterableExtensions.toList(resourceDescription.getExportedObjects());
 		}
 		return Collections.emptyList();
 	}
