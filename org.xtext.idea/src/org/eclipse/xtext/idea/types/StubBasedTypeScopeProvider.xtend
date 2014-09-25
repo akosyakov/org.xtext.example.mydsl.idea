@@ -1,10 +1,7 @@
 package org.eclipse.xtext.idea.types
 
 import com.google.common.base.Predicate
-import com.google.common.collect.Lists
 import com.google.inject.Inject
-import com.intellij.psi.impl.java.stubs.index.JavaShortClassNameIndex
-import com.intellij.psi.search.GlobalSearchScope
 import org.eclipse.emf.ecore.InternalEObject
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.common.types.TypesFactory
@@ -15,7 +12,6 @@ import org.eclipse.xtext.common.types.xtext.AbstractTypeScopeProvider
 import org.eclipse.xtext.idea.types.access.StubJvmTypeProvider
 import org.eclipse.xtext.idea.types.access.StubTypeProviderFactory
 import org.eclipse.xtext.naming.IQualifiedNameConverter
-import org.eclipse.xtext.resource.EObjectDescription
 import org.eclipse.xtext.resource.IEObjectDescription
 
 class StubBasedTypeScopeProvider extends AbstractTypeScopeProvider {
@@ -54,18 +50,19 @@ class StubBasedTypeScope extends AbstractTypeScope {
 	}
 	
 	override protected internalGetAllElements() {
-		val allScopedElements = Lists.<IEObjectDescription>newArrayListWithExpectedSize(25000)
-		val project = (typeProvider as StubJvmTypeProvider).project
-		val scope = GlobalSearchScope.allScope(project)
-		val index = JavaShortClassNameIndex.getInstance() 
-		for (fullClassName : index.getAllKeys(project)) {
-			for (psiClass : index.get(fullClassName, project, scope)) {
-				val proxy = psiClass.qualifiedName.createProxy
-				val qualifiedName = getQualifiedNameConverter().toQualifiedName(psiClass.qualifiedName)
-				allScopedElements += EObjectDescription.create(qualifiedName, proxy)
-			}	
-		}
-		allScopedElements
+		emptyList
+//		val allScopedElements = Lists.<IEObjectDescription>newArrayListWithExpectedSize(25000)
+//		val project = (typeProvider as StubJvmTypeProvider).project
+//		val scope = GlobalSearchScope.allScope(project)
+//		val index = JavaShortClassNameIndex.getInstance() 
+//		for (fullClassName : index.getAllKeys(project)) {
+//			for (psiClass : index.get(fullClassName, project, scope)) {
+//				val proxy = psiClass.qualifiedName.createProxy
+//				val qualifiedName = getQualifiedNameConverter().toQualifiedName(psiClass.qualifiedName)
+//				allScopedElements += EObjectDescription.create(qualifiedName, proxy)
+//			}	
+//		}
+//		allScopedElements
 	}
 
 	protected def createProxy(String fullClassName) {

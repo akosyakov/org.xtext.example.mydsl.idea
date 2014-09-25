@@ -4,16 +4,12 @@ import com.google.inject.Inject
 import com.intellij.psi.PsiFile
 import com.intellij.psi.stubs.DefaultStubBuilder
 import org.eclipse.xtext.idea.lang.IElementTypeProvider
-import org.eclipse.xtext.psi.IPsiModelAssociations
 import org.eclipse.xtext.psi.impl.BaseXtextFile
 
 class XtextStubBuilder extends DefaultStubBuilder {
 	
 	@Inject
 	IElementTypeProvider elementTypeProvider
-//	
-//	@Inject
-//	extension IPsiModelAssociations psiModelAssociations
 	
 	override protected createStubForFile(PsiFile file) {
 		switch file {

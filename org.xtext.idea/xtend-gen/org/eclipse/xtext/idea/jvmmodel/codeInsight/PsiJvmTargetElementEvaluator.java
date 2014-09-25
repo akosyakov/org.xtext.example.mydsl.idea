@@ -3,7 +3,7 @@ package org.eclipse.xtext.idea.jvmmodel.codeInsight;
 import com.intellij.codeInsight.TargetElementEvaluator;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
+import com.intellij.psi.impl.light.LightElement;
 
 @SuppressWarnings("all")
 public class PsiJvmTargetElementEvaluator implements TargetElementEvaluator {
@@ -13,9 +13,9 @@ public class PsiJvmTargetElementEvaluator implements TargetElementEvaluator {
     final PsiElement element = _resolve;
     boolean _matched = false;
     if (!_matched) {
-      if (element instanceof PsiJvmDeclaredType) {
+      if (element instanceof LightElement) {
         _matched=true;
-        _switchResult = ((PsiJvmDeclaredType)element).getNavigationElement();
+        _switchResult = ((LightElement)element).getNavigationElement();
       }
     }
     if (!_matched) {

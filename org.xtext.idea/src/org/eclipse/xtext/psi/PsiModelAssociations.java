@@ -13,6 +13,7 @@ import org.eclipse.xtext.idea.resource.impl.StubBasedResourceDescriptions;
 import org.eclipse.xtext.linking.lazy.ICrossReferenceDescription;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.service.OperationCanceledError;
 
 import com.google.inject.Singleton;
 import com.intellij.openapi.project.Project;
@@ -109,25 +110,29 @@ public class PsiModelAssociations implements IPsiModelAssociations, IPsiModelAss
     }
 
     public PsiElement getPsiElement(EObject object) {
-    	if (object == null) {
-    		return null;
+    	try {
+	    	if (object == null) {
+	    		return null;
+	    	}
+	    	PsiElement psi = PsiAdapter.getPsi(object);
+	    	if (psi != null) {
+	    		return psi;
+	    	}
+	    	
+	    	URI uri = EcoreUtil.getURI(object);
+	    	Resource eResource = object.eResource();
+	    	if (eResource == null) {
+	    		return null;
+	    	}
+			BaseXtextFile xtextFile = getBaseXtextFile(eResource.getResourceSet(), uri);
+	    	if (xtextFile == null) {
+	    		return null;
+	    	}
+	    	EObject resolvedObject = xtextFile.getEObject(uri);
+			return PsiAdapter.getPsi(resolvedObject);
+    	} catch (OperationCanceledError e) {
+    		throw e.getWrapped();
     	}
-    	PsiElement psi = PsiAdapter.getPsi(object);
-    	if (psi != null) {
-    		return psi;
-    	}
-    	
-    	URI uri = EcoreUtil.getURI(object);
-    	Resource eResource = object.eResource();
-    	if (eResource == null) {
-    		return null;
-    	}
-		BaseXtextFile xtextFile = getBaseXtextFile(eResource.getResourceSet(), uri);
-    	if (xtextFile == null) {
-    		return null;
-    	}
-    	EObject resolvedObject = xtextFile.getEObject(uri);
-		return PsiAdapter.getPsi(resolvedObject);
     }
 
 	protected BaseXtextFile getBaseXtextFile(ResourceSet resourceSet, URI uri) {

@@ -5,9 +5,9 @@ import java.util.Iterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScopeProvider;
+import org.eclipse.xtext.service.OperationCanceledError;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -29,8 +29,8 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
     			value = ((InternalEList<EObject>) value).get(index);
     		}
 			return (EObject) value;
-    	} catch (Exception e) {
-    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+    	} catch (OperationCanceledError e) {
+    		throw e.getWrapped();
     	}
     }
 
@@ -45,24 +45,24 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
 					public boolean hasNext() {
 						try {
 							return iterator.hasNext();
-						} catch (Exception e) {
-				    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+						} catch (OperationCanceledError e) {
+				    		throw e.getWrapped();
 				    	} 
 					}
 
 					public IEObjectDescription next() {
 						try {
 							return iterator.next();
-						} catch (Exception e) {
-				    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+						} catch (OperationCanceledError e) {
+				    		throw e.getWrapped();
 				    	}
 					}
 
 					public void remove() {
 						try {
 							iterator.remove();
-						} catch (Exception e) {
-				    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+						} catch (OperationCanceledError e) {
+				    		throw e.getWrapped();
 				    	}
 					}
 					
@@ -75,8 +75,8 @@ public class CrossReferenceDescription implements ICrossReferenceDescription {
 	protected Iterable<IEObjectDescription> getAllElements() {
 		try {
 			return scopeProvider.getScope(context, reference).getAllElements();
-		} catch (Exception e) {
-    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+		} catch (OperationCanceledError e) {
+    		throw e.getWrapped();
     	}
 	}
     

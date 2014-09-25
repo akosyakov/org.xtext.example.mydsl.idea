@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.diagnostics.Severity;
-import org.eclipse.xtext.idea.ProcessCanceledExceptionHandling;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.psi.PsiEObject;
 import org.eclipse.xtext.service.OperationCanceledError;
@@ -69,8 +68,8 @@ public class IssueAnnotator implements Annotator {
 				}
 				
 			});
-		} catch (Exception e) {
-    		throw ProcessCanceledExceptionHandling.unWrappedReThrow(e);
+		} catch (OperationCanceledError e) {
+    		throw e.getWrapped();
     	}
 	}
 

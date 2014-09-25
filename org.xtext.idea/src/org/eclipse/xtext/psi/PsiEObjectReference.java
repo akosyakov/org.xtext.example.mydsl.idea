@@ -51,7 +51,7 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
         	String name = qualifiedNameConverter.toString(objectDescription.getName());
             PsiElement element = psiModelAssociations.getPsiElement(objectDescription, myElement.getEObject());
             if (element != null) {
-            	variants.add(LookupElementBuilder.create(name).withTypeText(element.getContainingFile().getName()));
+            	variants.add(LookupElementBuilder.create(name).withTypeText(element.getNavigationElement().getContainingFile().getName()));
             }
         }
         return variants.toArray();
@@ -65,6 +65,9 @@ public class PsiEObjectReference extends PsiReferenceBase<PsiReferenceEObject> i
         }
         EObject object = crossReferenceDescription.resolve();
         ProgressIndicatorProvider.checkCanceled();
+        if (object.eIsProxy()) {
+        	return null;
+        }
         return psiModelAssociations.getPsiElement(object);
 	}
 	
