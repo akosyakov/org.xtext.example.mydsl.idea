@@ -2,6 +2,7 @@ package org.eclipse.xtext.idea.resource.impl;
 
 import java.util.List;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
@@ -10,10 +11,12 @@ import org.eclipse.xtext.resource.IReferenceDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.impl.AbstractResourceDescription;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtext.xbase.lib.Pure;
 
 @FinalFieldsConstructor
 @SuppressWarnings("all")
 public class PsiFileBasedResourceDescription extends AbstractResourceDescription implements IResourceDescription {
+  @Accessors
   private final BaseXtextFile xtextFile;
   
   protected List<IEObjectDescription> computeExportedObjects() {
@@ -35,5 +38,10 @@ public class PsiFileBasedResourceDescription extends AbstractResourceDescription
   public PsiFileBasedResourceDescription(final BaseXtextFile xtextFile) {
     super();
     this.xtextFile = xtextFile;
+  }
+  
+  @Pure
+  public BaseXtextFile getXtextFile() {
+    return this.xtextFile;
   }
 }

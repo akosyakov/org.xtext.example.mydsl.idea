@@ -1,25 +1,25 @@
 package org.eclipse.xtext.idea
 
 import com.google.inject.Binder
+import org.eclipse.xtext.idea.containers.ResolveScopeBasedContainerManger
 import org.eclipse.xtext.psi.IPsiModelAssociations
 import org.eclipse.xtext.psi.IPsiModelAssociator
 import org.eclipse.xtext.psi.PsiModelAssociations
 import org.eclipse.xtext.psi.stubindex.ExportedObjectQualifiedNameIndex
 import org.eclipse.xtext.resource.IContainer
 import org.eclipse.xtext.resource.IResourceDescriptions
-import org.eclipse.xtext.resource.impl.SimpleResourceDescriptionsBasedContainerManager
 import org.eclipse.xtext.service.AbstractGenericModule
 import org.eclipse.xtext.service.SingletonBinding
-import org.eclipse.xtext.idea.resource.impl.PsiFilesBasedResourceDescriptions
+import org.eclipse.xtext.idea.resource.impl.ProjectScopeBasedResourceDescriptions
 
 class DefaultIdeaModule extends AbstractGenericModule {
 
 	def void configureIResourceDescriptions(Binder binder) {
-		binder.bind(IResourceDescriptions).to(PsiFilesBasedResourceDescriptions)
+		binder.bind(IResourceDescriptions).to(ProjectScopeBasedResourceDescriptions)
 	}
 
 	def Class<? extends IContainer.Manager> bindIContainer$Manager() {
-		SimpleResourceDescriptionsBasedContainerManager
+		ResolveScopeBasedContainerManger
 	}
 
 	def Class<? extends IPsiModelAssociations> bindIPsiModelAssociations() {
