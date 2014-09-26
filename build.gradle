@@ -13,10 +13,11 @@ task cloneIntellij << {
 }
 
 task buildIntellij {
-	outputs.dir new File(intellijHome, 'out')
 	dependsOn cloneIntellij
 	doLast {
-		ant.ant(antfile:'build.xml', dir:intellijHome)
+		if (!new File(intellijHome, 'out').exists()) {
+			ant.ant(antfile:'build.xml', dir:intellijHome)
+		}
 	}
 }
 
