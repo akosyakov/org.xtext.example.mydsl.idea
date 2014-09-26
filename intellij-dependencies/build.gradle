@@ -1,0 +1,9 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+dependencies {
+	compile fileTree('../intellij-ce/out/dist.all.ce/lib')
+		.matching {
+			include '*.jar'
+		}
+}

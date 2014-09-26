@@ -1,0 +1,42 @@
+import org.ajoberstar.grgit.*
+import org.ajoberstar.grgit.operation.*
+
+buildscript {
+	repositories.jcenter()
+	
+	dependencies {
+		classpath 'org.ajoberstar:grgit:0.3.0'
+	}
+}
+
+def intellijHome = new File('intellij-ce')
+
+task cloneIntellij << {
+	if (!intellijHome.exists()) {
+		def repo = Grgit.clone(dir: intellijHome, uri: 'git@github.com:JetBrains/intellij-community.git')
+		repo.reset(commit: 'f5da1b5', mode: ResetOp.Mode.HARD)
+	}
+}
+
+task buildIntellij {
+	dependsOn cloneIntellij
+	doLast {
+		def intellijOut = new File(intellijHome, 'out')
+		if (!intellijOut.exists()) {
+			ant.ant(antfile:'build.xml', dir:intellijHome)
+		}
+	}
+}
+
+task prepareIntellij {
+	dependsOn buildIntellij
+	dependsOn ':intellij-dependencies:eclipseClasspath'
+}
+
+task cleanTestSystem(type: Delete) {
+	delete new File(intellijHome, 'test-system')
+}
+
+task cleanIntellij(type: Delete) {
+	delete intellijHome
+}

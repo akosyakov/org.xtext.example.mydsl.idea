@@ -8,4 +8,7 @@ target
 system
 index
 availables.xml
+extensions.xml
 config
+.gradle
+intellij-ce
