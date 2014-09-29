@@ -2,6 +2,7 @@ package org.eclipse.xtext.idea.lang.parser
 
 import com.google.inject.Inject
 import com.intellij.lang.ASTNode
+import com.intellij.lang.LanguageUtil
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
 import com.intellij.lexer.Lexer
@@ -10,6 +11,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import javax.inject.Provider
+import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.generator.idea.TokenTypeProvider
 import org.eclipse.xtext.idea.lang.BaseXtextPsiParser
 import org.eclipse.xtext.idea.lang.IElementTypeProvider
@@ -17,7 +19,6 @@ import org.eclipse.xtext.psi.impl.PsiEObjectImpl
 import org.eclipse.xtext.psi.impl.PsiNamedEObjectImpl
 import org.eclipse.xtext.psi.impl.PsiReferenceEObjectImpl
 import org.jetbrains.annotations.NotNull
-import org.eclipse.xtend.lib.annotations.Accessors
 
 abstract class AbstractXtextParserDefinition implements ParserDefinition {
 
@@ -64,7 +65,7 @@ abstract class AbstractXtextParserDefinition implements ParserDefinition {
 	}
 
 	override SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
-		return SpaceRequirements.MAY;
+		return LanguageUtil.canStickTokensTogetherByLexer(left, right, lexerProvider.get)
 	}
 
 	@NotNull

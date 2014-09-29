@@ -3,6 +3,7 @@ package org.eclipse.xtext.idea.lang.parser;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.LanguageUtil;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
@@ -72,7 +73,8 @@ public abstract class AbstractXtextParserDefinition implements ParserDefinition 
   }
   
   public ParserDefinition.SpaceRequirements spaceExistanceTypeBetweenTokens(final ASTNode left, final ASTNode right) {
-    return ParserDefinition.SpaceRequirements.MAY;
+    Lexer _get = this.lexerProvider.get();
+    return LanguageUtil.canStickTokensTogetherByLexer(left, right, _get);
   }
   
   @NotNull
