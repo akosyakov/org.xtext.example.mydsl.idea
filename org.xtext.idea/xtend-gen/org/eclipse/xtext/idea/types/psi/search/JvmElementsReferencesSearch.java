@@ -15,7 +15,6 @@ import com.intellij.util.Processor;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
-import org.eclipse.xtext.idea.resource.ResourceInitializationService;
 import org.eclipse.xtext.psi.IPsiModelAssociations;
 import org.eclipse.xtext.psi.PsiNamedEObject;
 import org.eclipse.xtext.service.OperationCanceledError;
@@ -35,10 +34,6 @@ public class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference,
   @Extension
   private IJvmModelAssociations _iJvmModelAssociations;
   
-  @Inject
-  @Extension
-  private ResourceInitializationService _resourceInitializationService;
-  
   private final IXtextLanguage language;
   
   public JvmElementsReferencesSearch(final IXtextLanguage language) {
@@ -55,7 +50,6 @@ public class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference,
     }
     try {
       if ((element instanceof PsiNamedEObject<?>)) {
-        this._resourceInitializationService.ensureFullyInitialized(element);
         EObject _eObject = ((PsiNamedEObject<?>)element).getEObject();
         Set<EObject> _jvmElements = this._iJvmModelAssociations.getJvmElements(_eObject);
         final Function1<EObject, PsiElement> _function = new Function1<EObject, PsiElement>() {

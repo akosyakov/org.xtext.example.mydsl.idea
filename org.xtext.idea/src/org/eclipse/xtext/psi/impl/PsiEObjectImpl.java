@@ -5,9 +5,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
+import org.eclipse.xtext.idea.resource.ResourceInitializationService;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.psi.PsiEObject;
 
+import com.google.inject.Inject;
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.IStubElementType;
@@ -15,6 +17,9 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.tree.IElementType;
 
 public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBase<T> implements PsiEObject {
+	
+	@Inject
+	private ResourceInitializationService resourceInitializationService;
 	
 	private final IElementType elementType;
 	
@@ -47,7 +52,15 @@ public class PsiEObjectImpl<T extends StubElement> extends StubBasedPsiElementBa
 	}
 
 	public INode getINode() {
-		return getNode().getUserData(XTEXT_NODE_KEY);
+		INode node = getNode().getUserData(XTEXT_NODE_KEY);
+		EObject semanticElement = node.getSemanticElement();
+		if (semanticElement != null) {
+			Boolean ensureInitialized = getUserData(ResourceInitializationService.ENSURE_INITIALIZED);
+			if (!Boolean.FALSE.equals(ensureInitialized)) {
+				resourceInitializationService.ensureFullyInitialized(semanticElement.eResource());
+			}
+		}
+		return node;
 	}
 
 	public boolean isRoot() {

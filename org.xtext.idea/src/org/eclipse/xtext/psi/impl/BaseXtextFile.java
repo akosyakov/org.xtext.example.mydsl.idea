@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.resource.IResourceSetProvider;
 import org.eclipse.xtext.idea.resource.ResourceDescriptionAdapter;
+import org.eclipse.xtext.idea.resource.ResourceInitializationService;
 import org.eclipse.xtext.psi.PsiEObject;
 import org.eclipse.xtext.psi.stubs.ExportedObject;
 import org.eclipse.xtext.psi.stubs.XtextFileStub;
@@ -71,8 +72,18 @@ public abstract class BaseXtextFile extends PsiFileBase {
 	}
     
     public IResourceDescription getResourceDescription() {
-    	Resource resource = getResource();
-    	return resource != null ? ResourceDescriptionAdapter.get(resource) : null;
+    	PsiEObject root = getRoot();
+    	if (root == null) {
+    		return null;
+    	}
+    	Boolean ensureInitialized = root.getUserData(ResourceInitializationService.ENSURE_INITIALIZED);
+		root.putUserData(ResourceInitializationService.ENSURE_INITIALIZED, Boolean.FALSE);
+		try {
+			Resource resource = root.getResource();
+    		return resource != null ? ResourceDescriptionAdapter.get(resource) : null;
+		} finally {
+			root.putUserData(ResourceInitializationService.ENSURE_INITIALIZED, ensureInitialized);
+		}
     }
     
     public Resource getResource() {

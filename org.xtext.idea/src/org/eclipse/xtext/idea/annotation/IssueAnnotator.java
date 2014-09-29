@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
-import org.eclipse.xtext.idea.resource.ResourceInitializationService;
 import org.eclipse.xtext.psi.PsiEObject;
 import org.eclipse.xtext.resource.ISynchronizable;
 import org.eclipse.xtext.service.OperationCanceledError;
@@ -43,7 +42,6 @@ public class IssueAnnotator implements Annotator {
 			return;
 		}
 		IXtextLanguage xtextLanguage = (IXtextLanguage) language;
-		xtextLanguage.getInstance(ResourceInitializationService.class).ensureFullyInitialized(resource);
 		IResourceValidator resourceValidator = xtextLanguage.getInstance(IResourceValidator.class);
 		try {
 			for (Issue issue : getIssues(resource, resourceValidator)) {

@@ -1,9 +1,8 @@
 package org.eclipse.xtext.idea.resource;
 
 import com.google.inject.Singleton;
+import com.intellij.openapi.util.Key;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.psi.PsiEObject;
-import org.eclipse.xtext.psi.impl.BaseXtextFile;
 import org.eclipse.xtext.resource.DerivedStateAwareResource;
 import org.eclipse.xtext.resource.ISynchronizable;
 import org.eclipse.xtext.service.OperationCanceledError;
@@ -13,45 +12,33 @@ import org.eclipse.xtext.xbase.lib.Exceptions;
 @Singleton
 @SuppressWarnings("all")
 public class ResourceInitializationService {
-  public Resource ensureFullyInitialized(final Object context) {
+  public final static Key<Boolean> ENSURE_INITIALIZED = Key.<Boolean>create("ENSURE_INITIALIZED");
+  
+  public Resource ensureFullyInitialized(final Resource resource) {
     try {
       Resource _xtrycatchfinallyexpression = null;
       try {
         Resource _switchResult = null;
         boolean _matched = false;
         if (!_matched) {
-          if (context instanceof PsiEObject) {
-            _matched=true;
-            Resource _resource = ((PsiEObject)context).getResource();
-            _switchResult = this.ensureFullyInitialized(_resource);
-          }
-        }
-        if (!_matched) {
-          if (context instanceof BaseXtextFile) {
-            _matched=true;
-            Resource _resource = ((BaseXtextFile)context).getResource();
-            _switchResult = this.ensureFullyInitialized(_resource);
-          }
-        }
-        if (!_matched) {
-          if (context instanceof DerivedStateAwareResource) {
+          if (resource instanceof DerivedStateAwareResource) {
             _matched=true;
             Resource _xifexpression = null;
-            if ((context instanceof ISynchronizable<?>)) {
+            if ((resource instanceof ISynchronizable<?>)) {
               final IUnitOfWork<Resource, Object> _function = new IUnitOfWork<Resource, Object>() {
                 public Resource exec(final Object it) throws Exception {
-                  return ResourceInitializationService.this.doEnsureFullyInitialized(((DerivedStateAwareResource)context));
+                  return ResourceInitializationService.this.doEnsureFullyInitialized(((DerivedStateAwareResource)resource));
                 }
               };
-              _xifexpression = ((ISynchronizable<?>)context).<Resource>execute(_function);
+              _xifexpression = ((ISynchronizable<?>)resource).<Resource>execute(_function);
             } else {
-              _xifexpression = this.doEnsureFullyInitialized(((DerivedStateAwareResource)context));
+              _xifexpression = this.doEnsureFullyInitialized(((DerivedStateAwareResource)resource));
             }
             _switchResult = _xifexpression;
           }
         }
         if (!_matched) {
-          _switchResult = null;
+          _switchResult = resource;
         }
         _xtrycatchfinallyexpression = _switchResult;
       } catch (final Throwable _t) {
