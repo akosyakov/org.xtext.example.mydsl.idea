@@ -3564,6 +3564,19 @@
         </option>
       </plugins>
     </entry>
+    <entry key="lombok.config">
+      <plugins>
+        <option name="myPlugins">
+          <set>
+            <plugin>
+              <option name="myPluginId" value="Lombook Plugin" />
+              <option name="myPluginName" />
+              <option name="myBundled" value="false" />
+            </plugin>
+          </set>
+        </option>
+      </plugins>
+    </entry>
     <entry key="messages">
       <plugins>
         <option name="myPlugins">

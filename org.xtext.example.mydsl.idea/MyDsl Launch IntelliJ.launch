@@ -11,5 +11,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 6 [1.6.0_65-b14-462]"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.intellij.idea.Main"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.xtext.example.mydsl.idea"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2g  -XX:MaxPermSize=320m  -Didea.plugins.path=../org.xtext.example.mydsl.idea -Didea.home.path=../intellij-ce/ -Dcompiler.process.debug.port=-1 -Didea.ProcessCanceledException=disabled"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2g  -XX:MaxPermSize=320m  -Didea.plugins.path=../ -Didea.home.path=../intellij-ce/ -Dcompiler.process.debug.port=-1 -Didea.ProcessCanceledException=disabled"/>
 </launchConfiguration>
