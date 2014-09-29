@@ -7,14 +7,12 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.search.searches.ReferencesSearch.SearchParameters
 import com.intellij.util.Processor
-import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.idea.lang.IXtextLanguage
+import org.eclipse.xtext.idea.resource.ResourceInitializationService
 import org.eclipse.xtext.psi.IPsiModelAssociations
 import org.eclipse.xtext.psi.PsiNamedEObject
-import org.eclipse.xtext.psi.impl.BaseXtextFile
-import org.eclipse.xtext.resource.DerivedStateAwareResource
-import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
 import org.eclipse.xtext.service.OperationCanceledError
+import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations
 
 class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> {
 
@@ -23,6 +21,9 @@ class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference, Refere
 
 	@Inject
 	extension IJvmModelAssociations
+	
+	@Inject
+	extension ResourceInitializationService
 
 	val IXtextLanguage language
 
@@ -38,27 +39,13 @@ class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference, Refere
 		}
 		try {
 			if (element instanceof PsiNamedEObject<?>) {
-				switch xtextFile : element.containingFile {
-					BaseXtextFile: xtextFile.resource.installDerivedState
-				}
+				element.ensureFullyInitialized
 				for (psiJvmElement : element.EObject.jvmElements.map[psiElement].filter(PsiNamedElement)) {
 					queryParameters.optimizer.searchWord(psiJvmElement.name, queryParameters.effectiveSearchScope, true, psiJvmElement)
 				}
 			}
 		} catch (OperationCanceledError e) {
 			throw e.wrapped
-		}
-	}
-
-	protected def installDerivedState(Resource resource) {
-		if (resource instanceof DerivedStateAwareResource) {
-			val deliver = resource.eDeliver
-			try {
-				resource.eSetDeliver(false)
-				resource.installDerivedState(false)
-			} finally {
-				resource.eSetDeliver(deliver)
-			}
 		}
 	}
 

@@ -6,7 +6,6 @@ import com.google.inject.Inject;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.SearchRequestCollector;
@@ -15,12 +14,10 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
+import org.eclipse.xtext.idea.resource.ResourceInitializationService;
 import org.eclipse.xtext.psi.IPsiModelAssociations;
 import org.eclipse.xtext.psi.PsiNamedEObject;
-import org.eclipse.xtext.psi.impl.BaseXtextFile;
-import org.eclipse.xtext.resource.DerivedStateAwareResource;
 import org.eclipse.xtext.service.OperationCanceledError;
 import org.eclipse.xtext.xbase.jvmmodel.IJvmModelAssociations;
 import org.eclipse.xtext.xbase.lib.Exceptions;
@@ -38,6 +35,10 @@ public class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference,
   @Extension
   private IJvmModelAssociations _iJvmModelAssociations;
   
+  @Inject
+  @Extension
+  private ResourceInitializationService _resourceInitializationService;
+  
   private final IXtextLanguage language;
   
   public JvmElementsReferencesSearch(final IXtextLanguage language) {
@@ -54,16 +55,7 @@ public class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference,
     }
     try {
       if ((element instanceof PsiNamedEObject<?>)) {
-        PsiFile _containingFile = ((PsiNamedEObject<?>)element).getContainingFile();
-        final PsiFile xtextFile = _containingFile;
-        boolean _matched = false;
-        if (!_matched) {
-          if (xtextFile instanceof BaseXtextFile) {
-            _matched=true;
-            Resource _resource = ((BaseXtextFile)xtextFile).getResource();
-            this.installDerivedState(_resource);
-          }
-        }
+        this._resourceInitializationService.ensureFullyInitialized(element);
         EObject _eObject = ((PsiNamedEObject<?>)element).getEObject();
         Set<EObject> _jvmElements = this._iJvmModelAssociations.getJvmElements(_eObject);
         final Function1<EObject, PsiElement> _function = new Function1<EObject, PsiElement>() {
@@ -86,18 +78,6 @@ public class JvmElementsReferencesSearch extends QueryExecutorBase<PsiReference,
         throw e.getWrapped();
       } else {
         throw Exceptions.sneakyThrow(_t);
-      }
-    }
-  }
-  
-  protected void installDerivedState(final Resource resource) {
-    if ((resource instanceof DerivedStateAwareResource)) {
-      final boolean deliver = ((DerivedStateAwareResource)resource).eDeliver();
-      try {
-        ((DerivedStateAwareResource)resource).eSetDeliver(false);
-        ((DerivedStateAwareResource)resource).installDerivedState(false);
-      } finally {
-        ((DerivedStateAwareResource)resource).eSetDeliver(deliver);
       }
     }
   }
