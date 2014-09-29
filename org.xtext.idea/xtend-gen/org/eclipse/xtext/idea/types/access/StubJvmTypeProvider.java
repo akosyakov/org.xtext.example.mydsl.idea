@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.impl.JavaPsiFacadeEx;
 import com.intellij.psi.impl.compiled.SignatureParsing;
+import com.intellij.psi.search.GlobalSearchScope;
 import java.text.StringCharacterIterator;
 import java.util.List;
 import org.eclipse.emf.common.util.EList;
@@ -29,6 +30,7 @@ import org.eclipse.xtext.idea.types.access.PsiClassMirror;
 import org.eclipse.xtext.idea.types.access.StubURIHelper;
 import org.eclipse.xtext.psi.IPsiModelAssociator;
 import org.eclipse.xtext.resource.ISynchronizable;
+import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.eclipse.xtext.xbase.lib.Exceptions;
@@ -199,8 +201,23 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
   protected IMirror createMirrorForFQN(final String name) {
     PsiClassMirror _xblockexpression = null;
     {
+      GlobalSearchScope _switchResult = null;
+      ResourceSet _resourceSet = this.getResourceSet();
+      final ResourceSet it = _resourceSet;
+      boolean _matched = false;
+      if (!_matched) {
+        if (it instanceof XtextResourceSet) {
+          _matched=true;
+          Object _classpathURIContext = ((XtextResourceSet)it).getClasspathURIContext();
+          _switchResult = ((GlobalSearchScope) _classpathURIContext);
+        }
+      }
+      if (!_matched) {
+        _switchResult = GlobalSearchScope.projectScope(this.project);
+      }
+      final GlobalSearchScope scope = _switchResult;
       JavaPsiFacadeEx _instanceEx = JavaPsiFacadeEx.getInstanceEx(this.project);
-      final PsiClass psiClass = _instanceEx.findClass(name);
+      final PsiClass psiClass = _instanceEx.findClass(name, scope);
       boolean _or = false;
       boolean _equals = Objects.equal(psiClass, null);
       if (_equals) {

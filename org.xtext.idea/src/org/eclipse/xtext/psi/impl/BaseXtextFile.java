@@ -52,7 +52,7 @@ public abstract class BaseXtextFile extends PsiFileBase {
         if (virtualFile == null) {
             return null;
         }
-        ResourceSet resourceSet = resourceSetProvider.get(getProject());
+        ResourceSet resourceSet = resourceSetProvider.get(this);
         Resource resource = resourceSet.createResource(getURI());
         try {
             resource.load(virtualFile.getInputStream(), null);

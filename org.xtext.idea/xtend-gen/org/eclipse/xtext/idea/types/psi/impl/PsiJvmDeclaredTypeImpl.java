@@ -17,9 +17,11 @@ import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
+import org.eclipse.xtext.service.OperationCanceledError;
 import org.eclipse.xtext.xbase.compiler.GeneratorConfig;
 import org.eclipse.xtext.xbase.compiler.JvmModelGenerator;
 import org.eclipse.xtext.xbase.lib.Conversions;
+import org.eclipse.xtext.xbase.lib.Exceptions;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
@@ -66,14 +68,25 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
     {
       boolean _equals = Objects.equal(this.delegate, null);
       if (_equals) {
-        GeneratorConfig _generatorConfig = new GeneratorConfig();
-        final Procedure1<GeneratorConfig> _function = new Procedure1<GeneratorConfig>() {
-          public void apply(final GeneratorConfig it) {
-            it.setGenerateExpressions(false);
+        CharSequence _xtrycatchfinallyexpression = null;
+        try {
+          GeneratorConfig _generatorConfig = new GeneratorConfig();
+          final Procedure1<GeneratorConfig> _function = new Procedure1<GeneratorConfig>() {
+            public void apply(final GeneratorConfig it) {
+              it.setGenerateExpressions(false);
+            }
+          };
+          GeneratorConfig _doubleArrow = ObjectExtensions.<GeneratorConfig>operator_doubleArrow(_generatorConfig, _function);
+          _xtrycatchfinallyexpression = this._jvmModelGenerator.generateType(this.declaredType, _doubleArrow);
+        } catch (final Throwable _t) {
+          if (_t instanceof OperationCanceledError) {
+            final OperationCanceledError cancel = (OperationCanceledError)_t;
+            throw cancel.getWrapped();
+          } else {
+            throw Exceptions.sneakyThrow(_t);
           }
-        };
-        GeneratorConfig _doubleArrow = ObjectExtensions.<GeneratorConfig>operator_doubleArrow(_generatorConfig, _function);
-        final CharSequence text = this._jvmModelGenerator.generateType(this.declaredType, _doubleArrow);
+        }
+        final CharSequence text = _xtrycatchfinallyexpression;
         Project _project = this.getProject();
         PsiFileFactory _instance = PsiFileFactory.getInstance(_project);
         PsiFile _createFileFromText = _instance.createFileFromText("_Dummy_.java", JavaFileType.INSTANCE, text);

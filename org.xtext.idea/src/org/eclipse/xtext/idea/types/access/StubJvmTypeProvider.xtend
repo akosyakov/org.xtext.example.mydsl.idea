@@ -23,6 +23,9 @@ import org.eclipse.xtext.resource.ISynchronizable
 import org.eclipse.xtext.util.Strings
 
 import static extension org.eclipse.xtend.lib.annotations.AccessorType.*
+import org.eclipse.xtext.resource.XtextResourceSet
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.SearchScope
 
 class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	
@@ -121,7 +124,11 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	}
 	
 	protected override createMirrorForFQN(String name) {
-		val psiClass = JavaPsiFacadeEx.getInstanceEx(project).findClass(name)
+		val scope = switch it:resourceSet {
+			XtextResourceSet: classpathURIContext as GlobalSearchScope
+			default: GlobalSearchScope.projectScope(project)
+		}
+		val psiClass = JavaPsiFacadeEx.getInstanceEx(project).findClass(name, scope)
 		if (psiClass == null || psiClass.containingClass != null) {
 			return null
 		}

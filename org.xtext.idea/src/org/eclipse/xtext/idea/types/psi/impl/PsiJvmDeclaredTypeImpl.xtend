@@ -14,6 +14,7 @@ import org.eclipse.xtext.idea.lang.IXtextLanguage
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType
 import org.eclipse.xtext.xbase.compiler.GeneratorConfig
 import org.eclipse.xtext.xbase.compiler.JvmModelGenerator
+import org.eclipse.xtext.service.OperationCanceledError
 
 class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclaredType {
 	
@@ -50,9 +51,13 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 
 	override getDelegate() {
 		if (delegate == null) {
-			val text = declaredType.generateType(new GeneratorConfig => [
-				generateExpressions = false
-			])
+			val text = try {
+				 declaredType.generateType(new GeneratorConfig => [
+					generateExpressions = false
+				])
+			} catch (OperationCanceledError cancel) {
+				throw cancel.wrapped
+			}
 
 			switch psiFile : PsiFileFactory.getInstance(project).createFileFromText("_Dummy_.java", JavaFileType.INSTANCE, text) {
 				PsiJavaFile: delegate = psiFile.classes.head
