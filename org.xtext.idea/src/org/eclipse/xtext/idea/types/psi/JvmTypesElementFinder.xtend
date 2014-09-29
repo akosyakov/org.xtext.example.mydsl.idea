@@ -18,9 +18,12 @@ class JvmTypesElementFinder extends PsiElementFinder {
 	
 	val Project project
 	
+	val IXtextLanguage language
+	
 	new(IXtextLanguage language, Project project) {
 		language.injectMembers(this)
 		this.project = project
+		this.language = language
 	}
 	
 	override findClass(String qualifiedName, GlobalSearchScope scope) {
@@ -30,7 +33,9 @@ class JvmTypesElementFinder extends PsiElementFinder {
 	override findClasses(String qualifiedName, GlobalSearchScope scope) {
 		val result = newArrayList 
 		for (xtextFile : exportedObjectQualifiedNameIndex.get(qualifiedName, project, scope)) {
-			result += xtextFile.getPsiJvmDeclaredTypes(QualifiedName.create(qualifiedName.split("\\.")))
+			if (xtextFile.language == language) {
+				result += xtextFile.getPsiJvmDeclaredTypes(QualifiedName.create(qualifiedName.split("\\.")))
+			}
 		}
 		result
 	}

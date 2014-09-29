@@ -48,7 +48,8 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
     super(psiElement.getManager(), psiElement.getLanguage());
     this.type = this.type;
     this.declaredType = declaredType;
-    this.qualifiedName = this.qualifiedName;
+    String _qualifiedName = declaredType.getQualifiedName();
+    this.qualifiedName = _qualifiedName;
     this.psiElement = psiElement;
     final Language language = this.getLanguage();
     if ((language instanceof IXtextLanguage)) {

@@ -27,9 +27,12 @@ class JvmTypesShortNamesCache extends PsiShortNamesCache {
 	
 	val Project project
 	
+	val IXtextLanguage language
+	
 	new(IXtextLanguage language, Project project) {
 		language.injectMembers(this)
 		this.project = project
+		this.language = language
 	}
 	
 	override getAllClassNames() {
@@ -59,7 +62,9 @@ class JvmTypesShortNamesCache extends PsiShortNamesCache {
 		val result = newArrayList
 		val xtextFiles = jvmDeclaredTypeShortNameIndex.get(name, project, scope)
 		for (xtextFile : xtextFiles) {
-			result += xtextFile.getPsiJvmDeclaredTypesByName(name)
+			if (xtextFile.language == language) {
+				result += xtextFile.getPsiJvmDeclaredTypesByName(name)
+			}
 		}
 		result
 	}

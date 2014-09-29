@@ -36,7 +36,7 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 		super(psiElement.manager, psiElement.language)
 		this.type = type
 		this.declaredType = declaredType
-		this.qualifiedName = qualifiedName
+		this.qualifiedName = declaredType.qualifiedName
 		this.psiElement = psiElement
 		val language = language
 		if (language instanceof IXtextLanguage) {

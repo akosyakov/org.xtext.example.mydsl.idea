@@ -1,7 +1,9 @@
 package org.eclipse.xtext.idea.types.psi;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementFinder;
@@ -30,9 +32,12 @@ public class JvmTypesElementFinder extends PsiElementFinder {
   
   private final Project project;
   
+  private final IXtextLanguage language;
+  
   public JvmTypesElementFinder(final IXtextLanguage language, final Project project) {
     language.injectMembers(this);
     this.project = project;
+    this.language = language;
   }
   
   public PsiClass findClass(final String qualifiedName, final GlobalSearchScope scope) {
@@ -46,10 +51,14 @@ public class JvmTypesElementFinder extends PsiElementFinder {
       final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
       Collection<BaseXtextFile> _get = this.exportedObjectQualifiedNameIndex.get(qualifiedName, this.project, scope);
       for (final BaseXtextFile xtextFile : _get) {
-        String[] _split = qualifiedName.split("\\.");
-        QualifiedName _create = QualifiedName.create(_split);
-        ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypes = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypes(xtextFile, _create);
-        Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypes);
+        Language _language = xtextFile.getLanguage();
+        boolean _equals = Objects.equal(_language, this.language);
+        if (_equals) {
+          String[] _split = qualifiedName.split("\\.");
+          QualifiedName _create = QualifiedName.create(_split);
+          ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypes = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypes(xtextFile, _create);
+          Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypes);
+        }
       }
       _xblockexpression = result;
     }

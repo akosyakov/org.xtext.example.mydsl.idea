@@ -1,7 +1,9 @@
 package org.eclipse.xtext.idea.types;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
@@ -38,9 +40,12 @@ public class JvmTypesShortNamesCache extends PsiShortNamesCache {
   
   private final Project project;
   
+  private final IXtextLanguage language;
+  
   public JvmTypesShortNamesCache(final IXtextLanguage language, final Project project) {
     language.injectMembers(this);
     this.project = project;
+    this.language = language;
   }
   
   public String[] getAllClassNames() {
@@ -72,8 +77,12 @@ public class JvmTypesShortNamesCache extends PsiShortNamesCache {
       final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
       final Collection<BaseXtextFile> xtextFiles = this.jvmDeclaredTypeShortNameIndex.get(name, this.project, scope);
       for (final BaseXtextFile xtextFile : xtextFiles) {
-        ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypesByName = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypesByName(xtextFile, name);
-        Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypesByName);
+        Language _language = xtextFile.getLanguage();
+        boolean _equals = Objects.equal(_language, this.language);
+        if (_equals) {
+          ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypesByName = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypesByName(xtextFile, name);
+          Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypesByName);
+        }
       }
       _xblockexpression = result;
     }
