@@ -89,7 +89,7 @@ abstract class AbstractScopeBasedSelectable extends AbstractCompoundSelectable {
 	}
 
 	protected def getXtextLanguageFilesTypes() {
-		FileBasedIndex.instance.getAllKeys(FileTypeIndex.NAME, scope.project)
+		FileBasedIndex.instance.getAllKeys(FileTypeIndex.NAME, scope.project).filter[xtextLanguage]
 	}
 
 	protected def isXtextLanguage(FileType fileType) {

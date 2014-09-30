@@ -158,7 +158,7 @@ public abstract class AbstractScopeBasedSelectable extends AbstractCompoundSelec
   }
   
   protected void processFiles(final Function1<? super Collection<VirtualFile>, ? extends Boolean> acceptor) {
-    Collection<FileType> _xtextLanguageFilesTypes = this.getXtextLanguageFilesTypes();
+    Iterable<FileType> _xtextLanguageFilesTypes = this.getXtextLanguageFilesTypes();
     for (final FileType fileType : _xtextLanguageFilesTypes) {
       Collection<VirtualFile> _files = FileTypeIndex.getFiles(fileType, this.scope);
       Boolean _apply = acceptor.apply(_files);
@@ -169,10 +169,16 @@ public abstract class AbstractScopeBasedSelectable extends AbstractCompoundSelec
     }
   }
   
-  protected Collection<FileType> getXtextLanguageFilesTypes() {
+  protected Iterable<FileType> getXtextLanguageFilesTypes() {
     FileBasedIndex _instance = FileBasedIndex.getInstance();
     Project _project = this.scope.getProject();
-    return _instance.<FileType>getAllKeys(FileTypeIndex.NAME, _project);
+    Collection<FileType> _allKeys = _instance.<FileType>getAllKeys(FileTypeIndex.NAME, _project);
+    final Function1<FileType, Boolean> _function = new Function1<FileType, Boolean>() {
+      public Boolean apply(final FileType it) {
+        return Boolean.valueOf(AbstractScopeBasedSelectable.this.isXtextLanguage(it));
+      }
+    };
+    return IterableExtensions.<FileType>filter(_allKeys, _function);
   }
   
   protected boolean isXtextLanguage(final FileType fileType) {

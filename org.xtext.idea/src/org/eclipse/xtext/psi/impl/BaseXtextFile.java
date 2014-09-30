@@ -47,6 +47,10 @@ public abstract class BaseXtextFile extends PsiFileBase {
         	throw new IllegalArgumentException("Expected an Xtext language but got "+language.getDisplayName());
         }
     }
+	
+	public IXtextLanguage getXtextLanguage() {
+		return (IXtextLanguage) getLanguage();
+	}
 
 	public Resource createResource() {    	
     	VirtualFile virtualFile = getViewProvider().getVirtualFile();
