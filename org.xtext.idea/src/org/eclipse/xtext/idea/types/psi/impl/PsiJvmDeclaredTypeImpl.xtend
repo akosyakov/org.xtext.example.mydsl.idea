@@ -78,6 +78,9 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 		if (another instanceof PsiJvmDeclaredType) {
 			return isEquivalent(another)
 		}
+		if (another instanceof PsiClass) {
+			return another.qualifiedName == qualifiedName
+		}
 		false
 	}
 	
