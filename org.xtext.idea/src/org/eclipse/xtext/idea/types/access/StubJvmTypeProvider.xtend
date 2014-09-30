@@ -126,7 +126,7 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	protected override createMirrorForFQN(String name) {
 		val scope = switch it:resourceSet {
 			XtextResourceSet: classpathURIContext as GlobalSearchScope
-			default: GlobalSearchScope.projectScope(project)
+			default: GlobalSearchScope.allScope(project)
 		}
 		val psiClass = JavaPsiFacadeEx.getInstanceEx(project).findClass(name, scope)
 		if (psiClass == null || psiClass.containingClass != null) {

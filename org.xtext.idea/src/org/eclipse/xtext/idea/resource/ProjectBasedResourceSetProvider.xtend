@@ -18,7 +18,7 @@ class ProjectBasedResourceSetProvider implements IResourceSetProvider {
 		val resourceSet = resourceSetProvider.get
 		if (context instanceof Project) {
 			resourceSet.eAdapters.add(new ProjectAdapter(context))
-			resourceSet.classpathURIContext = GlobalSearchScope.projectScope(context)
+			resourceSet.classpathURIContext = GlobalSearchScope.allScope(context)
 		}
 		if (context instanceof PsiFile) {
 			resourceSet.eAdapters.add(new ProjectAdapter(context.project))

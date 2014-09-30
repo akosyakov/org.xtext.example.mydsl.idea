@@ -27,8 +27,8 @@ public class ProjectBasedResourceSetProvider implements IResourceSetProvider {
         EList<Adapter> _eAdapters = resourceSet.eAdapters();
         ProjectAdapter _projectAdapter = new ProjectAdapter(((Project)context));
         _eAdapters.add(_projectAdapter);
-        GlobalSearchScope _projectScope = GlobalSearchScope.projectScope(((Project)context));
-        resourceSet.setClasspathURIContext(_projectScope);
+        GlobalSearchScope _allScope = GlobalSearchScope.allScope(((Project)context));
+        resourceSet.setClasspathURIContext(_allScope);
       }
       if ((context instanceof PsiFile)) {
         EList<Adapter> _eAdapters_1 = resourceSet.eAdapters();

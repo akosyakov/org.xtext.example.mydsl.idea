@@ -213,7 +213,7 @@ public class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
         }
       }
       if (!_matched) {
-        _switchResult = GlobalSearchScope.projectScope(this.project);
+        _switchResult = GlobalSearchScope.allScope(this.project);
       }
       final GlobalSearchScope scope = _switchResult;
       JavaPsiFacadeEx _instanceEx = JavaPsiFacadeEx.getInstanceEx(this.project);
