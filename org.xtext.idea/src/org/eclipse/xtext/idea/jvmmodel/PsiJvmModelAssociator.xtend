@@ -67,7 +67,10 @@ class PsiJvmModelAssociator extends JvmModelAssociator {
 			JvmField: {
 				return [
 					val containingClass = jvmElement.declaringType.psiElement as PsiClass
-					switch field : containingClass.findField(jvmElement) {
+					val field = containingClass.findField(jvmElement)
+					if (field == null)
+						return null
+					switch field {
 						LightField: field
 						default: new LightField(field.manager, field, containingClass)
 					} => [
@@ -78,7 +81,10 @@ class PsiJvmModelAssociator extends JvmModelAssociator {
 			JvmExecutable: {
 				return [
 					val containingClass = jvmElement.declaringType.psiElement as PsiClass
-					switch method : containingClass.findMethod(jvmElement) {
+					val method = containingClass.findMethod(jvmElement)
+					if (method == null)
+						return null
+					switch method {
 						LightMethod: method
 						default: new LightMethod(method.manager, method, containingClass)
 					} => [
@@ -91,7 +97,10 @@ class PsiJvmModelAssociator extends JvmModelAssociator {
 					val jvmExecutable = jvmElement.eContainer as JvmExecutable
 					val containingClass = jvmExecutable.declaringType.psiElement as PsiClass
 					val method = containingClass.findMethod(jvmExecutable)
-					switch parameter : containingClass.findMethod(jvmExecutable).findParameter(jvmElement) {
+					val parameter = method?.findParameter(jvmElement)
+					if (parameter == null)
+						return null
+					switch parameter {
 						LightParameter:
 							parameter
 						default:
@@ -181,6 +190,7 @@ class PsiJvmModelAssociator extends JvmModelAssociator {
 
 	protected def boolean equals(JvmType jvmType, PsiType psiType) {
 		switch jvmType {
+			case null: false
 			JvmArrayType: {
 				if (psiType instanceof PsiArrayType)
 					equals(jvmType.componentType, psiType.componentType)

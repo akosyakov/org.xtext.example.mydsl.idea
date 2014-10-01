@@ -100,9 +100,12 @@ public class PsiJvmModelAssociator extends JvmModelAssociator {
               JvmDeclaredType _declaringType = ((JvmField)jvmElement).getDeclaringType();
               PsiElement _psiElement = PsiJvmModelAssociator.this._iPsiModelAssociations.getPsiElement(_declaringType);
               final PsiClass containingClass = ((PsiClass) _psiElement);
+              final PsiField field = PsiJvmModelAssociator.this.findField(containingClass, ((JvmField)jvmElement));
+              boolean _equals = Objects.equal(field, null);
+              if (_equals) {
+                return null;
+              }
               LightField _switchResult = null;
-              PsiField _findField = PsiJvmModelAssociator.this.findField(containingClass, ((JvmField)jvmElement));
-              final PsiField field = _findField;
               boolean _matched = false;
               if (!_matched) {
                 if (field instanceof LightField) {
@@ -138,9 +141,12 @@ public class PsiJvmModelAssociator extends JvmModelAssociator {
               JvmDeclaredType _declaringType = ((JvmExecutable)jvmElement).getDeclaringType();
               PsiElement _psiElement = PsiJvmModelAssociator.this._iPsiModelAssociations.getPsiElement(_declaringType);
               final PsiClass containingClass = ((PsiClass) _psiElement);
+              final PsiMethod method = PsiJvmModelAssociator.this.findMethod(containingClass, ((JvmExecutable)jvmElement));
+              boolean _equals = Objects.equal(method, null);
+              if (_equals) {
+                return null;
+              }
               LightMethod _switchResult = null;
-              PsiMethod _findMethod = PsiJvmModelAssociator.this.findMethod(containingClass, ((JvmExecutable)jvmElement));
-              final PsiMethod method = _findMethod;
               boolean _matched = false;
               if (!_matched) {
                 if (method instanceof LightMethod) {
@@ -179,10 +185,16 @@ public class PsiJvmModelAssociator extends JvmModelAssociator {
               PsiElement _psiElement = PsiJvmModelAssociator.this._iPsiModelAssociations.getPsiElement(_declaringType);
               final PsiClass containingClass = ((PsiClass) _psiElement);
               final PsiMethod method = PsiJvmModelAssociator.this.findMethod(containingClass, jvmExecutable);
-              LightParameter _switchResult = null;
-              PsiMethod _findMethod = PsiJvmModelAssociator.this.findMethod(containingClass, jvmExecutable);
-              PsiParameter _findParameter = PsiJvmModelAssociator.this.findParameter(_findMethod, ((JvmFormalParameter)jvmElement));
+              PsiParameter _findParameter = null;
+              if (method!=null) {
+                _findParameter=PsiJvmModelAssociator.this.findParameter(method, ((JvmFormalParameter)jvmElement));
+              }
               final PsiParameter parameter = _findParameter;
+              boolean _equals = Objects.equal(parameter, null);
+              if (_equals) {
+                return null;
+              }
+              LightParameter _switchResult = null;
               boolean _matched = false;
               if (!_matched) {
                 if (parameter instanceof LightParameter) {
@@ -369,6 +381,12 @@ public class PsiJvmModelAssociator extends JvmModelAssociator {
   protected boolean equals(final JvmType jvmType, final PsiType psiType) {
     boolean _switchResult = false;
     boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(jvmType, null)) {
+        _matched=true;
+        _switchResult = false;
+      }
+    }
     if (!_matched) {
       if (jvmType instanceof JvmArrayType) {
         _matched=true;
