@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -15,13 +16,13 @@ import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.resource.IResourceSetProvider;
 import org.eclipse.xtext.idea.resource.ResourceDescriptionAdapter;
 import org.eclipse.xtext.idea.resource.ResourceInitializationService;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.PsiEObject;
 import org.eclipse.xtext.psi.stubs.ExportedObject;
 import org.eclipse.xtext.psi.stubs.XtextFileStub;
 import org.eclipse.xtext.resource.EObjectDescription;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.resource.IResourceDescription;
-import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.inject.Inject;
@@ -131,18 +132,26 @@ public abstract class BaseXtextFile extends PsiFileBase {
 			XtextFileStub<?> xtextFileStub = (XtextFileStub<?>) stub;
 			List<IEObjectDescription> exportedObjects = new ArrayList<IEObjectDescription>();
 			for (ExportedObject exportedObject : xtextFileStub.getExportedObjects()) {
-				EFactory factory = exportedObject.getEClass().getEPackage().getEFactoryInstance();
-				InternalEObject element = (InternalEObject) factory.create(exportedObject.getEClass());
-				element.eSetProxyURI(exportedObject.getEObjectURI());
-				exportedObjects.add(EObjectDescription.create(exportedObject.getQualifiedName(), element));
+				exportedObjects.add(createEObjectDescription(exportedObject.getEClass(), exportedObject.getEObjectURI(), exportedObject.getQualifiedName()));
 			}
 			return exportedObjects;
 		}
 		IResourceDescription resourceDescription = getResourceDescription();
 		if (resourceDescription != null) {
-			return IterableExtensions.toList(resourceDescription.getExportedObjects());
+			List<IEObjectDescription> exportedObjects = new ArrayList<IEObjectDescription>();
+			for (IEObjectDescription exportedObject : resourceDescription.getExportedObjects()) {
+				exportedObjects.add(createEObjectDescription(exportedObject.getEClass(), exportedObject.getEObjectURI(), exportedObject.getQualifiedName()));
+			}
+			return exportedObjects;
 		}
 		return Collections.emptyList();
+	}
+
+	protected IEObjectDescription createEObjectDescription(EClass eClass, URI eObjectURI, QualifiedName qualifiedName) {
+		EFactory factory = eClass.getEPackage().getEFactoryInstance();
+		InternalEObject element = (InternalEObject) factory.create(eClass);
+		element.eSetProxyURI(eObjectURI);
+		return EObjectDescription.create(qualifiedName, element);
 	}
 
 }

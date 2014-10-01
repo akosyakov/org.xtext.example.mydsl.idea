@@ -1,6 +1,7 @@
 package org.eclipse.xtext.psi.stubs;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.stubs.DefaultStubBuilder;
@@ -54,7 +55,8 @@ public class XtextStubBuilder extends DefaultStubBuilder {
       final IResourceDescription resourceDescription = file.getResourceDescription();
       boolean _notEquals = (!Objects.equal(resourceDescription, null));
       if (_notEquals) {
-        Iterable<IEObjectDescription> _exportedObjects = resourceDescription.getExportedObjects();
+        List<ExportedObject> _exportedObjects = stub.getExportedObjects();
+        Iterable<IEObjectDescription> _exportedObjects_1 = resourceDescription.getExportedObjects();
         final Function1<IEObjectDescription, ExportedObject> _function = new Function1<IEObjectDescription, ExportedObject>() {
           public ExportedObject apply(final IEObjectDescription it) {
             QualifiedName _qualifiedName = it.getQualifiedName();
@@ -63,11 +65,8 @@ public class XtextStubBuilder extends DefaultStubBuilder {
             return new ExportedObject(_qualifiedName, _eClass, _eObjectURI);
           }
         };
-        Iterable<ExportedObject> _map = IterableExtensions.<IEObjectDescription, ExportedObject>map(_exportedObjects, _function);
-        for (final ExportedObject exportedObject : _map) {
-          List<ExportedObject> _exportedObjects_1 = stub.getExportedObjects();
-          _exportedObjects_1.add(exportedObject);
-        }
+        Iterable<ExportedObject> _map = IterableExtensions.<IEObjectDescription, ExportedObject>map(_exportedObjects_1, _function);
+        Iterables.<ExportedObject>addAll(_exportedObjects, _map);
       }
       _xblockexpression = stub;
     }

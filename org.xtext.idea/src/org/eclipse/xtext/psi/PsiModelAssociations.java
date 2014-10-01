@@ -111,7 +111,7 @@ public class PsiModelAssociations implements IPsiModelAssociations, IPsiModelAss
 
     public PsiElement getPsiElement(EObject object) {
     	try {
-	    	if (object == null) {
+	    	if (object == null || object.eIsProxy()) {
 	    		return null;
 	    	}
 	    	PsiElement psi = PsiAdapter.getPsi(object);
