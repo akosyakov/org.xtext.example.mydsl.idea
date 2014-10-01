@@ -76,9 +76,9 @@ class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvmDeclare
 	
 	override isEquivalentTo(PsiElement another) {
 		if (another instanceof PsiClass) {
-			qualifiedName == another.qualifiedName
+			return qualifiedName == another.qualifiedName
 		}
-		false
+		return false
 	}
 
 }

@@ -115,15 +115,11 @@ public class PsiJvmDeclaredTypeImpl extends AbstractLightClass implements PsiJvm
   }
   
   public boolean isEquivalentTo(final PsiElement another) {
-    boolean _xblockexpression = false;
-    {
-      if ((another instanceof PsiClass)) {
-        String _qualifiedName = ((PsiClass)another).getQualifiedName();
-        /* Objects.equal(this.qualifiedName, _qualifiedName); */
-      }
-      _xblockexpression = false;
+    if ((another instanceof PsiClass)) {
+      String _qualifiedName = ((PsiClass)another).getQualifiedName();
+      return Objects.equal(this.qualifiedName, _qualifiedName);
     }
-    return _xblockexpression;
+    return false;
   }
   
   @Pure
