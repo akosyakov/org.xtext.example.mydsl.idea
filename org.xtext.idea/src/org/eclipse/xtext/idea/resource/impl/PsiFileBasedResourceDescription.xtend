@@ -27,5 +27,9 @@ class PsiFileBasedResourceDescription extends AbstractResourceDescription implem
 	override getURI() {
 		xtextFile.URI
 	}
+	
+	override toString() {
+		class.name + ':' + xtextFile.toString
+	}
 
 }

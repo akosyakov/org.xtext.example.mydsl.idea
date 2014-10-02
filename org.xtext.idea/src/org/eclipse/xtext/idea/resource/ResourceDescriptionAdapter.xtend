@@ -66,4 +66,8 @@ class ResourceDescriptionAdapter extends AdapterImpl implements IResourceDescrip
 		eAdapters.filter(ResourceDescriptionAdapter).head
 	}
 	
+	override toString() {
+		class.name + ':' + delegate.toString
+	}
+	
 }

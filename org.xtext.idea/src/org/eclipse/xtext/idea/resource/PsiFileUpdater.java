@@ -65,7 +65,7 @@ public class PsiFileUpdater extends AbstractProjectComponent implements ProjectC
 		if (filesToReparse.isEmpty()) {
 			return;
 		}
-		PsiDocumentManager.getInstance(myProject).reparseFiles(filesToReparse, true);
+		PsiDocumentManager.getInstance(myProject).reparseFiles(filesToReparse, false);
 	}
 
 	protected boolean needReparse(VirtualFile virtualFile, List<VirtualFile> updatedFiles) {

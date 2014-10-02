@@ -109,6 +109,14 @@ public class ResourceDescriptionAdapter extends AdapterImpl implements IResource
     return IterableExtensions.<ResourceDescriptionAdapter>head(_filter);
   }
   
+  public String toString() {
+    Class<? extends ResourceDescriptionAdapter> _class = this.getClass();
+    String _name = _class.getName();
+    String _plus = (_name + ":");
+    String _string = this.delegate.toString();
+    return (_plus + _string);
+  }
+  
   public ResourceDescriptionAdapter(final IResourceDescription delegate) {
     super();
     this.delegate = delegate;

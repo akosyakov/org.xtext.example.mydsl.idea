@@ -35,6 +35,14 @@ public class PsiFileBasedResourceDescription extends AbstractResourceDescription
     return this.xtextFile.getURI();
   }
   
+  public String toString() {
+    Class<? extends PsiFileBasedResourceDescription> _class = this.getClass();
+    String _name = _class.getName();
+    String _plus = (_name + ":");
+    String _string = this.xtextFile.toString();
+    return (_plus + _string);
+  }
+  
   public PsiFileBasedResourceDescription(final BaseXtextFile xtextFile) {
     super();
     this.xtextFile = xtextFile;

@@ -28,7 +28,7 @@ public class XtextStubBuilder extends DefaultStubBuilder {
   @Inject
   private IElementTypeProvider elementTypeProvider;
   
-  protected StubElement createStubForFile(final PsiFile file) {
+  protected StubElement<?> createStubForFile(final PsiFile file) {
     StubElement _switchResult = null;
     boolean _matched = false;
     if (!_matched) {
@@ -43,16 +43,16 @@ public class XtextStubBuilder extends DefaultStubBuilder {
     return _switchResult;
   }
   
-  protected XtextFileStub<BaseXtextFile> createStubForFile(final BaseXtextFile file) {
+  protected XtextFileStub<BaseXtextFile> createStubForFile(final BaseXtextFile xtextFile) {
     XtextFileStub<BaseXtextFile> _xblockexpression = null;
     {
       IFileElementType _fileType = this.elementTypeProvider.getFileType();
-      final XtextFileStub<BaseXtextFile> stub = new XtextFileStub<BaseXtextFile>(file, ((XtextFileElementType<?>) _fileType));
-      URI _uRI = file.getURI();
-      stub.setUri(_uRI);
+      final XtextFileStub<BaseXtextFile> stub = new XtextFileStub<BaseXtextFile>(xtextFile, ((XtextFileElementType<?>) _fileType));
+      URI _physicalURI = xtextFile.getPhysicalURI();
+      stub.setUri(_physicalURI);
       ArrayList<ExportedObject> _newArrayList = CollectionLiterals.<ExportedObject>newArrayList();
       stub.setExportedObjects(_newArrayList);
-      final IResourceDescription resourceDescription = file.getResourceDescription();
+      final IResourceDescription resourceDescription = xtextFile.getResourceDescription();
       boolean _notEquals = (!Objects.equal(resourceDescription, null));
       if (_notEquals) {
         List<ExportedObject> _exportedObjects = stub.getExportedObjects();

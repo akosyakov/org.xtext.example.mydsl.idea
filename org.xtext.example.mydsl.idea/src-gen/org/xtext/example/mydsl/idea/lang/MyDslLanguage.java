@@ -13,7 +13,6 @@ public final class MyDslLanguage extends AbstractXtextLanguage {
 	private MyDslLanguage() {
 		super("org.xtext.example.mydsl.MyDsl");
 		this.injector = new org.xtext.example.mydsl.idea.MyDslStandaloneSetupIdea().createInjectorAndDoEMFRegistration();
-		
 	}
 
 	@Override

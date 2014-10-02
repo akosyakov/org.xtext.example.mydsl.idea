@@ -45,7 +45,7 @@ public abstract class BaseXtextFile extends PsiFileBase {
         if (language instanceof IXtextLanguage) {
         	((IXtextLanguage) language).injectMembers(this);
         } else {
-        	throw new IllegalArgumentException("Expected an Xtext language but got "+language.getDisplayName());
+        	throw new IllegalArgumentException("Expected an Xtext language but got " + language.getDisplayName());
         }
     }
 	
@@ -109,10 +109,14 @@ public abstract class BaseXtextFile extends PsiFileBase {
     
     public URI getURI() {
     	StubElement<?> stub = getStub();
-		if (stub instanceof XtextFileStub<?>) {
-			XtextFileStub<?> xtextFileStub = (XtextFileStub<?>) stub;
-			return xtextFileStub.getUri();
-		}
+    	if (stub instanceof XtextFileStub<?>) {
+    		XtextFileStub<?> xtextFileStub = (XtextFileStub<?>) stub;
+    		return xtextFileStub.getUri();
+    	}
+        return getPhysicalURI();
+	}
+    
+    public URI getPhysicalURI() {
 		PsiFile originalFile = getOriginalFile();
 		if (originalFile != this && originalFile instanceof BaseXtextFile) {
 			BaseXtextFile originalXtextFile = (BaseXtextFile) originalFile;
@@ -124,7 +128,7 @@ public abstract class BaseXtextFile extends PsiFileBase {
     	}
 		String url = virtualFile.getUrl();
         return URI.createURI(url);
-	}
+    }
 
 	public List<IEObjectDescription> getExportedObjects() {
 		StubElement<?> stub = getStub();
@@ -152,6 +156,11 @@ public abstract class BaseXtextFile extends PsiFileBase {
 		InternalEObject element = (InternalEObject) factory.create(eClass);
 		element.eSetProxyURI(eObjectURI);
 		return EObjectDescription.create(qualifiedName, element);
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getName() + ":" + getName();
 	}
 
 }
