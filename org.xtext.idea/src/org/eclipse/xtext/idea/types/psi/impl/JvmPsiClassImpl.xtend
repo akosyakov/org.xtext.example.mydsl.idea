@@ -3,6 +3,9 @@ package org.eclipse.xtext.idea.types.psi.impl
 import com.google.inject.Inject
 import com.intellij.lang.Language
 import com.intellij.psi.JavaElementVisitor
+import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiAnnotationMemberValue
+import com.intellij.psi.PsiAnnotationOwner
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiElement
@@ -171,12 +174,13 @@ class JvmPsiClassImpl extends LightElement implements JvmPsiClass, PsiExtensible
 
 	private def associatePrimary(EObject jvmElement, LightElement psiElement) {
 		val primarySourceElement = jvmAssocations.getPrimarySourceElement(jvmElement)
-		psiElement.navigationElement = psiAssocations.getPsiElement(primarySourceElement)
+		val navigationElement = psiAssocations.getPsiElement(primarySourceElement)
+		psiElement.navigationElement = navigationElement
 		psiAssocations.associatePrimary(primarySourceElement, [psiElement])
 	}
 
 	private def getPsiModifiers(JvmMember m) {
-		new LightModifierList(manager, language) => [
+		new AnnotatableModifierList(manager, language) => [
 			switch m.visibility {
 				case DEFAULT:
 					addModifier(PsiModifier.PACKAGE_LOCAL)
@@ -222,7 +226,11 @@ class JvmPsiClassImpl extends LightElement implements JvmPsiClass, PsiExtensible
 					addModifier(PsiModifier.SYNCHRONIZED)
 			}
 			if (m instanceof JvmAnnotationTarget) {
-				//TODO subclass LightModifierList to allow annotations
+				m.annotations.forEach[anno|
+					addAnnotation(anno.annotation.qualifiedName) => [
+						associatePrimary(m, it) 
+					]
+				]
 			}
 		]
 	}
@@ -473,4 +481,81 @@ public class LightFieldBuilder extends LightVariableBuilder<LightFieldBuilder> i
 	new(PsiManager manager, Language language, String name, PsiType type) {
 		super(manager, name, type, language)
 	}
+}
+
+public class AnnotatableModifierList extends LightModifierList {
+	
+	val annotations = <PsiAnnotation>newArrayList
+	
+	new(PsiManager manager, Language language) {
+		super(manager, language, #[])
+	}
+	
+	
+	override LightAnnotation addAnnotation(String qualifiedName) {
+		val anno = new LightAnnotation(manager, language, qualifiedName)
+		anno.owner = this
+		annotations += anno
+		anno
+	}
+
+	override findAnnotation(String qualifiedName) {
+		annotations.findFirst[a|qualifiedName == a.qualifiedName]
+	}
+
+	override getAnnotations() {
+		annotations
+	}
+
+	override getApplicableAnnotations() {
+
+		//TODO filter
+		annotations
+	}
+
+}
+
+public class LightAnnotation extends LightElement implements PsiAnnotation {
+
+	String qualifiedName
+	
+	@Accessors PsiAnnotationOwner owner
+	
+	public new(PsiManager manager, Language language, String qualifiedName) {
+		super(manager, language)
+		this.qualifiedName = qualifiedName
+	}
+
+	override getQualifiedName() {
+		qualifiedName
+	}
+
+	override toString() {
+		qualifiedName
+	}
+
+	override findAttributeValue(String attributeName) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
+	override findDeclaredAttributeValue(String attributeName) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
+	override getNameReferenceElement() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
+	override getParameterList() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
+	override <T extends PsiAnnotationMemberValue> setDeclaredAttributeValue(String attributeName, T value) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
+	override getMetaData() {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+
 }

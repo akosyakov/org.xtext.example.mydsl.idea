@@ -32,7 +32,6 @@ import com.intellij.psi.impl.PsiImplUtil;
 import com.intellij.psi.impl.PsiSuperMethodImplUtil;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.impl.light.LightModifierList;
 import com.intellij.psi.impl.light.LightParameter;
 import com.intellij.psi.impl.light.LightParameterListBuilder;
 import com.intellij.psi.impl.light.LightReferenceListBuilder;
@@ -52,6 +51,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.xtext.common.types.JvmAnnotationReference;
 import org.eclipse.xtext.common.types.JvmAnnotationTarget;
 import org.eclipse.xtext.common.types.JvmAnnotationType;
 import org.eclipse.xtext.common.types.JvmConstructor;
@@ -69,6 +69,8 @@ import org.eclipse.xtext.common.types.JvmTypeReference;
 import org.eclipse.xtext.common.types.JvmVisibility;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
 import org.eclipse.xtext.idea.types.psi.JvmPsiClass;
+import org.eclipse.xtext.idea.types.psi.impl.AnnotatableModifierList;
+import org.eclipse.xtext.idea.types.psi.impl.LightAnnotation;
 import org.eclipse.xtext.idea.types.psi.impl.LightFieldBuilder;
 import org.eclipse.xtext.psi.PsiElementProvider;
 import org.eclipse.xtext.psi.PsiModelAssociations;
@@ -163,7 +165,7 @@ public class JvmPsiClassImpl extends LightElement implements JvmPsiClass, PsiExt
         final Procedure1<LightFieldBuilder> _function = new Procedure1<LightFieldBuilder>() {
           public void apply(final LightFieldBuilder it) {
             it.setContainingClass(JvmPsiClassImpl.this);
-            LightModifierList _psiModifiers = JvmPsiClassImpl.this.getPsiModifiers(f);
+            AnnotatableModifierList _psiModifiers = JvmPsiClassImpl.this.getPsiModifiers(f);
             it.setModifierList(_psiModifiers);
             PsiDocCommentImpl _psiDocComment = JvmPsiClassImpl.this.getPsiDocComment(f);
             it.setDocComment(_psiDocComment);
@@ -189,7 +191,7 @@ public class JvmPsiClassImpl extends LightElement implements JvmPsiClass, PsiExt
         Language _language = JvmPsiClassImpl.this.getLanguage();
         String _simpleName = m.getSimpleName();
         LightParameterListBuilder _psiParameters = JvmPsiClassImpl.this.getPsiParameters(m);
-        LightModifierList _psiModifiers = JvmPsiClassImpl.this.getPsiModifiers(m);
+        AnnotatableModifierList _psiModifiers = JvmPsiClassImpl.this.getPsiModifiers(m);
         LightReferenceListBuilder _psiThrowsList = JvmPsiClassImpl.this.psiThrowsList(m);
         LightTypeParameterListBuilder _psiTypeParameterList = JvmPsiClassImpl.this.getPsiTypeParameterList(m);
         LightMethodBuilder _lightMethodBuilder = new LightMethodBuilder(_manager, _language, _simpleName, _psiParameters, _psiModifiers, _psiThrowsList, _psiTypeParameterList);
@@ -260,8 +262,8 @@ public class JvmPsiClassImpl extends LightElement implements JvmPsiClass, PsiExt
     boolean _xblockexpression = false;
     {
       final EObject primarySourceElement = this.jvmAssocations.getPrimarySourceElement(jvmElement);
-      PsiElement _psiElement = this.psiAssocations.getPsiElement(primarySourceElement);
-      psiElement.setNavigationElement(_psiElement);
+      final PsiElement navigationElement = this.psiAssocations.getPsiElement(primarySourceElement);
+      psiElement.setNavigationElement(navigationElement);
       final PsiElementProvider _function = new PsiElementProvider() {
         public PsiElement get() {
           return psiElement;
@@ -272,12 +274,12 @@ public class JvmPsiClassImpl extends LightElement implements JvmPsiClass, PsiExt
     return _xblockexpression;
   }
   
-  private LightModifierList getPsiModifiers(final JvmMember m) {
+  private AnnotatableModifierList getPsiModifiers(final JvmMember m) {
     PsiManager _manager = this.getManager();
     Language _language = this.getLanguage();
-    LightModifierList _lightModifierList = new LightModifierList(_manager, _language);
-    final Procedure1<LightModifierList> _function = new Procedure1<LightModifierList>() {
-      public void apply(final LightModifierList it) {
+    AnnotatableModifierList _annotatableModifierList = new AnnotatableModifierList(_manager, _language);
+    final Procedure1<AnnotatableModifierList> _function = new Procedure1<AnnotatableModifierList>() {
+      public void apply(final AnnotatableModifierList it) {
         JvmVisibility _visibility = m.getVisibility();
         if (_visibility != null) {
           switch (_visibility) {
@@ -358,10 +360,25 @@ public class JvmPsiClassImpl extends LightElement implements JvmPsiClass, PsiExt
           }
         }
         if ((m instanceof JvmAnnotationTarget)) {
+          EList<JvmAnnotationReference> _annotations = m.getAnnotations();
+          final Procedure1<JvmAnnotationReference> _function = new Procedure1<JvmAnnotationReference>() {
+            public void apply(final JvmAnnotationReference anno) {
+              JvmAnnotationType _annotation = anno.getAnnotation();
+              String _qualifiedName = _annotation.getQualifiedName();
+              LightAnnotation _addAnnotation = it.addAnnotation(_qualifiedName);
+              final Procedure1<LightAnnotation> _function = new Procedure1<LightAnnotation>() {
+                public void apply(final LightAnnotation it) {
+                  JvmPsiClassImpl.this.associatePrimary(m, it);
+                }
+              };
+              ObjectExtensions.<LightAnnotation>operator_doubleArrow(_addAnnotation, _function);
+            }
+          };
+          IterableExtensions.<JvmAnnotationReference>forEach(_annotations, _function);
         }
       }
     };
-    return ObjectExtensions.<LightModifierList>operator_doubleArrow(_lightModifierList, _function);
+    return ObjectExtensions.<AnnotatableModifierList>operator_doubleArrow(_annotatableModifierList, _function);
   }
   
   private PsiType toPsiType(final JvmTypeReference type) {
