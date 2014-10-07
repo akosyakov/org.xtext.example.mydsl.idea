@@ -11,7 +11,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.common.types.JvmDeclaredType;
 import org.eclipse.xtext.common.types.TypesPackage;
-import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
+import org.eclipse.xtext.idea.types.psi.JvmPsiClass;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.IPsiModelAssociations;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
@@ -27,11 +27,11 @@ public class PsiJvmDeclaredTypes {
   @Extension
   private IPsiModelAssociations _iPsiModelAssociations;
   
-  public ArrayList<PsiJvmDeclaredType> getPsiJvmDeclaredTypesByName(final BaseXtextFile it, final String name) {
-    ArrayList<PsiJvmDeclaredType> _xblockexpression = null;
+  public ArrayList<JvmPsiClass> getPsiJvmDeclaredTypesByName(final BaseXtextFile it, final String name) {
+    ArrayList<JvmPsiClass> _xblockexpression = null;
     {
       final Resource resource = it.getResource();
-      final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
+      final ArrayList<JvmPsiClass> result = CollectionLiterals.<JvmPsiClass>newArrayList();
       IResourceDescription _resourceDescription = it.getResourceDescription();
       Iterable<IEObjectDescription> _exportedObjectsByType = _resourceDescription.getExportedObjectsByType(TypesPackage.Literals.JVM_DECLARED_TYPE);
       for (final IEObjectDescription description : _exportedObjectsByType) {
@@ -47,7 +47,7 @@ public class PsiJvmDeclaredTypes {
             if (_equals) {
               _matched=true;
               PsiElement _psiElement = this._iPsiModelAssociations.getPsiElement(jvmDeclaredType);
-              result.add(((PsiJvmDeclaredType) _psiElement));
+              result.add(((JvmPsiClass) _psiElement));
             }
           }
         }
@@ -57,11 +57,11 @@ public class PsiJvmDeclaredTypes {
     return _xblockexpression;
   }
   
-  public ArrayList<PsiJvmDeclaredType> getPsiJvmDeclaredTypes(final BaseXtextFile it, final QualifiedName qualifiedName) {
-    ArrayList<PsiJvmDeclaredType> _xblockexpression = null;
+  public ArrayList<JvmPsiClass> getPsiJvmDeclaredTypes(final BaseXtextFile it, final QualifiedName qualifiedName) {
+    ArrayList<JvmPsiClass> _xblockexpression = null;
     {
       final Resource resource = it.getResource();
-      final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
+      final ArrayList<JvmPsiClass> result = CollectionLiterals.<JvmPsiClass>newArrayList();
       IResourceDescription _resourceDescription = it.getResourceDescription();
       Iterable<IEObjectDescription> _exportedObjects = _resourceDescription.getExportedObjects(TypesPackage.Literals.JVM_DECLARED_TYPE, qualifiedName, false);
       for (final IEObjectDescription description : _exportedObjects) {
@@ -74,7 +74,7 @@ public class PsiJvmDeclaredTypes {
           if (jvmDeclaredType instanceof JvmDeclaredType) {
             _matched=true;
             PsiElement _psiElement = this._iPsiModelAssociations.getPsiElement(jvmDeclaredType);
-            result.add(((PsiJvmDeclaredType) _psiElement));
+            result.add(((JvmPsiClass) _psiElement));
           }
         }
       }

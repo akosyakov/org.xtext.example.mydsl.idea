@@ -47,7 +47,7 @@ class StubJvmTypeProvider extends AbstractRuntimeJvmTypeProvider {
 	}
 	
 	def createPsiClassFactory(IPsiModelAssociator psiModelAssociator) {
-		new PsiClassFactory(uriHelper, psiModelAssociator)
+		new PsiBasedTypeFactory(uriHelper, psiModelAssociator)
 	}
 	
 	protected def createStubURIHelper() {

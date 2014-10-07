@@ -17,7 +17,7 @@ import com.intellij.util.containers.HashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
-import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
+import org.eclipse.xtext.idea.types.psi.JvmPsiClass;
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredTypes;
 import org.eclipse.xtext.idea.types.stubindex.JvmDeclaredTypeShortNameIndex;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
@@ -72,16 +72,16 @@ public class JvmTypesShortNamesCache extends PsiShortNamesCache {
   }
   
   public PsiClass[] getClassesByName(final String name, final GlobalSearchScope scope) {
-    ArrayList<PsiJvmDeclaredType> _xblockexpression = null;
+    ArrayList<JvmPsiClass> _xblockexpression = null;
     {
-      final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
+      final ArrayList<JvmPsiClass> result = CollectionLiterals.<JvmPsiClass>newArrayList();
       final Collection<BaseXtextFile> xtextFiles = this.jvmDeclaredTypeShortNameIndex.get(name, this.project, scope);
       for (final BaseXtextFile xtextFile : xtextFiles) {
         Language _language = xtextFile.getLanguage();
         boolean _equals = Objects.equal(_language, this.language);
         if (_equals) {
-          ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypesByName = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypesByName(xtextFile, name);
-          Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypesByName);
+          ArrayList<JvmPsiClass> _psiJvmDeclaredTypesByName = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypesByName(xtextFile, name);
+          Iterables.<JvmPsiClass>addAll(result, _psiJvmDeclaredTypesByName);
         }
       }
       _xblockexpression = result;

@@ -22,7 +22,7 @@ class PsiJvmDeclaredTypes {
 		for (description : resourceDescription.getExportedObjectsByType(JVM_DECLARED_TYPE)) {
 			switch jvmDeclaredType : resource.resourceSet.getEObject(description.EObjectURI, true) {
 				JvmDeclaredType case jvmDeclaredType.simpleName == name:
-					result += jvmDeclaredType.psiElement as PsiJvmDeclaredType
+					result += jvmDeclaredType.psiElement as JvmPsiClass
 			}
 		}
 		result
@@ -35,7 +35,7 @@ class PsiJvmDeclaredTypes {
 		for (description : resourceDescription.getExportedObjects(JVM_DECLARED_TYPE, qualifiedName, false)) {
 			switch jvmDeclaredType : resource.resourceSet.getEObject(description.EObjectURI, true) {
 				JvmDeclaredType:
-					result += jvmDeclaredType.psiElement as PsiJvmDeclaredType
+					result += jvmDeclaredType.psiElement as JvmPsiClass
 			}
 		}
 		result

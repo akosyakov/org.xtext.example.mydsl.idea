@@ -63,7 +63,7 @@ import org.eclipse.xtext.common.types.impl.JvmTypeConstraintImplCustom
 import org.eclipse.xtext.psi.IPsiModelAssociator
 import org.eclipse.xtext.util.internal.Stopwatches
 
-class PsiClassFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
+class PsiBasedTypeFactory implements ITypeFactory<PsiClass, JvmDeclaredType> {
 
 	val final createTypeTask = Stopwatches.forTask("PsiClassFactory.createType")
 
