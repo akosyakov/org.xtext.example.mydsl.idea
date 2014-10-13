@@ -9,12 +9,12 @@ if (osName.startsWith('Mac')) {
 
 task downloadIntellij {
 	doLast {
-		ant.get(src:'https://teamcity.jetbrains.com/repository/download/bt410/153679:id/${archiveName}?guest', dest: "${intellijHome}/", usetimestamp: true)
+		ant.get(src:"https://teamcity.jetbrains.com/repository/download/bt410/153679:id/${archiveName}?guest", dest: "${intellijHome}/", usetimestamp: true)
 		ant.get(src:'https://teamcity.jetbrains.com/repository/download/bt410/153679:id/sources.zip?guest', dest: "${intellijHome}/", usetimestamp: true)
 	}
 }
 
-task unpackIntellij(type: Copy) {
+task unpackIntellij(type: Copy, dependsOn: downloadIntellij) {
 	def zipFile = file("${intellijHome}/${archiveName}")
 	def outputDir = file("${intellijHome}/")
 	from zipTree(zipFile)
