@@ -1,28 +1,28 @@
 def intellijHome = new File('intellij-ce')
+def osName = System.getProperty('os.name')
+def archiveName
+if (osName.startsWith('Mac')) {
+	archiveName = 'ideaIC-138.SNAPSHOT.mac.zip'
+} else if (osName.startsWith('Win')) {
+  archiveName = 'ideaIC-138.SNAPSHOT.win.zip'
+}
 
-task cloneIntellij << {
-	if (!intellijHome.exists()) {
-		exec {
-			commandLine 'git', 'clone', 'https://github.com/JetBrains/intellij-community.git', '-b', 'master', '--single-branch', intellijHome.path
-		}
-		exec {
-			commandLine 'git', 'reset', '--hard', 'f5da1b5'
-			workingDir = intellijHome
-		}
+task downloadIntellij {
+	doLast {
+		ant.get(src:'https://teamcity.jetbrains.com/repository/download/bt410/153679:id/${archiveName}?guest', dest: "${intellijHome}/", usetimestamp: true)
+		ant.get(src:'https://teamcity.jetbrains.com/repository/download/bt410/153679:id/sources.zip?guest', dest: "${intellijHome}/", usetimestamp: true)
 	}
 }
 
-task buildIntellij {
-	dependsOn cloneIntellij
-	doLast {
-		if (!new File(intellijHome, 'out').exists()) {
-			ant.ant(antfile:'build.xml', dir:intellijHome)
-		}
-	}
+task unpackIntellij(type: Copy) {
+	def zipFile = file("${intellijHome}/${archiveName}")
+	def outputDir = file("${intellijHome}/")
+	from zipTree(zipFile)
+	into outputDir
 }
 
 task prepareIntellij {
-	dependsOn buildIntellij
+	dependsOn unpackIntellij
 	dependsOn ':intellij-dependencies:eclipseClasspath'
 }
 
