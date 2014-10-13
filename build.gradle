@@ -1,4 +1,4 @@
-def intellijHome = new File('intellij-ce')
+def intellijHome = file('intellij-ce')
 def osName = System.getProperty('os.name')
 def archiveName
 if (osName.startsWith('Mac')) {
@@ -10,25 +10,20 @@ if (osName.startsWith('Mac')) {
 task downloadIntellij {
 	doLast {
 		intellijHome.mkdirs()
-		ant.get(src:"https://teamcity.jetbrains.com/repository/download/bt410/153679:id/${archiveName}?guest", dest: "${intellijHome}/", usetimestamp: true)
-		ant.get(src:'https://teamcity.jetbrains.com/repository/download/bt410/153679:id/sources.zip?guest', dest: "${intellijHome}/", usetimestamp: true)
+		ant.get(src:"https://teamcity.jetbrains.com/repository/download/bt410/153679:id/${archiveName}?guest", dest: intellijHome, usetimestamp: true)
+		ant.get(src:'https://teamcity.jetbrains.com/repository/download/bt410/153679:id/sources.zip?guest', dest: intellijHome, usetimestamp: true)
 	}
 }
 
 task unpackIntellij(type: Copy, dependsOn: downloadIntellij) {
-	def zipFile = file("${intellijHome}/${archiveName}")
-	def outputDir = file("${intellijHome}/")
-	from zipTree(zipFile)
-	into outputDir
+	from zipTree("${intellijHome}/${archiveName}")
+	into intellijHome
 }
 
-task prepareIntellij {
-	dependsOn unpackIntellij
-	dependsOn ':intellij-dependencies:eclipseClasspath'
-}
+task prepareIntellij(dependsOn: [unpackIntellij, ':intellij-dependencies:eclipseClasspath'])
 
 task cleanTestSystem(type: Delete) {
-	delete new File(intellijHome, 'test-system')
+	delete "${intellijHome}/test-system"
 }
 
 task cleanIntellij(type: Delete) {
