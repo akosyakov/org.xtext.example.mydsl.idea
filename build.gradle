@@ -9,6 +9,7 @@ if (osName.startsWith('Mac')) {
 
 task downloadIntellij {
 	doLast {
+		intellijHome.mkdirs()
 		ant.get(src:"https://teamcity.jetbrains.com/repository/download/bt410/153679:id/${archiveName}?guest", dest: "${intellijHome}/", usetimestamp: true)
 		ant.get(src:'https://teamcity.jetbrains.com/repository/download/bt410/153679:id/sources.zip?guest', dest: "${intellijHome}/", usetimestamp: true)
 	}
