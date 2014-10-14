@@ -11,7 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.xtext.idea.lang.IXtextLanguage;
-import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredType;
+import org.eclipse.xtext.idea.types.psi.JvmPsiClass;
 import org.eclipse.xtext.idea.types.psi.PsiJvmDeclaredTypes;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.psi.impl.BaseXtextFile;
@@ -46,9 +46,9 @@ public class JvmTypesElementFinder extends PsiElementFinder {
   }
   
   public PsiClass[] findClasses(final String qualifiedName, final GlobalSearchScope scope) {
-    ArrayList<PsiJvmDeclaredType> _xblockexpression = null;
+    ArrayList<JvmPsiClass> _xblockexpression = null;
     {
-      final ArrayList<PsiJvmDeclaredType> result = CollectionLiterals.<PsiJvmDeclaredType>newArrayList();
+      final ArrayList<JvmPsiClass> result = CollectionLiterals.<JvmPsiClass>newArrayList();
       Collection<BaseXtextFile> _get = this.exportedObjectQualifiedNameIndex.get(qualifiedName, this.project, scope);
       for (final BaseXtextFile xtextFile : _get) {
         Language _language = xtextFile.getLanguage();
@@ -56,8 +56,8 @@ public class JvmTypesElementFinder extends PsiElementFinder {
         if (_equals) {
           String[] _split = qualifiedName.split("\\.");
           QualifiedName _create = QualifiedName.create(_split);
-          ArrayList<PsiJvmDeclaredType> _psiJvmDeclaredTypes = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypes(xtextFile, _create);
-          Iterables.<PsiJvmDeclaredType>addAll(result, _psiJvmDeclaredTypes);
+          ArrayList<JvmPsiClass> _psiJvmDeclaredTypes = this._psiJvmDeclaredTypes.getPsiJvmDeclaredTypes(xtextFile, _create);
+          Iterables.<JvmPsiClass>addAll(result, _psiJvmDeclaredTypes);
         }
       }
       _xblockexpression = result;
